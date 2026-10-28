@@ -6,14 +6,16 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
     container: lorisleiva/laravel-docker:8.5
     steps:
       - uses: actions/checkout@v5
-      - run: npm install
-      - run: npm install vite
+      - run: npm ci
       - run: npm run build
       - run: composer install --no-interaction --no-dev --prefer-dist
       - run: touch database/database.sqlite
