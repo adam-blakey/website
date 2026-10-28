@@ -7,6 +7,7 @@ use App\Models\MusicNowPlaying;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Mime\MimeTypes;
 
 class MusicServiceManager
 {
@@ -46,15 +47,21 @@ class MusicServiceManager
             return null;
         }
 
-        $path = 'album-art/' . sha1($url);
+        $base = 'album-art/' . sha1($url);
         $disk = Storage::disk('public');
 
         try {
-            if (!$disk->exists($path)) {
+            // shortcut: glob assumes a local disk, switch to a stored lookup if the disk goes remote.
+            $cached = glob($disk->path($base) . '.*');
+            if ($cached) {
+                $path = $base . '.' . pathinfo($cached[0], PATHINFO_EXTENSION);
+            } else {
                 $response = Http::timeout(10)->get($url);
-                if (!$response->successful() || !str_starts_with($response->header('Content-Type'), 'image/')) {
+                $type = strtolower(trim(explode(';', $response->header('Content-Type'))[0]));
+                if (!$response->successful() || !str_starts_with($type, 'image/')) {
                     return $url;
                 }
+                $path = $base . '.' . (MimeTypes::getDefault()->getExtensions($type)[0] ?? 'jpg');
                 $disk->put($path, $response->body());
             }
         } catch (\Exception $e) {
