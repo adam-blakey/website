@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - '*'
+  workflow_dispatch:
 
 jobs:
   build_and_test:
@@ -51,6 +52,9 @@ jobs:
       - run: envoy run deploy --branch=main --domain=laravel.blakey.family
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+          DEPLOY_SSH_USER: ${{ secrets.DEPLOY_SSH_USER }}
+          DEPLOY_SSH_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
+          DEPLOY_SSH_PORT: ${{ secrets.DEPLOY_SSH_PORT }}
 
   deploy_main:
     runs-on: ubuntu-latest
@@ -71,3 +75,6 @@ jobs:
       - run: envoy run deploy --branch=main --domain=adam.blakey.family
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+          DEPLOY_SSH_USER: ${{ secrets.DEPLOY_SSH_USER }}
+          DEPLOY_SSH_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
+          DEPLOY_SSH_PORT: ${{ secrets.DEPLOY_SSH_PORT }}

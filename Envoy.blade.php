@@ -1,4 +1,4 @@
-@servers(['production' => '-A les99cou@tien-lon.krystal.uk -p 722'])
+@servers(['production' => '-A ' . getenv('DEPLOY_SSH_USER') . '@' . getenv('DEPLOY_SSH_HOST') . ' -p ' . getenv('DEPLOY_SSH_PORT')])
 
 @setup
     /*
@@ -6,9 +6,9 @@
     | Variables we take branch and domain form envoy command
     |--------------------------------------------------------------------------
     */
-    $root = 'les99cou';
-    $repository = 'git@github.com:adam-blakey/adam-website-2024.git';
-    $venv = '/home/les99cou/nodevenv/domains/' . $domain . '/20/bin/activate';
+    $root = getenv('DEPLOY_SSH_USER');
+    $repository = 'git@github.com:adam-blakey/website.git';
+    $venv = '/home/' . $root . '/nodevenv/domains/' . $domain . '/20/bin/activate';
 
     /*
     |--------------------------------------------------------------------------
