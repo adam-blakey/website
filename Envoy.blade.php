@@ -8,7 +8,6 @@
     */
     $root = getenv('DEPLOY_SSH_USER');
     $repository = 'git@github.com:adam-blakey/website.git';
-    $venv = '/home/' . $root . '/nodevenv/domains/' . $domain . '/20/bin/activate';
 
     /*
     |--------------------------------------------------------------------------
@@ -25,9 +24,6 @@
 @story('deploy', ['on' => 'production'])
     git_pull
     artisan_down
-    run_npm_install
-    compiling_assets
-    run_composer
     optimize_installation
     migrate_database
     artisan_up
@@ -50,32 +46,6 @@
     {{ logMessage('🔒  Putting Application into maintenance mode...') }}
     cd {{ $app_dir }}
     php artisan down
-@endtask
-
-@task('run_npm_install')
-    {{ logMessage('📦  Running npm...') }}
-    cd {{ $app_dir }}
-    @if (!empty($venv))
-        source {{ $venv }}
-    @endif
-    npm install
-@endtask
-
-@task('compiling_assets')
-    {{ logMessage('🌅  Compiling assets...') }}
-    cd {{ $app_dir }}
-    @if (!empty($venv))
-        source {{ $venv }}
-    @endif
-    npm install vite
-    npm run build
-@endtask
-
-@task('run_composer')
-    {{ logMessage('🚚  Running Composer...') }}
-    cd {{ $app_dir }}
-    composer update
-    composer install --no-interaction --no-dev --prefer-dist
 @endtask
 
 @task('optimize_installation')
