@@ -7,7 +7,7 @@
     |--------------------------------------------------------------------------
     */
     $root = 'les99cou';
-    $repository = 'git@gitlab.com:adam.blakey/adam-website-2024.git';
+    $repository = 'git@github.com:adam-blakey/adam-website-2024.git';
     $venv = '/home/les99cou/nodevenv/domains/' . $domain . '/20/bin/activate';
 
     /*
@@ -38,7 +38,7 @@
     {{ logMessage('🐛  Pulling changes...') }}
     cd {{ $app_dir }}
     ssh-agent /bin/bash
-    ssh-add ~/.ssh/gitlab
+    ssh-add ~/.ssh/github
     git reset --hard
     git fetch origin {{ $branch }}
     git fetch --tags
