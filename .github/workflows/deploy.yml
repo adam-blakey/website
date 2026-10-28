@@ -18,14 +18,12 @@ jobs:
       - run: composer install --no-interaction --no-dev --prefer-dist
       - run: touch database/database.sqlite
       - run: cp .env.example .env
-      - run: php artisan clear-compiled --env=production
-      - run: php artisan optimize --env=production
-      - run: php artisan route:cache
-      - run: php artisan event:cache
       - run: php artisan key:generate
-      - run: php artisan config:cache
       - run: php artisan migrate
       - run: php artisan test --log-junit ./junit.xml
+      # Production build smoke test. Must run after the tests: a cached config ignores APP_ENV=testing and CSRF would be enforced.
+      - run: php artisan optimize --env=production
+      - run: php artisan event:cache
       - uses: actions/upload-artifact@v4
         if: always()
         with:
