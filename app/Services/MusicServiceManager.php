@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Contracts\MusicServiceInterface;
 use App\Models\MusicNowPlaying;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class MusicServiceManager
 {
@@ -27,6 +29,7 @@ class MusicServiceManager
             try {
                 $track = $service->getRecentTrack();
                 if ($track) {
+                    $track->artwork_url = $this->cacheArtwork($track->artwork_url);
                     $track->save();
                     return $track;
                 }
@@ -35,5 +38,30 @@ class MusicServiceManager
             }
             return null;
         })->filter();
+    }
+
+    private function cacheArtwork(?string $url): ?string
+    {
+        if (!$url) {
+            return null;
+        }
+
+        $path = 'album-art/' . sha1($url);
+        $disk = Storage::disk('public');
+
+        try {
+            if (!$disk->exists($path)) {
+                $response = Http::timeout(10)->get($url);
+                if (!$response->successful() || !str_starts_with($response->header('Content-Type'), 'image/')) {
+                    return $url;
+                }
+                $disk->put($path, $response->body());
+            }
+        } catch (\Exception $e) {
+            report($e);
+            return $url;
+        }
+
+        return $disk->url($path);
     }
 }

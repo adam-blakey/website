@@ -13,4 +13,4 @@ Schedule::call($artisan('blog:import-wordpress'))->name('blog:import-wordpress')
 Schedule::call($artisan('blog:generate-responsive-images'))->name('blog:generate-responsive-images')->hourly();
 Schedule::call($artisan('concerts:import'))->name('concerts:import')->hourly();
 
-Schedule::call($artisan('music:clear-old'))->name('music:clear-old')->daily();
+Schedule::call($artisan('music:clear-old'))->name('music:clear-old')->hourly();
