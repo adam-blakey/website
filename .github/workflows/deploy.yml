@@ -46,16 +46,16 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-      - run: envoy run deploy --branch=main --domain=laravel.blakey.family
+      - run: composer global exec envoy -- run deploy --branch=main --domain=laravel.blakey.family
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-          DEPLOY_SSH_USER: ${{ secrets.DEPLOY_SSH_USER }}
-          DEPLOY_SSH_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
-          DEPLOY_SSH_PORT: ${{ secrets.DEPLOY_SSH_PORT }}
+          DEPLOY_SSH_USER: ${{ vars.DEPLOY_SSH_USER }}
+          DEPLOY_SSH_HOST: ${{ vars.DEPLOY_SSH_HOST }}
+          DEPLOY_SSH_PORT: ${{ vars.DEPLOY_SSH_PORT }}
 
   deploy_main:
     runs-on: ubuntu-latest
-    needs: build_and_test
+    needs: deploy_staging
     steps:
       - uses: actions/checkout@v4
       - run: composer global require --prefer-dist laravel/envoy=~2.9.0 --no-interaction --prefer-dist --quiet
@@ -69,9 +69,9 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-      - run: envoy run deploy --branch=main --domain=adam.blakey.family
+      - run: composer global exec envoy -- run deploy --branch=main --domain=adam.blakey.family
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-          DEPLOY_SSH_USER: ${{ secrets.DEPLOY_SSH_USER }}
-          DEPLOY_SSH_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
-          DEPLOY_SSH_PORT: ${{ secrets.DEPLOY_SSH_PORT }}
+          DEPLOY_SSH_USER: ${{ vars.DEPLOY_SSH_USER }}
+          DEPLOY_SSH_HOST: ${{ vars.DEPLOY_SSH_HOST }}
+          DEPLOY_SSH_PORT: ${{ vars.DEPLOY_SSH_PORT }}
