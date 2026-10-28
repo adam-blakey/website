@@ -37,9 +37,10 @@
     ssh-add ~/.ssh/GitHubActionsdeploy
     git reset --hard
     git fetch origin {{ $branch }}
-    git fetch --tags
+    git fetch --tags --force
     git reset --hard origin/{{ $branch }}
     git describe --tags --abbrev=0 --always > VERSION
+    rm -f bootstrap/cache/*.php
 @endtask
 
 @task('artisan_down')
