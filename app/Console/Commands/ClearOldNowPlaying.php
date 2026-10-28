@@ -20,7 +20,6 @@ class ClearOldNowPlaying extends Command
             $cutoffDate = Carbon::now()->subDays(30);
             $count = MusicNowPlaying::where('played_at', '<', $cutoffDate)->delete();
 
-            // Drop cached artwork no remaining entry points at (a recent track may reuse an old album's file).
             $disk = Storage::disk('public');
             $inUse = MusicNowPlaying::pluck('artwork_url')->map(fn ($url) => 'album-art/' . basename((string) $url));
             $disk->delete(collect($disk->files('album-art'))->diff($inUse)->all());

@@ -40,7 +40,6 @@ class MusicServiceManager
         })->filter();
     }
 
-    /** Download remote artwork once into the public disk; fall back to the remote URL on failure. */
     private function cacheArtwork(?string $url): ?string
     {
         if (!$url) {
