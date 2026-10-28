@@ -43,6 +43,7 @@
     git fetch origin {{ $branch }}
     git fetch --tags
     git reset --hard origin/{{ $branch }}
+    git describe --tags --abbrev=0 --always > VERSION
 @endtask
 
 @task('artisan_down')

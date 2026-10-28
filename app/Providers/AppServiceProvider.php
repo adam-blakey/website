@@ -38,12 +38,7 @@ class AppServiceProvider extends ServiceProvider
         $topLevelPath = explode('/', request()->path())[0];
         $active = request()->is('/') ? 'welcome' : $topLevelPath;
 
-        try {
-            $taggedVersion = trim(exec('git describe --tags --abbrev=0 --always'));
-        }
-        catch (\Exception $e) {
-            $taggedVersion = '0.0.0';
-        }
+        $taggedVersion = config('app.version');
 
         try {
             $latestTrack = MusicNowPlaying::where('played_at', '>', now()->addMinutes(-5))
