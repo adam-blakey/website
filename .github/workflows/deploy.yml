@@ -15,7 +15,6 @@ jobs:
       - run: npm install
       - run: npm install vite
       - run: npm run build
-      - run: composer update
       - run: composer install --no-interaction --no-dev --prefer-dist
       - run: touch database/database.sqlite
       - run: cp .env.example .env
