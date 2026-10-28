@@ -1,0 +1,30 @@
+@import "flowbite/src/themes/default.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@plugin "flowbite/plugin";
+@source "../node_modules/flowbite";
+
+h1 {
+    @apply text-4xl font-bold !important;
+}
+
+h2 {
+    @apply text-3xl font-bold !important;
+}
+
+h3 {
+    @apply text-2xl font-bold !important;
+}
+
+@media (width >= 40rem) {
+    .grecaptcha-badge {
+        bottom: 2rem !important;
+    }
+}
+
+@media (width < 40rem) {
+    .grecaptcha-badge {
+        bottom: 3.5rem !important;
+    }
+}
