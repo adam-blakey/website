@@ -46,7 +46,9 @@ jobs:
     strategy:
       max-parallel: 1 # staging first; a failure there skips production
       matrix:
-        domain: [laravel.blakey.family, adam.blakey.family]
+        domain:
+          - ${{ vars.STAGING_DOMAIN }}
+          - ${{ vars.PROD_DOMAIN }}
     env:
       SSH: ssh -i ~/.ssh/deploy -p ${{ vars.DEPLOY_SSH_PORT }} -o StrictHostKeyChecking=no
       HOST: ${{ vars.DEPLOY_SSH_USER }}@${{ vars.DEPLOY_SSH_HOST }}
@@ -63,7 +65,7 @@ jobs:
           $SSH $HOST bash -es <<'EOF'
             set -e
             cd domains/${{ matrix.domain }}
-            export GIT_SSH_COMMAND="ssh -i ~/.ssh/GitHubActionsdeploy -o IdentitiesOnly=yes"
+            export GIT_SSH_COMMAND="ssh -i ~/.ssh/${{ vars.DEPLOY_GIT_KEY }} -o IdentitiesOnly=yes"
             git fetch --tags --force origin main
             git reset --hard origin/main
             git describe --tags --abbrev=0 --always > VERSION
