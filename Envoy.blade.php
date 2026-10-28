@@ -38,7 +38,7 @@
     {{ logMessage('🐛  Pulling changes...') }}
     cd {{ $app_dir }}
     ssh-agent /bin/bash
-    ssh-add ~/.ssh/github
+    ssh-add ~/.ssh/GitHubActionsdeploy
     git reset --hard
     git fetch origin {{ $branch }}
     git fetch --tags
