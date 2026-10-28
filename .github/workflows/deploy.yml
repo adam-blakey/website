@@ -39,9 +39,31 @@ jobs:
             public/build
           include-hidden-files: true
 
-  deploy:
+  release:
     if: github.ref == 'refs/heads/main'
     needs: build_and_test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency: release # serialise so two pushes can't compute the same version
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      # Patch bump of the latest vX.Y.Z tag (v0.0.1 if none). For a minor/major bump, push the tag by hand.
+      - id: version
+        run: |
+          last=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1)
+          echo "next=$(echo "${last:-v0.0.0}" | awk -F. '{print $1"."$2"."$3+1}')" >> "$GITHUB_OUTPUT"
+      - uses: softprops/action-gh-release@v2.6.2
+        with:
+          tag_name: ${{ steps.version.outputs.next }}
+          target_commitish: ${{ github.sha }}
+          generate_release_notes: true
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: [build_and_test, release]
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1 # staging first; a failure there skips production
