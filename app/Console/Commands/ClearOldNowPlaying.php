@@ -10,14 +10,14 @@ use Illuminate\Support\Facades\Storage;
 class ClearOldNowPlaying extends Command
 {
     protected $signature = 'music:clear-old';
-    protected $description = 'Clear music now playing entries older than 30 days';
+    protected $description = 'Clear music now playing entries older than 2 hours';
 
     public function handle(): int
     {
-        $this->info('Clearing music now playing entries older than 30 days...');
+        $this->info('Clearing music now playing entries older than 2 hours...');
 
         try {
-            $cutoffDate = Carbon::now()->subDays(30);
+            $cutoffDate = Carbon::now()->subHours(2);
             $count = MusicNowPlaying::where('played_at', '<', $cutoffDate)->delete();
 
             $disk = Storage::disk('public');
