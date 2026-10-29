@@ -34,3 +34,8 @@ it('returns a successful response for software interests page', function () {
     $response = $this->get('/interests/software');
     $response->assertStatus(200);
 });
+
+it('returns a successful response for now page', function () {
+    $response = $this->get('/now');
+    $response->assertStatus(200);
+});

@@ -53,7 +53,7 @@
         </div>
     </div>
 
-    <x-bottom-bar :taggedVersion="$layoutTaggedVersion ?? '1.0.0'" :latestTrack="$layoutLatestTrack" :programmingTime="$layoutProgrammingTime" :programmingTimeUrl="$layoutProgrammingTimeUrl" />
+    <x-bottom-bar :taggedVersion="$layoutTaggedVersion ?? '1.0.0'" :latestTrack="$layoutLatestTrack" :programmingTime="$layoutProgrammingTime" />
 </body>
 
 </html>

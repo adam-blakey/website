@@ -6,10 +6,7 @@
 
 <x-layout>
     <x-card-grid :columns="3">
-        <x-card-grid-item :colSpan="1" title="Work in progress!" color="bg-amber-500/[0.07] border-amber-400/20!">
-            <p class="text-gray-100">{!! $mdi('alert', 'inline text-amber-400') !!} Howdy! Thanks for stopping by. I'm afraid this site still needs a little bit of attention, so please mind your step as you explore.</p>
-        </x-card-grid-item>
-        <x-card-grid-item :colSpan="2" title="In short">
+        <x-card-grid-item :colSpan="3" title="In short">
             <div class="flex flex-col md:flex-row gap-4">
                 <div class="flex items-center">
                     <img class="my-4 md:h-32 md:w-32 h-24 w-24 rounded-lg shadow-lg" src="{{ Vite::asset('resources/img/adam.jpg') }}" alt="Adam's face" />
@@ -35,6 +32,9 @@
                         </x-a>
                         <x-a view="interests">
                             <h3>My Interests</h3>
+                        </x-a>
+                        <x-a view="now">
+                            <h3>Right now</h3>
                         </x-a>
                         <x-a view="contact">
                             <h3>Contact me</h3>

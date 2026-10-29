@@ -41,6 +41,13 @@ Route::get('/interests/software', function() {
     return view('interests.software');
 })->name('interests.software');
 
+Route::get('/now', function() {
+    return view('now', [
+        'latestTrack' => \App\Models\MusicNowPlaying::latest('played_at')->first(),
+        'programmingTime' => \App\Models\ProgrammingTime::getLatest(),
+    ]);
+})->name('now');
+
 Route::get('/contact', [\App\Http\Controllers\ContactController::class, 'show'])->name('contact');
 Route::post('/contact', [\App\Http\Controllers\ContactController::class, 'submit'])->name('contact.submit');
 

@@ -3,21 +3,18 @@
 <x-layout>
     <x-card-grid :columns="3">
         <x-card-grid-item :colSpan="3" title="Adam Blakey">
-            <div class="mb-2">Hi there, I'm Adam. 👋</div>
-            <div class="mb-2">{!! $mdi('briefcase-outline', 'inline', 24) !!}
-                As of September 2025, I'm a Software Developer at Capital One. I'm currently working in a team focusing on customer engagement. Most of my work is in Java. Before this, I worked at Savoy Systems where I programmed in a mixture of Delphi and C# Blazor.
+            <div class="mb-2">Hi there, I'm Adam 👋</div>
+            <div class="mb-2">
+                💼 I'm a Software Engineer at Capital One, mostly working on our backend Java services for customer offers. Before that, I worked at Savoy Systems on projects ranging from data visualisation and automated testing, all the way to a larger project where we were porting a legacy application to a new language.
             </div>
-            <div class="mb-2">{!! $mdi('school-outline', 'inline', 24) !!}
-                I've also just completed Mathematics PhD at the University of Nottingham, where I developed scientific software to simulate blood flow and nutrient transport within the human placenta.
+            <div class="mb-2">
+                🧑‍🔬 In 2024, I completed Mathematics PhD at the University of Nottingham, where I developed scientific software to simulate blood flow and nutrient transport within the human placenta.
             </div>
-            <div class="mb-2">{!! $mdi('file-code-outline', 'inline', 24) !!}
-                Most of what I do is develop software, and I predominantly create websites and bespoke software in PHP/SQL/JS/HTML/CSS in my spare time. I have the most experience with the interesting cocktail of C++, C#, Delphi, Fortran, PHP, and Python. I also have experience of independently teaching a first-year undergraduate Python course at the University of Nottingham.
+            <div class="mb-2">
+                🧑‍💻 Most of what I do is develop software, and I predominantly create websites and bespoke software in PHP/SQL/JS/HTML/CSS in my spare time. I have the most experience with the interesting cocktail of C#, Delphi, Fortran, Java, PHP, and Python. I also have experience teaching a first-year undergraduate Python course at the University of Nottingham, as well as mentoring newbies in tech and giving tech talks.
             </div>
-            <div class="mb-2">{!! $mdi('hand-heart-outline', 'inline', 24) !!}
-                I have spent many years as a trustee of 3 local charities, served on committees of 3 more organisations, and still volunteer every week with Scouts since 2016. I also provide website and technical support to several local organisations.
-            </div>
-            <div class="mb-2">{!! $mdi('music-note-outline', 'inline', 24) !!}
-                I'm also a keen clarinettist, playing in multiple ensembles in Nottingham.
+            <div class="mb-2">
+                ✅ I have spent many years as a trustee of 3 local charities, served on committees of 3 more organisations, and still volunteer every week with Scouts since 2015. I also provide website and technical support to several local organisations.
             </div>
         </x-card-grid-item>
         <x-card-grid-item :colSpan="1" title="Recent-ish timeline">
