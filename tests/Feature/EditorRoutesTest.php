@@ -5,14 +5,6 @@ it('returns a successful response for editor page', function () {
     $response->assertStatus(200);
 });
 
-it('can save editor content', function () {
-    $response = $this->post('/editor/save', [
-        'content' => 'Test content',
-        'filename' => 'test.md'
-    ]);
-
-    // Assuming a successful save redirects back or returns a success status
-    // Adjust this assertion based on the actual behavior of the save endpoint
-    $response->assertStatus(200)
-        ->assertSessionHasNoErrors();
+it('has no server-side save endpoint', function () {
+    $this->post('/editor/save', ['content' => 'x', 'filename' => 'a.md'])->assertStatus(404);
 });

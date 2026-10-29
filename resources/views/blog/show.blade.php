@@ -55,7 +55,7 @@
 
                 <!-- Post content -->
                 <article class="prose dark:prose-invert lg:prose-lg max-w-none mb-12 space-y-4">
-                    {!! $post->content !!}
+                    {!! (new \HTMLPurifier(\HTMLPurifier_Config::createDefault()))->purify($post->content) !!}
                 </article>
 
                 <!-- Related posts -->

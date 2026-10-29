@@ -100,36 +100,12 @@ Code block example
                 const content = editor.value;
                 const filenameValue = filename.value || 'untitled.md';
 
-                // Create a form to submit the content
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '{{ route("editor.save") }}';
-                form.style.display = 'none';
-
-                // Add CSRF token
-                const csrfToken = document.createElement('input');
-                csrfToken.type = 'hidden';
-                csrfToken.name = '_token';
-                csrfToken.value = '{{ csrf_token() }}';
-                form.appendChild(csrfToken);
-
-                // Add content
-                const contentInput = document.createElement('input');
-                contentInput.type = 'hidden';
-                contentInput.name = 'content';
-                contentInput.value = content;
-                form.appendChild(contentInput);
-
-                // Add filename
-                const filenameInput = document.createElement('input');
-                filenameInput.type = 'hidden';
-                filenameInput.name = 'filename';
-                filenameInput.value = filenameValue;
-                form.appendChild(filenameInput);
-
-                // Submit the form
-                document.body.appendChild(form);
-                form.submit();
+                const url = URL.createObjectURL(new Blob([content], { type: 'text/markdown' }));
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filenameValue;
+                link.click();
+                URL.revokeObjectURL(url);
             }
 
             // Listen for save command (Ctrl+S or Command+S)
