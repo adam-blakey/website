@@ -22,7 +22,7 @@
             </a>
             <a class="flex items-center gap-1 shrink-0 rounded px-1 hover:bg-gray-600 hover:text-white" href="{{ route('now') }}">{!! $mdi('clock-outline', '', 13) !!} {{ $programmingTime ?? '0 hrs' }} programming</a>
             <span class="hidden md:inline">UTF-8</span>
-            <span class="hidden md:flex items-center gap-1">{!! $mdi('tag-outline', '', 13) !!} v{{ $taggedVersion ?? '1.0.0' }}</span>
+            <span class="flex items-center gap-1 shrink-0">{!! $mdi('tag-outline', '', 13) !!} v{{ $taggedVersion ?? '1.0.0' }}</span>
         </div>
     </div>
 </footer>
