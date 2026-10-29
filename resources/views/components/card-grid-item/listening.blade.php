@@ -37,7 +37,8 @@
         </div>
 
         <div class="mt-4">
-            <p class="text-sm text-gray-400">{!! $mdi('music-box', 'inline mr-1', 16) !!} Played {{ ($track->played_at->diffForHumans(Carbon::now(), CarbonInterface::DIFF_RELATIVE_TO_NOW)) }}</p>
+            @php($playingNow = $track->played_at->gt(Carbon::now()->subMinutes(3)))
+            <p class="text-sm text-gray-400">{!! $mdi('music-box', 'inline mr-1' . ($playingNow ? ' motion-safe:animate-bounce' : ''), 16) !!} {{ $playingNow ? 'Playing now' : 'Played ' . $track->played_at->diffForHumans(Carbon::now(), CarbonInterface::DIFF_RELATIVE_TO_NOW) }}</p>
                 @if(config('music-services.lastfm.enabled'))
                     <p class="text-sm text-gray-400">
                         {!! $si('lastdotfm', 'inline mr-1', 16) !!} View Adam's <x-a href="https://www.last.fm/user/{{ config('music-services.lastfm.username') }}" class="text-blue-500">Last.fm Profile</x-a>
