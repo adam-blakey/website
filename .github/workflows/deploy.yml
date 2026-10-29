@@ -76,18 +76,21 @@ jobs:
           generate_release_notes: true
 
   deploy:
-    # PRs from this repo (not forks or Dependabot, which get no secrets) deploy to staging only; release is skipped for them.
+    # Also runs for PRs from this repo (forks and Dependabot get no secrets). !failure() because release is skipped on PRs.
     if: >-
-      ${{ !failure() && !cancelled() && (github.ref == 'refs/heads/main' || (github.event_name == 'pull_request'
-      && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]')) }}
+      ${{ !failure() && !cancelled() && (github.ref == 'refs/heads/main'
+      || github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]') }}
     needs: [build_and_test, release]
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1 # staging first; a failure there skips production
       matrix:
-        domain: ${{ fromJSON(github.event_name == 'pull_request' && format('["{0}"]', vars.STAGING_DOMAIN) || format('["{0}","{1}"]', vars.STAGING_DOMAIN, vars.PROD_DOMAIN)) }}
+        domain:
+          - ${{ vars.STAGING_DOMAIN }}
+          - ${{ vars.PROD_DOMAIN }}
+        exclude: # PRs deploy to staging only
+          - domain: ${{ github.event_name == 'pull_request' && vars.PROD_DOMAIN || '' }}
     env:
-      REF: ${{ github.event_name == 'pull_request' && github.sha || 'main' }}
       SSH: ssh -i ~/.ssh/deploy -p ${{ vars.DEPLOY_SSH_PORT }} -o StrictHostKeyChecking=no
       HOST: ${{ vars.DEPLOY_SSH_USER }}@${{ vars.DEPLOY_SSH_HOST }}
     steps:
@@ -104,7 +107,7 @@ jobs:
             set -e
             cd domains/${{ matrix.domain }}
             export GIT_SSH_COMMAND="ssh -i ~/.ssh/${{ vars.DEPLOY_GIT_KEY }} -o IdentitiesOnly=yes"
-            git fetch --tags --force origin ${{ env.REF }}
+            git fetch --tags --force origin ${{ github.sha }}
             git reset --hard FETCH_HEAD
             git describe --tags --abbrev=0 --always > VERSION
             rm -f bootstrap/cache/*.php
