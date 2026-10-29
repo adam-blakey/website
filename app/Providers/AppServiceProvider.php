@@ -38,8 +38,7 @@ class AppServiceProvider extends ServiceProvider
         $topLevelPath = explode('/', request()->path())[0];
         $active = request()->is('/') ? 'welcome' : $topLevelPath;
 
-        $taggedVersion = config('app.version');
-
+        $taggedVersion = ltrim(config('app.version'), 'v');
         try {
             $latestTrack = MusicNowPlaying::where('played_at', '>', now()->addMinutes(-5))
                 ->latest('played_at')
