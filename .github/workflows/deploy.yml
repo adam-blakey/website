@@ -76,7 +76,7 @@ jobs:
           generate_release_notes: true
 
   deploy:
-    if: ${{ !failure() && !cancelled() && (github.ref == 'refs/heads/main' || github.event_name == 'pull_request') }}
+    if: ${{ !failure() && !cancelled() && github.actor != 'dependabot[bot]' && (github.ref == 'refs/heads/main' || github.event_name == 'pull_request') }}
     needs: [build_and_test, release]
     runs-on: ubuntu-latest
     strategy:
