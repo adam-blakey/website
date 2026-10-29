@@ -10,11 +10,13 @@ use App\Models\BlogTag;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use DOMDocument;
 use DOMXPath;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ImportWordPressPosts extends Command
 {
@@ -60,10 +62,10 @@ class ImportWordPressPosts extends Command
                 }
 
                 $this->info("Fetching page {$page}...");
-                $response = Http::timeout(30)->get($url);
+                $response = $this->httpClient()->request('GET', $url);
 
                 if ($response->getStatusCode() == 400) {
-                    $jsonContent = $response->body();
+                    $jsonContent = $response->getContent(false);
                     $error_message = json_decode($jsonContent, true);
 
                     if ($error_message['code'] == 'rest_post_invalid_page_number') {
@@ -74,12 +76,12 @@ class ImportWordPressPosts extends Command
                         return 1;
                     }
                 }
-                elseif (!$response->successful()) {
-                    $this->error("Failed to fetch JSON file: HTTP " . $response->status());
+                elseif (!$response->getStatusCode() < 300) {
+                    $this->error("Failed to fetch JSON file: HTTP " . $response->getStatusCode());
                     return 1;
                 }
 
-                $jsonContent = $response->body();
+                $jsonContent = $response->getContent(false);
                 $posts = json_decode($jsonContent, true);
 
                 if (json_last_error() !== JSON_ERROR_NONE) {
@@ -258,14 +260,22 @@ class ImportWordPressPosts extends Command
     }
 
     /**
+     * HTTP client that refuses private/reserved IPs on every hop (SSRF guard).
+     */
+    private function httpClient(): HttpClientInterface
+    {
+        return new NoPrivateNetworkHttpClient(HttpClient::create(['timeout' => 30]));
+    }
+
+    /**
      * Fetch term data (categories or tags) from WordPress API.
      */
     private function fetchTermData(string $url): array
     {
         try {
-            $response = Http::timeout(30)->get($url);
-            if ($response->successful()) {
-                $data = json_decode($response->body(), true);
+            $response = $this->httpClient()->request('GET', $url);
+            if ($response->getStatusCode() < 300) {
+                $data = json_decode($response->getContent(false), true);
                 if (is_array($data)) {
                     return $data;
                 }
@@ -301,9 +311,9 @@ class ImportWordPressPosts extends Command
         // If we have a link but no matching category in the data, fetch it directly
         if ($categoryLink && empty($categoryData)) {
             try {
-                $response = Http::timeout(30)->get($categoryLink);
-                if ($response->successful()) {
-                    $categories = json_decode($response->body(), true);
+                $response = $this->httpClient()->request('GET', $categoryLink);
+                if ($response->getStatusCode() < 300) {
+                    $categories = json_decode($response->getContent(false), true);
                     if (is_array($categories) && !empty($categories)) {
                         foreach ($categories as $category) {
                             if (isset($category['id']) && $category['id'] == $wordpressCategoryId &&
@@ -358,9 +368,9 @@ class ImportWordPressPosts extends Command
         // If we have a link but no matching tag in the data, fetch it directly
         if ($tagLink && empty($tagData)) {
             try {
-                $response = Http::timeout(30)->get($tagLink);
-                if ($response->successful()) {
-                    $tags = json_decode($response->body(), true);
+                $response = $this->httpClient()->request('GET', $tagLink);
+                if ($response->getStatusCode() < 300) {
+                    $tags = json_decode($response->getContent(false), true);
                     if (is_array($tags) && !empty($tags)) {
                         foreach ($tags as $tag) {
                             if (isset($tag['id']) && $tag['id'] == $wordpressTagId &&
@@ -432,8 +442,8 @@ class ImportWordPressPosts extends Command
         // If no extension in URL, try to get it from the content type
         if (empty($extension)) {
             try {
-                $response = Http::head($url);
-                $contentType = $response->header('Content-Type');
+                $response = $this->httpClient()->request('HEAD', $url);
+                $contentType = ($response->getHeaders(false)['content-type'][0] ?? '');
                 $extension = $this->getExtensionFromMimeType($contentType);
             } catch (\Exception $e) {
                 // Default to jpg if we can't determine the extension
@@ -447,9 +457,9 @@ class ImportWordPressPosts extends Command
 
         try {
             // Download the file with a timeout
-            $response = Http::timeout(30)->get($url);
-            if ($response->successful()) {
-                $contentType = $response->header('Content-Type');
+            $response = $this->httpClient()->request('GET', $url);
+            if ($response->getStatusCode() < 300) {
+                $contentType = ($response->getHeaders(false)['content-type'][0] ?? '');
 
                 // Verify it's an image
                 if (!$this->isImageContentType($contentType)) {
@@ -458,7 +468,7 @@ class ImportWordPressPosts extends Command
                 }
 
                 // Save the file
-                Storage::disk('public')->put($path, $response->body());
+                Storage::disk('public')->put($path, $response->getContent(false));
 
                 // Create media record
                 $media = BlogMedia::create([
@@ -470,7 +480,7 @@ class ImportWordPressPosts extends Command
                 $this->info("Downloaded media: {$url} -> {$filename}");
                 return $media->id;
             } else {
-                $this->warn("Failed to download media (HTTP " . $response->status() . "): {$url}");
+                $this->warn("Failed to download media (HTTP " . $response->getStatusCode() . "): {$url}");
             }
         } catch (\Exception $e) {
             // Log error but continue with import
@@ -612,7 +622,7 @@ class ImportWordPressPosts extends Command
         if ($contentUpdated) {
             $updatedContent = $dom->saveHTML();
             if ($updatedContent) {
-                $post->save(['content' => $updatedContent]);
+                $post->update(['content' => $updatedContent]);
                 $this->info("Updated content for post: {$post->title}");
             }
         }
