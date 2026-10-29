@@ -115,3 +115,8 @@ jobs:
             php artisan event:cache
             php artisan queue:restart
           EOF
+      - name: Warm Cloudflare cache
+        run: |
+          for f in public/build/assets/* $($SSH $HOST "cd domains/${{ matrix.domain }} && find public/storage/blog-media -type f"); do
+            curl -fsS --retry 2 -o /dev/null -w '%{http_code} %header{cf-cache-status} %{url}\n' "https://${{ matrix.domain }}/${f#public/}"
+          done
