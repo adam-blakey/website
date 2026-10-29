@@ -15,6 +15,18 @@ jobs:
     container: lorisleiva/laravel-docker:8.5
     steps:
       - uses: actions/checkout@v5
+      - uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-
+      - id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
       - run: npm ci
       - run: npm run build
       - run: composer install --no-interaction --no-dev --prefer-dist
@@ -25,7 +37,9 @@ jobs:
       - run: php artisan test --log-junit ./junit.xml
       # Production build smoke test. Must run after the tests: a cached config ignores APP_ENV=testing and CSRF would be enforced.
       - run: php artisan optimize --env=production
+        if: github.ref == 'refs/heads/main'
       - run: php artisan event:cache
+        if: github.ref == 'refs/heads/main'
       - uses: actions/upload-artifact@v5
         if: always()
         with:
@@ -39,9 +53,31 @@ jobs:
             public/build
           include-hidden-files: true
 
-  deploy:
+  release:
     if: github.ref == 'refs/heads/main'
     needs: build_and_test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency: release # serialise so two pushes can't compute the same version
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      # Patch bump of the latest vX.Y.Z tag (v0.0.1 if none). For a minor/major bump, push the tag by hand.
+      - id: version
+        run: |
+          last=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1)
+          echo "next=$(echo "${last:-v0.0.0}" | awk -F. '{print $1"."$2"."$3+1}')" >> "$GITHUB_OUTPUT"
+      - uses: softprops/action-gh-release@v2.6.2
+        with:
+          tag_name: ${{ steps.version.outputs.next }}
+          target_commitish: ${{ github.sha }}
+          generate_release_notes: true
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: [build_and_test, release]
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1 # staging first; a failure there skips production
