@@ -1,0 +1,34 @@
+[
+    {
+        "title": "PGR Demonstrator Award",
+        "date": "2022-07-01",
+        "description": "Awarded in July 2022 for work delivering the Python component MTHS1001 (first-year non-Maths Core Maths module).",
+        "image": null,
+        "link": null,
+        "featured": true
+    },
+    {
+        "title": "Outstanding Contribution to the Postgraduate Community",
+        "date": "2022-05-01",
+        "description": "Awarded at the 2022 Tri-Campus Awards Ceremony. This award recognises the contributions that postgraduate researchers have made to the university’s research community.",
+        "image": "resources/img/outstanding-contribution-award.jpg",
+        "link": null,
+        "featured": true
+    },
+    {
+        "title": "Chief Scout’s Commendation for Good Service",
+        "date": "2021-01-01",
+        "description": "Awarded in respect of not less than 5 years good service, which stands out. It should be regarded as the Chief Scout’s recognition of the very real contribution made to the Scouts by the individual concerned.",
+        "image": "resources/img/commendation-award.jpg",
+        "link": null,
+        "featured": true
+    },
+    {
+        "title": "Elizabeth and JD Marsden Prize (1st Place)",
+        "date": "2020-08-01",
+        "description": "The Elizabeth and JD Marsden prizes were founded in 1953 “to encourage not only the development of the mind (with which education seems to be mainly concerned) but also to encourage and reward the cultivation of those qualities which are the essence of character and personality” and by these prizes to “provide pecuniary help to students on leaving the University to enter upon their life’s work.” The prizes are “awarded to students who are adjudged the best students of the year — who have gained high distinction in their examinations, and who have throughout their University careers been of exemplary conduct and given proofs of outstanding character and personality.”",
+        "image": null,
+        "link": null,
+        "featured": true
+    }
+]
