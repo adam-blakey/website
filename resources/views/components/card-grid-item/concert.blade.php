@@ -43,7 +43,7 @@
                 </time>
                 <p class="text-sm mt-1">{{ $concert->location }}</p>
                 <div class="prose dark:prose-invert max-w-none my-2 text-sm">
-                    {!! Str::limit(html_entity_decode(strip_tags($concert->description), ENT_QUOTES | ENT_HTML5), 800) !!}
+                    {{ Str::limit(html_entity_decode(strip_tags($concert->description), ENT_QUOTES | ENT_HTML5), 800) }}
                 </div>
             </div>
             @if($concert->poster_url)

@@ -52,7 +52,6 @@ Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 // Editor routes
 Route::get('/editor', [EditorController::class, 'show'])->name('editor.show');
-Route::post('/editor/save', [EditorController::class, 'save'])->name('editor.save');
 
 // Sitemap
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
