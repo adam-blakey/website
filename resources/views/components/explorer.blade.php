@@ -1,18 +1,35 @@
 @props(['tabEntries', 'active'])
 
-<aside class="hidden lg:flex flex-col w-56 shrink-0 bg-gray-950 border-r border-white/5 font-mono text-[13px] select-none">
-    <div class="px-4 pt-3 pb-2 text-[11px] font-medium tracking-widest text-gray-500">EXPLORER</div>
-    <div class="flex items-center gap-1 px-2 py-1 text-gray-300 font-medium">
-        {!! $mdi('chevron-down', 'inline text-gray-500', 16) !!} adam-blakey
+@php
+    // Per-page icon tints, like JetBrains' coloured file-type icons
+    $tints = ['welcome' => 'text-blue-400', 'about' => 'text-violet-400', 'interests' => 'text-rose-400', 'blog' => 'text-amber-400', 'contact' => 'text-emerald-400'];
+    $interestFiles = ['music' => 'music-note', 'scouts' => 'campfire', 'software' => 'code-tags'];
+    $row = 'flex items-center gap-1.5 h-7 rounded-md pr-2 transition-colors';
+    $rowState = fn ($on) => $on ? 'bg-blue-600/25 text-white' : 'text-gray-300 hover:bg-gray-700';
+@endphp
+
+<aside class="hidden lg:flex flex-col w-60 shrink-0 rounded-xl bg-gray-850 text-[13px] select-none overflow-hidden">
+    <div class="flex items-center justify-between h-10 px-3 shrink-0">
+        <span class="flex items-center gap-1 font-semibold text-gray-200">Project {!! $mdi('chevron-down', 'text-gray-500', 14) !!}</span>
+        <span class="flex items-center gap-2 text-gray-500">{!! $mdi('crosshairs-gps', '', 14) !!} {!! $mdi('dots-vertical', '', 14) !!}</span>
     </div>
-    <ul class="mt-0.5">
-        @foreach ($tabEntries as $key => $link)
-            <li>
-                <a class="{{ $key === $active ? 'bg-blue-500/10 text-white border-blue-400' : 'text-gray-400 border-transparent hover:bg-white/5 hover:text-gray-200' }} flex items-center gap-2 py-1 pl-8 pr-3 border-l-2 transition-colors"
-                    href="{{ route($link->path) }}">
-                    {!! $mdi($link->icon, 'inline ' . ($key === $active ? 'text-blue-400' : 'text-gray-500'), 16) !!} {{ explode('.', $link->path)[0] }}.md
-                </a>
-            </li>
+    <div class="flex-1 overflow-y-auto px-1.5 pb-2">
+        <div class="{{ $row }} pl-1 text-gray-200">
+            {!! $mdi('chevron-down', 'text-gray-500', 14) !!} {!! $mdi('folder', 'text-blue-400', 16) !!}
+            <span class="font-semibold">adam-blakey</span> <span class="text-gray-500 truncate">~/website</span>
+        </div>
+        <div class="{{ $row }} pl-5 text-gray-300">
+            {!! $mdi('chevron-down', 'text-gray-500', 14) !!} {!! $mdi('folder-outline', 'text-gray-400', 16) !!} interests
+        </div>
+        @foreach ($interestFiles as $file => $icon)
+            <a class="{{ $row }} {{ $rowState(request()->routeIs('interests.' . $file)) }} pl-[3.25rem]" href="{{ route('interests.' . $file) }}">
+                {!! $mdi($icon, 'text-rose-400/80', 16) !!} {{ $file }}.md
+            </a>
         @endforeach
-    </ul>
+        @foreach ($tabEntries as $key => $link)
+            <a class="{{ $row }} {{ $rowState($key === $active && !request()->is('interests/*')) }} pl-9" href="{{ route($link->path) }}">
+                {!! $mdi($link->icon, $tints[$key] ?? 'text-gray-400', 16) !!} {{ explode('.', $link->path)[0] }}.md
+            </a>
+        @endforeach
+    </div>
 </aside>

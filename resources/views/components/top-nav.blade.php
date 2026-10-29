@@ -4,20 +4,24 @@
     use App\Helpers\Helpers;
 @endphp
 
-<div class="relative flex h-10 items-center justify-between bg-gray-950 border-b border-white/5 px-2 font-mono text-[13px] text-gray-400">
-    <div class="flex items-center">
-        <a class="ml-1 mr-2 text-blue-400 hover:text-blue-300 transition-colors" href="/" aria-label="Adam's website logo (a capital letter 'A' in a rounded box)">{!! $mdi('alpha-a-box-outline', 'inline', 22) !!}</a>
+<header class="flex h-10 shrink-0 items-center justify-between gap-2 px-2 text-[13px] text-gray-300">
+    <div class="flex items-center gap-1 min-w-0">
+        <a class="flex items-center gap-2 rounded-md px-1.5 py-1 font-semibold text-gray-100 hover:bg-gray-600/60 transition-colors" href="/" aria-label="Adam's website home">
+            <span class="grid place-items-center size-5 rounded bg-gradient-to-br from-blue-500 to-violet-500 text-[10px] font-bold text-white">AB</span>
+            <span class="hidden sm:inline">adam-blakey</span>
+            {!! $mdi('chevron-down', 'hidden sm:inline text-gray-500', 14) !!}
+        </a>
 
         <div class="flex items-center p-0">
             @foreach ($topMenuEntries as $entry)
                 <div class="group relative cursor-pointer">
-                    <button class="select-none rounded-md px-2.5 py-1 group-hover:bg-white/5 group-hover:text-white transition-colors">{{ $entry->name }}</button>
+                    <button class="select-none rounded-md px-2 py-1 group-hover:bg-gray-600/60 group-hover:text-white transition-colors">{{ $entry->name }}</button>
                     <div class="absolute left-0 top-full hidden pt-1 w-52 group-hover:block z-20">
-                        <ul class="p-1 rounded-lg border border-white/10 bg-gray-850/95 backdrop-blur shadow-2xl shadow-black/50">
+                        <ul class="p-1 rounded-lg border border-gray-600 bg-gray-700 shadow-2xl shadow-black/50">
                             @foreach ($entry->subEntries as $item)
                                 <li>
                                     @if ($item->enabled)
-                                        <a class="flex items-center gap-2 rounded-md px-3 py-1.5 text-gray-300 hover:bg-blue-500/20 hover:text-white select-none" href="{{ url($item->url) }}" {{ Helpers::isExternalUrl($item->url) ? "target='_blank'" : '' }}>
+                                        <a class="flex items-center gap-2 rounded-md px-3 py-1.5 text-gray-300 hover:bg-blue-600 hover:text-white select-none" href="{{ url($item->url) }}" {{ Helpers::isExternalUrl($item->url) ? "target='_blank'" : '' }}>
                                             @if ($item->use_simple_icons)
                                                 {!! $si($item->icon, 'inline mr-0.5', 12) !!}
                                             @else
@@ -42,9 +46,19 @@
                 </div>
             @endforeach
         </div>
+
+        <x-a href="https://github.com/adam-blakey/adam-website-2024" class="hidden md:flex items-center gap-1.5 rounded-md px-2 py-1 hover:bg-gray-600/60 hover:text-white transition-colors" :noUnderline="true" :noExternalIcon="true" title="View source on GitHub" aria-label="View source on GitHub">
+            {!! $mdi('source-branch', 'text-gray-400', 15) !!} main
+        </x-a>
     </div>
-    <div class="absolute left-1/2 -translate-x-1/2 hidden sm:flex items-center gap-2 rounded-md border border-white/5 bg-white/[0.03] px-24 py-0.5 text-xs text-gray-500">
-        {!! $mdi('code-braces', 'inline', 14) !!} Adam's website
+
+    <div class="flex items-center gap-1.5 shrink-0">
+        <a class="flex items-center gap-1.5 rounded-md px-2 py-1 hover:bg-gray-600/60 hover:text-white transition-colors" href="{{ route('contact') }}" title="Run: Say hello">
+            <span class="hidden sm:inline text-gray-400">Say hello</span>
+            {!! $mdi('play', 'text-emerald-400', 18) !!}
+        </a>
+        <a class="rounded-full ring-1 ring-gray-600 hover:ring-blue-400 transition" href="{{ route('about') }}" aria-label="About Adam">
+            <img class="size-6 rounded-full object-cover" src="{{ Vite::asset('resources/img/adam.jpg') }}" alt="">
+        </a>
     </div>
-    <div class="sm:hidden text-xs text-gray-500">Adam's website</div>
-</div>
+</header>

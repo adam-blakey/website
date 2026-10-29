@@ -8,21 +8,28 @@
 @theme {
     --font-sans: Inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-
-    /* Neutral, slightly cool editor palette (replaces Tailwind's default grays) */
-    --color-gray-50: #f6f7f9;
-    --color-gray-100: #eceef2;
-    --color-gray-200: #dadde4;
-    --color-gray-300: #c2c7d0;
-    --color-gray-400: #969dab;
-    --color-gray-500: #6c7383;
-    --color-gray-600: #444b59;
-    --color-gray-700: #2c323d;
-    --color-gray-800: #1c2028;
-    --color-gray-850: #171a21;
-    --color-gray-900: #121419;
-    --color-gray-950: #0c0e12;
     --radius: 0.5rem;
+
+    /* JetBrains Islands Dark: the window frame (gray-700) is lighter than the islands (gray-850/900) */
+    --color-gray-50: #f7f8fa;
+    --color-gray-100: #f0f1f2;
+    --color-gray-200: #dfe1e5;
+    --color-gray-300: #ced0d6;
+    --color-gray-400: #9da0a8;
+    --color-gray-500: #6f737a;
+    --color-gray-600: #393b40;
+    --color-gray-700: #2b2d30;
+    --color-gray-800: #212225;
+    --color-gray-850: #1e1f22;
+    --color-gray-900: #191a1c;
+    --color-gray-950: #131315;
+
+    /* JetBrains accent blue and markdown heading orange */
+    --color-blue-400: #548af7;
+    --color-blue-500: #4682fa;
+    --color-blue-600: #3574f0;
+    --color-blue-700: #2e65d4;
+    --color-keyword: #cf8e6d;
 }
 
 h1 {
@@ -38,7 +45,8 @@ h3 {
 }
 
 ::selection {
-    @apply bg-blue-500/30 text-white;
+    background-color: #2e436e;
+    color: white;
 }
 
 a.underline {
@@ -53,7 +61,7 @@ a.underline:hover {
 
 * {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-gray-700) transparent;
+    scrollbar-color: var(--color-gray-600) transparent;
 }
 
 /* Minimal article styling; the typography plugin isn't installed */
@@ -66,11 +74,11 @@ a.underline:hover {
 }
 
 .prose code {
-    @apply font-mono text-[0.9em] bg-gray-800 border border-white/5 rounded px-1.5 py-0.5 text-blue-300;
+    @apply font-mono text-[0.9em] bg-gray-700 rounded px-1.5 py-0.5 text-gray-200;
 }
 
 .prose blockquote {
-    @apply border-l-2 border-blue-500/60 pl-4 text-gray-400 italic;
+    @apply border-l-2 border-gray-600 pl-4 text-gray-400 italic;
 }
 
 @media (width >= 40rem) {

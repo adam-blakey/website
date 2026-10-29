@@ -1,34 +1,28 @@
 @props(['taggedVersion', 'latestTrack', 'programmingTime', 'programmingTimeUrl'])
 
-<div class="fixed bottom-0 left-0 right-0 z-30 bg-gray-950/95 backdrop-blur font-mono text-[11px] text-gray-400 border-t border-white/5">
-    <!-- On medium screens and up: single row layout -->
-    <div class="hidden sm:flex h-6 items-center justify-between">
-        <div class="flex items-center h-full">
-            <span class="flex items-center h-full px-2.5 bg-blue-600 text-white" aria-hidden="true">{!! $mdi('code-tags', 'inline', 14) !!}</span>
-            <x-a href="https://github.com/adam-blakey/adam-website-2024" target="_blank" class="flex items-center gap-1 h-full px-3 hover:bg-white/5 hover:text-white" :noUnderline="true">
-                {!! $si('github', 'inline', 11) !!} View Source
-            </x-a>
-            <span class="flex items-center gap-1 px-3">{!! $mdi('tag-outline', 'inline', 13) !!} v{{ $taggedVersion ?? '1.0.0' }}</span>
-        </div>
-        <div class="flex items-center h-full">
-            <span class="flex items-center gap-1 px-3 truncate">{!! $mdi('music-note', 'inline ' . ($latestTrack ? 'text-green-400' : ''), 13) !!} {{ $latestTrack ? 'Currently listening to: ' . $latestTrack->track_name . ' by ' . $latestTrack->artist_name : 'Not currently listening to music' }}</span>
-            <x-a href="{{ $programmingTimeUrl }}" class="flex items-center gap-1 h-full px-3 hover:bg-white/5 hover:text-white" :noUnderline="true">{!! $mdi('clock-outline', 'inline', 13) !!} {{ $programmingTime ?? '0 hrs' }} programming</x-a>
-        </div>
-    </div>
+@php
+    $segments = request()->segments() ?: ['welcome'];
+@endphp
 
-    <!-- On small screens: two row layout -->
-    <div class="sm:hidden">
-        <!-- Top row -->
-        <div class="flex items-center justify-between px-3 h-6">
-            <x-a href="https://github.com/adam-blakey/adam-website-2024" target="_blank" class="hover:text-white flex items-center gap-1" :noUnderline="true">
-                {!! $si('github', 'inline', 11) !!} View Source
-            </x-a>
-            <span class="flex items-center gap-1">{!! $mdi('tag-outline', 'inline', 13) !!} v{{ $taggedVersion ?? '1.0.0' }}</span>
+<footer class="fixed lg:static bottom-0 left-0 right-0 z-30 shrink-0 bg-gray-700 text-xs text-gray-400">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between sm:h-7 px-3 py-1 sm:py-0 gap-1 sm:gap-4">
+        <!-- Navigation bar (breadcrumbs), as in the JetBrains status bar -->
+        <div class="flex items-center gap-0.5 min-w-0 overflow-x-auto whitespace-nowrap select-none">
+            <a class="rounded px-1 hover:bg-gray-600 hover:text-white" href="/">adam-blakey</a>
+            @foreach ($segments as $segment)
+                {!! $mdi('chevron-right', 'shrink-0 text-gray-500', 14) !!}
+                <span class="px-1 {{ $loop->last ? 'text-gray-200' : '' }}">{{ $segment }}{{ $loop->last ? '.md' : '' }}</span>
+            @endforeach
         </div>
-        <!-- Bottom row -->
-        <div class="flex items-center justify-between gap-3 px-3 h-6 border-t border-white/5">
-            <span class="flex items-center gap-1 truncate">{!! $mdi('music-note', 'inline shrink-0 ' . ($latestTrack ? 'text-green-400' : ''), 13) !!} <span class="truncate">{{ $latestTrack ? 'Listening to: ' . $latestTrack->track_name . ' by ' . $latestTrack->artist_name : 'No music playing' }}</span></span>
-            <x-a href="{{ $programmingTimeUrl }}" class="flex items-center gap-1 shrink-0" :noUnderline="true">{!! $mdi('clock-outline', 'inline', 13) !!} {{ $programmingTime ?? '0 hrs' }}</x-a>
+
+        <div class="flex items-center justify-between sm:justify-end gap-3 min-w-0 whitespace-nowrap">
+            <span class="flex items-center gap-1 min-w-0" title="{{ $latestTrack ? 'Currently listening to ' . $latestTrack->track_name . ' by ' . $latestTrack->artist_name : 'Not currently listening to music' }}">
+                {!! $mdi('music-note', 'shrink-0 ' . ($latestTrack ? 'text-emerald-400' : ''), 13) !!}
+                <span class="truncate">{{ $latestTrack ? $latestTrack->track_name . ' – ' . $latestTrack->artist_name : 'Nothing playing' }}</span>
+            </span>
+            <x-a href="{{ $programmingTimeUrl }}" class="flex items-center gap-1 shrink-0 rounded px-1 hover:bg-gray-600 hover:text-white" :noUnderline="true" :noExternalIcon="true">{!! $mdi('clock-outline', '', 13) !!} {{ $programmingTime ?? '0 hrs' }} programming</x-a>
+            <span class="hidden md:inline">UTF-8</span>
+            <span class="hidden md:flex items-center gap-1">{!! $mdi('tag-outline', '', 13) !!} v{{ $taggedVersion ?? '1.0.0' }}</span>
         </div>
     </div>
-</div>
+</footer>

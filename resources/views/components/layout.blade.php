@@ -24,7 +24,7 @@
     </script>
 </head>
 
-<body class="font-sans text-white bg-gray-950 antialiased">
+<body class="font-sans text-white bg-gray-700 antialiased lg:flex lg:flex-col lg:h-screen lg:overflow-hidden">
     <!--
             _       _                   ____  _       _
            / \   __| | __ _ _ __ ___   | __ )| | __ _| | _____ _   _
@@ -38,19 +38,17 @@
 
     <x-top-nav :topMenuEntries="$layoutTopMenuEntries" />
 
-    <div class="flex overflow-x-hidden max-w-full w-full min-h-[calc(100vh-2.5rem)]">
+    <div class="flex flex-1 min-h-0 gap-1.5 px-1.5 pb-14 sm:pb-8 lg:pb-0">
+        <x-tool-stripe />
         <x-explorer :tabEntries="$layoutTabEntries" :active="$layoutActiveTab" />
 
-        <div class="flex flex-col flex-1 min-w-0">
+        <div class="flex flex-col flex-1 min-w-0 rounded-xl bg-gray-900 overflow-hidden">
             <x-main-nav :tabEntries="$layoutTabEntries" :active="$layoutActiveTab" />
 
-            <main class="relative flex-1 px-4 pt-6 pb-18 sm:px-8 sm:pt-8 sm:pb-14 overflow-auto text-gray-300 bg-gray-900">
-                <div class="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.14),transparent_70%)]" aria-hidden="true"></div>
-                <div class="relative">
-                    <h1><a class="hover:text-blue-300 transition-colors" href="/"><span class="font-mono font-medium text-blue-400/50">#</span> Adam Blakey</a></h1>
-                    <h2 class="mt-1 mb-6"><a class="text-gray-400 hover:text-blue-300 transition-colors" href="/{{ Helpers::getPageLink($layoutTabEntries, $layoutActiveTab) }}"><span class="font-mono font-medium text-blue-400/40">##</span> {{ Helpers::getPageName($layoutTabEntries, $layoutActiveTab) }}</a></h2>
-                    {{ $slot }}
-                </div>
+            <main class="flex-1 px-4 py-6 sm:px-8 sm:py-8 overflow-y-auto text-gray-300">
+                <h1><a class="hover:text-blue-400 transition-colors" href="/"><span class="font-mono font-medium text-keyword">#</span> Adam Blakey</a></h1>
+                <h2 class="mt-1 mb-6"><a class="text-gray-400 hover:text-blue-400 transition-colors" href="/{{ Helpers::getPageLink($layoutTabEntries, $layoutActiveTab) }}"><span class="font-mono font-medium text-keyword">##</span> {{ Helpers::getPageName($layoutTabEntries, $layoutActiveTab) }}</a></h2>
+                {{ $slot }}
             </main>
         </div>
     </div>
