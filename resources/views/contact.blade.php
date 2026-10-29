@@ -1,4 +1,8 @@
 <x-layout>
+    @push('head')
+        {!! RecaptchaV3::initJs() !!}
+    @endpush
+
     <div class="container px-4 py-8">
         @if(session('success'))
             <div class="bg-green-500 text-white p-4 mb-6 rounded">
