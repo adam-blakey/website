@@ -7,7 +7,6 @@ use App\Models\MusicNowPlaying;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\Mime\MimeTypes;
 
 class MusicServiceManager
 {
@@ -47,21 +46,16 @@ class MusicServiceManager
             return null;
         }
 
-        $base = 'album-art/' . sha1($url);
+        $ext = pathinfo(parse_url($url, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION) ?: 'jpg';
+        $path = 'album-art/' . sha1($url) . '.' . $ext;
         $disk = Storage::disk('public');
 
         try {
-            // shortcut: glob assumes a local disk, switch to a stored lookup if the disk goes remote.
-            $cached = glob($disk->path($base) . '.*');
-            if ($cached) {
-                $path = $base . '.' . pathinfo($cached[0], PATHINFO_EXTENSION);
-            } else {
+            if (!$disk->exists($path)) {
                 $response = Http::timeout(10)->get($url);
-                $type = strtolower(trim(explode(';', $response->header('Content-Type'))[0]));
-                if (!$response->successful() || !str_starts_with($type, 'image/')) {
+                if (!$response->successful() || !str_starts_with($response->header('Content-Type'), 'image/')) {
                     return $url;
                 }
-                $path = $base . '.' . (MimeTypes::getDefault()->getExtensions($type)[0] ?? 'jpg');
                 $disk->put($path, $response->body());
             }
         } catch (\Exception $e) {
