@@ -10,8 +10,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adam Blakey</title>
     <link type="image/x-icon" href="{{ asset('favicon.ico') }}" rel="icon">
-    <link href="https://fonts.bunny.net" rel="preconnect">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700|jetbrains-mono:400,500,700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     {!! RecaptchaV3::initJs() !!}
     <script>
