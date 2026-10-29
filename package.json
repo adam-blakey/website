@@ -16,7 +16,6 @@
     },
     "dependencies": {
         "@mdi/svg": "^7.4.47",
-        "flowbite": "^4.0.2",
         "glob": "^13.0.6",
         "simple-icons": "^16.36.0"
     }
