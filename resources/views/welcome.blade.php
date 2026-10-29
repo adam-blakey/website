@@ -6,7 +6,7 @@
 
 <x-layout>
     <x-card-grid :columns="3">
-        <x-card-grid-item :colSpan="1" title="Work in progress!" color="bg-red-800">
+        <x-card-grid-item :colSpan="1" title="Work in progress!" color="bg-amber-500/[0.07] border-amber-400/20!">
             <p class="text-gray-100">{!! $mdi('alert', 'inline text-amber-400') !!} Howdy! Thanks for stopping by. I'm afraid this site still needs a little bit of attention, so please mind your step as you explore.</p>
         </x-card-grid-item>
         <x-card-grid-item :colSpan="2" title="In short">

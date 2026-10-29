@@ -147,7 +147,7 @@ Code block example
 
     <style>
         #editor {
-            font-family: 'Courier New', monospace;
+            font-family: var(--font-mono);
             line-height: 1.5;
             white-space: pre;
             overflow-wrap: normal;
@@ -163,13 +163,13 @@ Code block example
         }
 
         #line-numbers {
-            font-family: 'Courier New', monospace;
+            font-family: var(--font-mono);
             line-height: 1.5;
             user-select: none;
             padding-top: 10px;
             color: #6b7280;
-            background-color: #1f2937;
-            border-right: 1px solid #374151;
+            background-color: var(--color-gray-950);
+            border-right: 1px solid var(--color-gray-800);
             text-align: right;
             padding-right: 8px;
         }
@@ -191,17 +191,17 @@ Code block example
         #editor {
             height: 100%;
             min-height: unset;
-            background-color: #111827;
+            background-color: var(--color-gray-900);
         }
 
         /* Filename input styling */
         #filename {
-            background-color: #1f2937;
+            background-color: var(--color-gray-950);
             color: #d1d5db;
-            border-color: #374151;
+            border-color: var(--color-gray-700);
             border-radius: 4px;
             padding: 8px 12px;
-            font-family: 'Courier New', monospace;
+            font-family: var(--font-mono);
             width: 300px;
         }
 
