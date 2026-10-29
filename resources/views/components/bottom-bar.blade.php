@@ -6,7 +6,7 @@
 
 <footer class="fixed lg:static bottom-0 left-0 right-0 z-30 shrink-0 bg-gray-700 text-xs text-gray-400">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between sm:h-7 px-3 py-1 sm:py-0 gap-1 sm:gap-4">
-        <!-- Navigation bar (breadcrumbs), as in the JetBrains status bar -->
+        <!-- Breadcrumbs for the current page -->
         <div class="flex items-center gap-0.5 min-w-0 overflow-x-auto whitespace-nowrap select-none">
             <a class="rounded px-1 hover:bg-gray-600 hover:text-white" href="/">adam-blakey</a>
             @foreach ($segments as $segment)

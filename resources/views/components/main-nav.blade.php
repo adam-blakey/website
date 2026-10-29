@@ -8,7 +8,7 @@
     @foreach ($tabEntries as $key => $link)
         <a class="{{ $key === $active ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-200' }} flex items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 h-7 select-none transition-colors"
             href="{{ route($link->path) }}" @if ($key === $active) aria-current="page" @endif>
-            {!! $mdi($link->icon, $key === $active ? 'text-blue-400' : '', 15) !!} {{ explode('.', $link->path)[0] }}.md
+            {!! $mdi($link->icon, $link->color, 15) !!} {{ explode('.', $link->path)[0] }}.md
         </a>
     @endforeach
 </nav>

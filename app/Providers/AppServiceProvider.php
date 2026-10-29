@@ -29,11 +29,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $tabEntries = [
-            'welcome' => new TabNavLink(['name' => 'Welcome', 'path' => 'welcome', 'icon' => 'home']),
-            'about' => new TabNavLink(['name' => 'About me', 'path' => 'about', 'icon' => 'account']),
-            'interests' => new TabNavLink(['name' => 'My Interests', 'path' => 'interests', 'icon' => 'heart']),
-            'blog' => new TabNavLink(['name' => 'Blog', 'path' => 'blog.index', 'icon' => 'post']),
-            'contact' => new TabNavLink(['name' => 'Contact me', 'path' => 'contact', 'icon' => 'email'])
+            'welcome' => new TabNavLink(['name' => 'Welcome', 'path' => 'welcome', 'icon' => 'home', 'color' => 'text-blue-400']),
+            'about' => new TabNavLink(['name' => 'About me', 'path' => 'about', 'icon' => 'account', 'color' => 'text-violet-400']),
+            'interests' => new TabNavLink(['name' => 'My Interests', 'path' => 'interests', 'icon' => 'heart', 'color' => 'text-rose-400']),
+            'blog' => new TabNavLink(['name' => 'Blog', 'path' => 'blog.index', 'icon' => 'post', 'color' => 'text-amber-400']),
+            'contact' => new TabNavLink(['name' => 'Contact me', 'path' => 'contact', 'icon' => 'email', 'color' => 'text-emerald-400'])
         ];
         $topLevelPath = explode('/', request()->path())[0];
         $active = request()->is('/') ? 'welcome' : $topLevelPath;

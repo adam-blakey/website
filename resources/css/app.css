@@ -10,7 +10,7 @@
     --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     --radius: 0.5rem;
 
-    /* JetBrains Islands Dark: the window frame (gray-700) is lighter than the islands (gray-850/900) */
+    /* Window frame (gray-700) is lighter than the panels that sit on it (gray-850/900) */
     --color-gray-50: #f7f8fa;
     --color-gray-100: #f0f1f2;
     --color-gray-200: #dfe1e5;
@@ -24,7 +24,7 @@
     --color-gray-900: #191a1c;
     --color-gray-950: #131315;
 
-    /* JetBrains accent blue and markdown heading orange */
+    /* Accent blue and markdown heading orange */
     --color-blue-400: #548af7;
     --color-blue-500: #4682fa;
     --color-blue-600: #3574f0;

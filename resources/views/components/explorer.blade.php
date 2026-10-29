@@ -1,8 +1,6 @@
 @props(['tabEntries', 'active'])
 
 @php
-    // Per-page icon tints, like JetBrains' coloured file-type icons
-    $tints = ['welcome' => 'text-blue-400', 'about' => 'text-violet-400', 'interests' => 'text-rose-400', 'blog' => 'text-amber-400', 'contact' => 'text-emerald-400'];
     $interestFiles = ['music' => 'music-note', 'scouts' => 'campfire', 'software' => 'code-tags'];
     $row = 'flex items-center gap-1.5 h-7 rounded-md pr-2 transition-colors';
     $rowState = fn ($on) => $on ? 'bg-blue-600/25 text-white' : 'text-gray-300 hover:bg-gray-700';
@@ -28,7 +26,7 @@
         @endforeach
         @foreach ($tabEntries as $key => $link)
             <a class="{{ $row }} {{ $rowState($key === $active && !request()->is('interests/*')) }} pl-9" href="{{ route($link->path) }}">
-                {!! $mdi($link->icon, $tints[$key] ?? 'text-gray-400', 16) !!} {{ explode('.', $link->path)[0] }}.md
+                {!! $mdi($link->icon, $link->color, 16) !!} {{ explode('.', $link->path)[0] }}.md
             </a>
         @endforeach
     </div>
