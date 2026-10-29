@@ -16,7 +16,7 @@ use DOMDocument;
 use DOMXPath;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
-use Symfony\Contracts\HttpClient\ResponseInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ImportWordPressPosts extends Command
 {
@@ -62,7 +62,7 @@ class ImportWordPressPosts extends Command
                 }
 
                 $this->info("Fetching page {$page}...");
-                $response = $this->safeGet($url);
+                $response = $this->httpClient()->request('GET', $url);
 
                 if ($response->getStatusCode() == 400) {
                     $jsonContent = $response->getContent(false);
@@ -260,11 +260,11 @@ class ImportWordPressPosts extends Command
     }
 
     /**
-     * Fetch a URL, refusing private/reserved IPs on every hop (SSRF guard).
+     * HTTP client that refuses private/reserved IPs on every hop (SSRF guard).
      */
-    private function safeGet(string $url, string $method = 'GET'): ResponseInterface
+    private function httpClient(): HttpClientInterface
     {
-        return (new NoPrivateNetworkHttpClient(HttpClient::create(['timeout' => 30])))->request($method, $url);
+        return new NoPrivateNetworkHttpClient(HttpClient::create(['timeout' => 30]));
     }
 
     /**
@@ -273,7 +273,7 @@ class ImportWordPressPosts extends Command
     private function fetchTermData(string $url): array
     {
         try {
-            $response = $this->safeGet($url);
+            $response = $this->httpClient()->request('GET', $url);
             if ($response->getStatusCode() < 300) {
                 $data = json_decode($response->getContent(false), true);
                 if (is_array($data)) {
@@ -311,7 +311,7 @@ class ImportWordPressPosts extends Command
         // If we have a link but no matching category in the data, fetch it directly
         if ($categoryLink && empty($categoryData)) {
             try {
-                $response = $this->safeGet($categoryLink);
+                $response = $this->httpClient()->request('GET', $categoryLink);
                 if ($response->getStatusCode() < 300) {
                     $categories = json_decode($response->getContent(false), true);
                     if (is_array($categories) && !empty($categories)) {
@@ -368,7 +368,7 @@ class ImportWordPressPosts extends Command
         // If we have a link but no matching tag in the data, fetch it directly
         if ($tagLink && empty($tagData)) {
             try {
-                $response = $this->safeGet($tagLink);
+                $response = $this->httpClient()->request('GET', $tagLink);
                 if ($response->getStatusCode() < 300) {
                     $tags = json_decode($response->getContent(false), true);
                     if (is_array($tags) && !empty($tags)) {
@@ -442,7 +442,7 @@ class ImportWordPressPosts extends Command
         // If no extension in URL, try to get it from the content type
         if (empty($extension)) {
             try {
-                $response = $this->safeGet($url, 'HEAD');
+                $response = $this->httpClient()->request('HEAD', $url);
                 $contentType = ($response->getHeaders(false)['content-type'][0] ?? '');
                 $extension = $this->getExtensionFromMimeType($contentType);
             } catch (\Exception $e) {
@@ -457,7 +457,7 @@ class ImportWordPressPosts extends Command
 
         try {
             // Download the file with a timeout
-            $response = $this->safeGet($url);
+            $response = $this->httpClient()->request('GET', $url);
             if ($response->getStatusCode() < 300) {
                 $contentType = ($response->getHeaders(false)['content-type'][0] ?? '');
 
