@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0dfc9d4798aca8f1c6228fc4ec093076",
+    "content-hash": "da7bb4a448fd2ce978d618c7c0556b79",
     "packages": [
         {
             "name": "brianium/paratest",
@@ -6084,47 +6084,6 @@
             "time": "2024-10-09T05:16:32+00:00"
         },
         {
-            "name": "simple-icons/simple-icons",
-            "version": "16.36.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/simple-icons/simple-icons.git",
-                "reference": "2f67e5d1a7e5cba43c79a0ebc00abcd95fb0ea30"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/simple-icons/simple-icons/zipball/2f67e5d1a7e5cba43c79a0ebc00abcd95fb0ea30",
-                "reference": "2f67e5d1a7e5cba43c79a0ebc00abcd95fb0ea30",
-                "shasum": ""
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "CC0-1.0"
-            ],
-            "description": "SVG icons for popular brands",
-            "homepage": "https://simpleicons.org/",
-            "keywords": [
-                "icons",
-                "svg"
-            ],
-            "support": {
-                "chat": "https://discord.gg/vUXFa7t5xJ",
-                "docs": "https://github.com/simple-icons/simple-icons#php-usage-",
-                "forum": "https://github.com/simple-icons/simple-icons/discussions",
-                "issues": "https://github.com/simple-icons/simple-icons/issues",
-                "security": "https://github.com/simple-icons/simple-icons/security/policy",
-                "source": "https://github.com/simple-icons/simple-icons"
-            },
-            "funding": [
-                {
-                    "url": "https://opencollective.com/simple-icons",
-                    "type": "opencollective"
-                }
-            ],
-            "time": "2026-10-25T17:18:50+00:00"
-        },
-        {
             "name": "staabm/side-effects-detector",
             "version": "1.0.5",
             "source": {
@@ -9712,5 +9671,5 @@
         "php": "^8.5"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }
