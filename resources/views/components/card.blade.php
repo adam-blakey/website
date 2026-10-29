@@ -4,9 +4,9 @@
     'color' => 'bg-gray-800'
 ])
 
-<div class="mx-2 mt-2 rounded-lg p-8 shadow-xl {{ $hFull ? 'h-full' : '' }} {{ $color }}">
+<div {{ $attributes->merge(['class' => 'mx-2 mt-2 rounded-xl border border-gray-700/70 p-6 sm:p-7 transition-colors hover:border-gray-600 ' . ($hFull ? 'h-full ' : '') . $color]) }}>
     @if($title != "")
-        <h3 class="text-2xl text-white">{{ $title }}</h3>
+        <h3 class="text-white">{{ $title }}</h3>
     @endif
 
     {{ $slot }}

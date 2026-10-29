@@ -6,7 +6,7 @@
 
 <x-layout>
     <x-card-grid :columns="3">
-        <x-card-grid-item :colSpan="1" title="Work in progress!" color="bg-red-800">
+        <x-card-grid-item :colSpan="1" title="Work in progress!" color="bg-amber-500/[0.07] border-amber-400/20!">
             <p class="text-gray-100">{!! $mdi('alert', 'inline text-amber-400') !!} Howdy! Thanks for stopping by. I'm afraid this site still needs a little bit of attention, so please mind your step as you explore.</p>
         </x-card-grid-item>
         <x-card-grid-item :colSpan="2" title="In short">
@@ -17,7 +17,7 @@
                         <p class="ml-4 md:w-64">Hi there, I'm Adam. In short, I'm a software developer, clarinettist, Scout, and fan of all things maths.</p>
                         <div class="ml-4 flex gap-2 mt-2 flex-wrap">
                             @foreach (config('socials.platforms') as $platform)
-                                <x-a href="{{ $platform['url'] }}" class="text-gray-600 hover:text-white transition-colors" title="{{ $platform['name'] }}" :noUnderline="true" :noExternalIcon="true" aria-label="Adam's profile on {{ $platform['name'] }}">
+                                <x-a href="{{ $platform['url'] }}" class="text-gray-500 hover:text-white transition-colors" title="{{ $platform['name'] }}" :noUnderline="true" :noExternalIcon="true" aria-label="Adam's profile on {{ $platform['name'] }}">
                                     @if ($platform['use-simple-icons'])
                                         {!! $si($platform['icon'], 'inline mr-1 mt-1', 24) !!}
                                     @else

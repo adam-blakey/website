@@ -2,21 +2,83 @@
 @source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views";
 @source "../../storage/framework/views";
 
+/* The site is always dark, so dark: variants follow the .dark class on <html> rather than the OS setting */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-    --font-sans: Figtree, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-sans: Inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     --radius: 0.5rem;
+
+    /* Window frame (gray-700) is lighter than the panels that sit on it (gray-850/900) */
+    --color-gray-50: #f7f8fa;
+    --color-gray-100: #f0f1f2;
+    --color-gray-200: #dfe1e5;
+    --color-gray-300: #ced0d6;
+    --color-gray-400: #9da0a8;
+    --color-gray-500: #6f737a;
+    --color-gray-600: #393b40;
+    --color-gray-700: #2b2d30;
+    --color-gray-800: #212225;
+    --color-gray-850: #1e1f22;
+    --color-gray-900: #191a1c;
+    --color-gray-950: #131315;
+
+    /* Accent blue and markdown heading orange */
+    --color-blue-400: #548af7;
+    --color-blue-500: #4682fa;
+    --color-blue-600: #3574f0;
+    --color-blue-700: #2e65d4;
+    --color-keyword: #cf8e6d;
 }
 
 h1 {
-    @apply text-4xl! font-bold!;
+    @apply text-3xl! sm:text-4xl! font-bold! tracking-tight text-white;
 }
 
 h2 {
-    @apply text-3xl! font-bold!;
+    @apply text-2xl! font-bold! tracking-tight text-gray-100;
 }
 
 h3 {
-    @apply text-2xl! font-bold!;
+    @apply text-xl! font-semibold! tracking-tight text-gray-100;
+}
+
+::selection {
+    background-color: #2e436e;
+    color: white;
+}
+
+a.underline {
+    text-underline-offset: 3px;
+    text-decoration-color: color-mix(in oklab, currentColor 40%, transparent);
+    transition: text-decoration-color 150ms, color 150ms;
+}
+
+a.underline:hover {
+    text-decoration-color: currentColor;
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gray-600) transparent;
+}
+
+/* Minimal article styling; the typography plugin isn't installed */
+.prose ul {
+    @apply list-disc pl-6;
+}
+
+.prose ol {
+    @apply list-decimal pl-6;
+}
+
+.prose code {
+    @apply font-mono text-[0.9em] bg-gray-700 rounded px-1.5 py-0.5 text-gray-200;
+}
+
+.prose blockquote {
+    @apply border-l-2 border-gray-600 pl-4 text-gray-400 italic;
 }
 
 @media (width >= 40rem) {
