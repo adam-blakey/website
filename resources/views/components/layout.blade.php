@@ -13,7 +13,7 @@
     <link href="https://fonts.bunny.net" rel="preconnect">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700|jetbrains-mono:400,500,700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    {!! RecaptchaV3::initJs() !!}
+    @stack('head')
     <script>
         // Default saveFile function for menu items when not in editor
         window.saveFile = function() {
