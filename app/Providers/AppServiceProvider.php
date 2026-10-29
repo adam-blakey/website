@@ -32,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
             'welcome' => new TabNavLink(['name' => 'Welcome', 'path' => 'welcome', 'icon' => 'home', 'color' => 'text-blue-400']),
             'about' => new TabNavLink(['name' => 'About me', 'path' => 'about', 'icon' => 'account', 'color' => 'text-violet-400']),
             'interests' => new TabNavLink(['name' => 'My Interests', 'path' => 'interests', 'icon' => 'heart', 'color' => 'text-rose-400']),
+            'now' => new TabNavLink(['name' => 'Right now', 'path' => 'now', 'icon' => 'pulse', 'color' => 'text-cyan-400']),
             'blog' => new TabNavLink(['name' => 'Blog', 'path' => 'blog.index', 'icon' => 'post', 'color' => 'text-amber-400']),
             'contact' => new TabNavLink(['name' => 'Contact me', 'path' => 'contact', 'icon' => 'email', 'color' => 'text-emerald-400'])
         ];

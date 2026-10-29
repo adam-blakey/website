@@ -1,4 +1,4 @@
-@props(['taggedVersion', 'latestTrack', 'programmingTime', 'programmingTimeUrl'])
+@props(['taggedVersion', 'latestTrack', 'programmingTime'])
 
 @php
     $segments = request()->segments() ?: ['welcome'];
@@ -16,11 +16,11 @@
         </div>
 
         <div class="flex items-center justify-between sm:justify-end gap-3 min-w-0 whitespace-nowrap">
-            <span class="flex items-center gap-1 min-w-0" title="{{ $latestTrack ? 'Currently listening to ' . $latestTrack->track_name . ' by ' . $latestTrack->artist_name : 'Not currently listening to music' }}">
+            <a class="flex items-center gap-1 min-w-0 rounded px-1 hover:bg-gray-600 hover:text-white" href="{{ route('now') }}" title="{{ $latestTrack ? 'Currently listening to ' . $latestTrack->track_name . ' by ' . $latestTrack->artist_name : 'Not currently listening to music' }}">
                 {!! $mdi('music-note', 'shrink-0 ' . ($latestTrack ? 'text-emerald-400' : ''), 13) !!}
                 <span class="truncate">{{ $latestTrack ? $latestTrack->track_name . ' – ' . $latestTrack->artist_name : 'Nothing playing' }}</span>
-            </span>
-            <x-a href="{{ $programmingTimeUrl }}" class="flex items-center gap-1 shrink-0 rounded px-1 hover:bg-gray-600 hover:text-white" :noUnderline="true" :noExternalIcon="true">{!! $mdi('clock-outline', '', 13) !!} {{ $programmingTime ?? '0 hrs' }} programming</x-a>
+            </a>
+            <a class="flex items-center gap-1 shrink-0 rounded px-1 hover:bg-gray-600 hover:text-white" href="{{ route('now') }}">{!! $mdi('clock-outline', '', 13) !!} {{ $programmingTime ?? '0 hrs' }} programming</a>
             <span class="hidden md:inline">UTF-8</span>
             <span class="hidden md:flex items-center gap-1">{!! $mdi('tag-outline', '', 13) !!} v{{ $taggedVersion ?? '1.0.0' }}</span>
         </div>

@@ -33,6 +33,9 @@
                         <x-a view="interests">
                             <h3>My Interests</h3>
                         </x-a>
+                        <x-a view="now">
+                            <h3>Right now</h3>
+                        </x-a>
                         <x-a view="contact">
                             <h3>Contact me</h3>
                         </x-a>
