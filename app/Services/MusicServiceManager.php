@@ -46,7 +46,8 @@ class MusicServiceManager
             return null;
         }
 
-        $path = 'album-art/' . sha1($url);
+        $ext = pathinfo(parse_url($url, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION) ?: 'jpg';
+        $path = 'album-art/' . sha1($url) . '.' . $ext;
         $disk = Storage::disk('public');
 
         try {
