@@ -1,12 +1,10 @@
-@import "flowbite/src/themes/default.css";
 @import "tailwindcss";
-@plugin "flowbite/plugin";
-@source "../node_modules/flowbite";
 @source "../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views";
 @source "../../storage/framework/views";
 
 @theme {
     --font-sans: Figtree, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --radius: 0.5rem;
 }
 
 h1 {

@@ -16,7 +16,6 @@
         "mesavolt/mdi-php": "^1.1",
         "pestphp/pest": "^3.4",
         "pestphp/pest-plugin-laravel": "^3.0",
-        "simple-icons/simple-icons": "^16.36",
         "symfony/http-client": "^8.1"
     },
     "require-dev": {
