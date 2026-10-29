@@ -76,10 +76,7 @@ jobs:
           generate_release_notes: true
 
   deploy:
-    # Also runs for PRs from this repo (forks and Dependabot get no secrets). !failure() because release is skipped on PRs.
-    if: >-
-      ${{ !failure() && !cancelled() && (github.ref == 'refs/heads/main'
-      || github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]') }}
+    if: ${{ !failure() && !cancelled() && (github.ref == 'refs/heads/main' || github.event_name == 'pull_request') }}
     needs: [build_and_test, release]
     runs-on: ubuntu-latest
     strategy:
@@ -88,7 +85,7 @@ jobs:
         domain:
           - ${{ vars.STAGING_DOMAIN }}
           - ${{ vars.PROD_DOMAIN }}
-        exclude: # PRs deploy to staging only
+        exclude:
           - domain: ${{ github.event_name == 'pull_request' && vars.PROD_DOMAIN || '' }}
     env:
       SSH: ssh -i ~/.ssh/deploy -p ${{ vars.DEPLOY_SSH_PORT }} -o StrictHostKeyChecking=no
