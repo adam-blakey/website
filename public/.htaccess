@@ -1,3 +1,9 @@
+# Vite build output has content-hashed filenames, so a URL's bytes never change: let browsers and Cloudflare keep it for a year
+<IfModule mod_headers.c>
+    SetEnvIf Request_URI "^/build/assets/" HASHED_ASSET
+    Header always set Cache-Control "public, max-age=31536000, immutable" env=HASHED_ASSET
+</IfModule>
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
