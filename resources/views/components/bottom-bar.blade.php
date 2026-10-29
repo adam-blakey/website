@@ -11,7 +11,7 @@
             <a class="rounded px-1 hover:bg-gray-600 hover:text-white" href="/">adam-blakey</a>
             @foreach ($segments as $segment)
                 {!! $mdi('chevron-right', 'shrink-0 text-gray-500', 14) !!}
-                <span class="px-1 {{ $loop->last ? 'text-gray-200' : '' }}">{{ $segment }}{{ $loop->last ? '.md' : '' }}</span>
+                <a class="rounded px-1 hover:bg-gray-600 hover:text-white {{ $loop->last ? 'text-gray-200' : '' }}" href="/{{ implode('/', array_slice(request()->segments(), 0, $loop->iteration)) }}">{{ $segment }}{{ $loop->last ? '.md' : '' }}</a>
             @endforeach
         </div>
 
