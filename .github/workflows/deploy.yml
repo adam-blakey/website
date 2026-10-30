@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-24.04
     container: lorisleiva/laravel-docker:8.5
     outputs:
-      version: ${{ github.ref == 'refs/heads/main' && steps.version.outputs.new_tag || steps.version.outputs.previous_tag }}
+      version: ${{ steps.version.outputs.new_tag || steps.version.outputs.previous_tag }}
     steps:
       - uses: actions/checkout@v5
       - id: version
@@ -100,7 +100,11 @@ jobs:
             export GIT_SSH_COMMAND="ssh -i ~/.ssh/${{ vars.DEPLOY_GIT_KEY }} -o IdentitiesOnly=yes"
             git fetch --tags --force origin ${{ github.sha }}
             git reset --hard FETCH_HEAD
-            echo '${{ needs.build_and_test.outputs.version }}' > VERSION
+            if [ '${{ matrix.domain }}' = '${{ vars.PROD_DOMAIN }}' ]; then
+              echo '${{ needs.build_and_test.outputs.version }}' > VERSION
+            else
+              git describe --tags --always > VERSION
+            fi
             rm -f bootstrap/cache/*.php
             php artisan down
             trap 'php artisan up' EXIT
