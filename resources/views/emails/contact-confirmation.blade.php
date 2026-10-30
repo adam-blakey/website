@@ -27,9 +27,15 @@
 </head>
 <body>
     <div class="content">
-        <p>Howdy,</p>
+        <p>Howdy {{ $contact->name }},</p>
 
         <p>Thank you for contacting me. I have received your message and will get back to you as soon as possible.</p>
+
+        <p>Here's a copy of your message:</p>
+
+        <blockquote style="background-color: #f9f9f9; padding: 15px; border-left: 5px solid #2d3748;">
+            {{ $contact->message }}
+        </blockquote>
 
         <p>Adam Blakey</p>
     </div>

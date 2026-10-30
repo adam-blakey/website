@@ -12,7 +12,7 @@ permissions:
 jobs:
   build_and_test:
     runs-on: ubuntu-24.04
-    container: lorisleiva/laravel-docker:8.5@sha256:a25ff3e06be1488ed1c131988e4ac060bd099386417d241b7491316284bf2d18
+    container: lorisleiva/laravel-docker:8.5
     steps:
       - uses: actions/checkout@v5
       - uses: actions/cache@v6
