@@ -9,7 +9,7 @@
         <x-card-grid-item :colSpan="3" title="In short">
             <div class="flex flex-col md:flex-row gap-4">
                 <div class="flex items-center">
-                    <img class="my-4 md:h-32 md:w-32 h-24 w-24 rounded-lg shadow-lg" src="{{ Vite::asset('resources/img/adam.jpg') }}" alt="Adam's face" />
+                    <x-img class="my-4 md:h-32 md:w-32 h-24 w-24 rounded-lg shadow-lg" src="resources/img/adam.jpg" sizes="(min-width: 768px) 128px, 96px" alt="Adam's face" />
                     <div>
                         <p class="ml-4 md:w-64">Hi there, I'm Adam. In short, I'm a software developer, clarinettist, Scout, and fan of all things maths.</p>
                         <div class="ml-4 flex gap-2 mt-2 flex-wrap">

@@ -21,7 +21,6 @@
 
     $target = $isExternal ? '_blank' : null;
     $underlineClass = $noUnderline ? '' : 'underline';
-    // An aria-label replaces the link text, so only set one when the caller gave a label
     $ariaLabel = ($isExternal && $ariaLabel) ? $ariaLabel . ' (opens in a new tab)' : $ariaLabel;
 @endphp
 

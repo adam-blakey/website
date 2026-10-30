@@ -10,7 +10,6 @@ class SimpleIconsProvider extends ServiceProvider
     private $defaultAttributes = [
         'fill' => 'currentColor',
         'stroke' => 'none',
-        // Every icon sits beside text or inside a labelled link, so it's decorative
         'aria-hidden' => 'true',
     ];
 

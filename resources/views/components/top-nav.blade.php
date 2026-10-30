@@ -58,7 +58,7 @@
             {!! $mdi('play', 'text-emerald-400', 18) !!}
         </a>
         <a class="rounded-full ring-1 ring-gray-600 hover:ring-blue-400 transition" href="{{ route('about') }}" aria-label="About Adam">
-            <img class="size-6 rounded-full object-cover" src="{{ Vite::asset('resources/img/adam.jpg') }}" alt="">
+            <x-img class="size-6 rounded-full object-cover" src="resources/img/adam.jpg" sizes="24px" alt="" />
         </a>
     </div>
 </header>

@@ -28,8 +28,9 @@ jobs:
           key: composer-${{ hashFiles('composer.lock') }}
           restore-keys: composer-
       - run: npm ci
-      - run: npm run build
       - run: composer install --no-interaction --no-dev --prefer-dist
+      - run: php artisan images:resize
+      - run: npm run build
       - run: touch database/database.sqlite
       - run: cp .env.example .env
       - run: php artisan key:generate
