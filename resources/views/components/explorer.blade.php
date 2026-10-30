@@ -14,7 +14,7 @@
     <div class="flex-1 overflow-y-auto px-1.5 pb-2">
         <div class="{{ $row }} pl-1 text-gray-200">
             {!! $mdi('chevron-down', 'text-gray-500', 14) !!} {!! $mdi('folder', 'text-blue-400', 16) !!}
-            <span class="font-semibold">adam-blakey</span> <span class="text-gray-500 truncate">~/website</span>
+            <span class="font-semibold">adam-blakey</span> <span class="text-gray-400 truncate">~/website</span>
         </div>
         <div class="{{ $row }} pl-5 text-gray-300">
             {!! $mdi('chevron-down', 'text-gray-500', 14) !!} {!! $mdi('folder-outline', 'text-gray-400', 16) !!} interests
