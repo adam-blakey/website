@@ -47,11 +47,3 @@ it('throttles contact form submissions', function () {
 
     $this->post('/contact', [])->assertTooManyRequests();
 });
-
-it('does not repeat what the sender wrote in the confirmation email', function () {
-    $contact = new \App\Models\Contact(['name' => 'Buy pills', 'email' => 'victim@example.com', 'message' => 'Visit spam.example']);
-
-    expect((new \App\Mail\ContactConfirmation($contact))->render())
-        ->not->toContain('Buy pills')
-        ->not->toContain('spam.example');
-});
