@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  schedule:
+    - cron: '30 7 * * *'
+      timezone: Europe/London
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency: ${{ github.workflow }}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha=$(gh run list --workflow deploy.yml --branch main --status success --limit 1 --json headSha --jq '.[0].headSha')
+          [ -n "$sha" ] || { echo "::error::No successful deploy of main to release"; exit 1; }
+          read -r last next < <(.github/scripts/version.sh "$sha")
+          if [ "$next" = "$last" ]; then
+            echo "Nothing to release since $last"
+          else
+            gh release create "$next" --target "$sha" --generate-notes
+          fi

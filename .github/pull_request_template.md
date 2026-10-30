@@ -10,4 +10,6 @@ The release version is worked out from the commits:
   feat(blog)!: drop old URLs        → major (a "!" or a "BREAKING CHANGE:" line in the body)
   fix(contact): validate email      → patch (only when there's no feat)
   anything else                     → minor
+
+Merges deploy straight away. Releases are cut every morning at 07:30 UK time, or on demand from Actions → Release → Run workflow.
 -->
