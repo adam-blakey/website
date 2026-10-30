@@ -127,6 +127,7 @@ jobs:
             php artisan migrate --force
             php artisan optimize
             php artisan event:cache
+            php artisan cloudflare:reload
             php artisan queue:restart
           EOF
       - name: Warm Cloudflare cache
