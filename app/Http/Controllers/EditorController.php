@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MusicNowPlaying;
-use Illuminate\Http\Request;
-
 class EditorController extends Controller
 {
     /**
