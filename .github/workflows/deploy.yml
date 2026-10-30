@@ -114,7 +114,7 @@ jobs:
             if [ '${{ matrix.domain }}' = '${{ vars.PROD_DOMAIN }}' ]; then
               echo '${{ steps.version.outputs.new_tag || steps.version.outputs.previous_tag }}' > VERSION
             else
-              git describe --tags --always > VERSION
+              echo "$(git describe --tags --always)${{ github.event.pull_request.number && format('+pr{0}', github.event.pull_request.number) || '' }}" > VERSION
             fi
             rm -f bootstrap/cache/*.php
             php artisan down
