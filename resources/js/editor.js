@@ -1,5 +1,5 @@
 import { EditorView, basicSetup } from 'codemirror';
-import { keymap, placeholder } from '@codemirror/view';
+import { keymap } from '@codemirror/view';
 import { indentWithTab } from '@codemirror/commands';
 import { markdown } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
@@ -35,6 +35,7 @@ const siteColours = EditorView.theme({
 
 const editor = new EditorView({
     parent: document.getElementById('editor'),
+    doc: exampleMarkdown,
     extensions: [
         basicSetup,
         keymap.of([indentWithTab]),
@@ -42,7 +43,6 @@ const editor = new EditorView({
         siteColours,
         oneDark,
         EditorView.lineWrapping,
-        placeholder(exampleMarkdown),
     ],
 });
 
