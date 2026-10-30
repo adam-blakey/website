@@ -12,7 +12,7 @@ permissions:
 jobs:
   build_and_test:
     runs-on: ubuntu-24.04
-    container: lorisleiva/laravel-docker:8.5
+    container: lorisleiva/laravel-docker:8.5@sha256:a25ff3e06be1488ed1c131988e4ac060bd099386417d241b7491316284bf2d18
     steps:
       - uses: actions/checkout@v5
       - uses: actions/cache@v6
@@ -75,7 +75,7 @@ jobs:
       name: ${{ matrix.domain == vars.PROD_DOMAIN && 'production' || 'staging' }}
       url: https://${{ matrix.domain }}
     env:
-      SSH: ssh -i ~/.ssh/deploy -p ${{ vars.DEPLOY_SSH_PORT }} -o StrictHostKeyChecking=no
+      SSH: ssh -i ~/.ssh/deploy -p ${{ vars.DEPLOY_SSH_PORT }} -o StrictHostKeyChecking=yes
       HOST: ${{ vars.DEPLOY_SSH_USER }}@${{ vars.DEPLOY_SSH_HOST }}
     steps:
       - name: Cancel if a newer run is on its way
@@ -91,7 +91,7 @@ jobs:
           fi
       - id: version
         if: matrix.domain == vars.PROD_DOMAIN
-        uses: mathieudutour/github-tag-action@v7
+        uses: mathieudutour/github-tag-action@af99e60ce8132224b8e6ebab5023449fe256ed46
         with:
           github_token: ${{ github.token }}
           default_bump: minor
@@ -99,10 +99,15 @@ jobs:
       - uses: actions/download-artifact@v8
         with:
           name: build
-      - run: |
+      - env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          KNOWN_HOSTS: ${{ vars.DEPLOY_SSH_KNOWN_HOSTS }}
+        run: |
+          : "${KNOWN_HOSTS:?Set the DEPLOY_SSH_KNOWN_HOSTS repository variable to the output of ssh-keyscan -p <port> <host>}"
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy
+          printf '%s\n' "$PRIVATE_KEY" > ~/.ssh/deploy
           chmod 600 ~/.ssh/deploy
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
       - run: rsync -rltz --delete -e "$SSH" vendor public/build resources/img/sizes --relative "$HOST:domains/${{ matrix.domain }}/"
       - run: |
           $SSH $HOST bash -es <<'EOF'
@@ -131,7 +136,7 @@ jobs:
             curl -fsS --retry 2 -o /dev/null -w '%{http_code} %header{cf-cache-status} %{url}\n' "https://${{ matrix.domain }}/${f#public/}"
           done
       - if: matrix.domain == vars.PROD_DOMAIN
-        uses: softprops/action-gh-release@v2.6.2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
         with:
           tag_name: ${{ steps.version.outputs.new_tag || steps.version.outputs.previous_tag }}
           target_commitish: ${{ github.sha }}
