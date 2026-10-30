@@ -65,11 +65,11 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      # Patch bump of the latest vX.Y.Z tag (v0.0.1 if none). For a minor/major bump, push the tag by hand.
+      # Minor bump of the latest vX.Y.Z tag (v0.1.0 if none).
       - id: version
         run: |
           last=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1)
-          echo "next=$(echo "${last:-v0.0.0}" | awk -F. '{print $1"."$2"."$3+1}')" >> "$GITHUB_OUTPUT"
+          echo "next=$(echo "${last:-v0.0.0}" | awk -F. '{print $1"."$2+1".0"}')" >> "$GITHUB_OUTPUT"
       - uses: softprops/action-gh-release@v2.6.2
         with:
           tag_name: ${{ steps.version.outputs.next }}
