@@ -6,8 +6,6 @@ use App\Models\Concert;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
-use DOMDocument;
 
 class ImportConcerts extends Command
 {
@@ -32,10 +30,8 @@ class ImportConcerts extends Command
     {
         $this->info('Starting concert import...');
 
-        // Import Blackwood Clarinets concerts
         $this->importBlackwoodConcerts();
 
-        // Import Cirrus Clarinet Quartet concerts
         $this->importCirrusConcerts();
 
         $this->info('Concert import completed successfully!');
@@ -51,8 +47,6 @@ class ImportConcerts extends Command
         $this->info('Importing Blackwood Clarinets concerts...');
 
         try {
-            // In a real implementation, you would fetch from the actual API endpoint
-            // For this example, we'll use a mock response
             $response = $this->getBlackwoodConcertsData();
 
             if (empty($response)) {
@@ -63,6 +57,8 @@ class ImportConcerts extends Command
             foreach ($response as $event) {
                 $this->processBlackwoodConcert($event);
             }
+
+            $this->pruneMissingConcerts('blackwood_', array_column($response, 'id'));
 
             $this->info('Blackwood Clarinets concerts imported successfully.');
         } catch (\Exception $e) {
@@ -79,8 +75,6 @@ class ImportConcerts extends Command
         $this->info('Importing Cirrus Clarinet Quartet concerts...');
 
         try {
-            // In a real implementation, you would fetch from the actual API endpoint
-            // For this example, we'll use a mock response
             $response = $this->getCirrusConcertsData();
 
             if (empty($response)) {
@@ -91,6 +85,8 @@ class ImportConcerts extends Command
             foreach ($response as $event) {
                 $this->processCirrusConcert($event);
             }
+
+            $this->pruneMissingConcerts('cirrus_', array_column($response, 'id'));
 
             $this->info('Cirrus Clarinet Quartet concerts imported successfully.');
         } catch (\Exception $e) {
@@ -104,70 +100,33 @@ class ImportConcerts extends Command
      */
     private function processBlackwoodConcert($event)
     {
-        $externalId = 'blackwood_' . $event['id'];
+        $title = html_entity_decode($event['title']['rendered'], ENT_QUOTES | ENT_HTML5);
+        $page = Http::get($event['link']);
+        $schema = $page->successful() ? $this->getEventSchema($page->body()) : null;
 
-        // Check if concert already exists
-        $existingConcert = Concert::where('external_id', $externalId)->first();
-        if ($existingConcert) {
-            $this->info("Blackwood concert already exists: {$event['title']['rendered']}");
+        if (! isset($schema['startDate'])) {
+            $this->warn("No event schedule found for Blackwood concert: {$title}");
             return;
         }
 
-        // Extract concert details
-        $title = html_entity_decode($event['title']['rendered'], ENT_QUOTES | ENT_HTML5);
-        $slug = $event['slug'];
         $content = $event['content']['rendered'];
-        $startDate = Carbon::parse($event['date']);
+        [$startTime, $endTime] = $this->extractTimeRangeFromBlackwoodPage($page->body()) + [null, null];
+        $startDate = $this->toLocalTime(substr($schema['startDate'], 0, 10) . ' ' . $startTime);
+        $endDate = $endTime ? $this->toLocalTime(substr($schema['endDate'] ?? $schema['startDate'], 0, 10) . ' ' . $endTime) : null;
 
-        // Extract location and time from content
-        $location = $this->extractLocationFromBlackwoodContent($content);
-        $timeInfo = $this->extractTimeFromBlackwoodContent($content);
-
-        // If we found a specific time in the content, update the start date
-        if ($timeInfo['time']) {
-            $timeParts = explode(':', $timeInfo['time']);
-            $hour = (int)$timeParts[0];
-            $minute = isset($timeParts[1]) ? (int)$timeParts[1] : 0;
-
-            // Adjust for PM if needed
-            if ($timeInfo['isPM'] && $hour < 12) {
-                $hour += 12;
-            }
-
-            $startDate->setTime($hour, $minute);
-        }
-
-        // End time is typically 1.5 hours after start for concerts
-        $endDate = clone $startDate;
-        $endDate->addHours(1)->addMinutes(30);
-
-        // Extract poster URL
-        $posterUrl = null;
-        if (isset($event['_links']['wp:featuredmedia'][0]['href'])) {
-            $posterUrl = $this->extractPosterUrlFromBlackwood($event);
-        }
-
-        // Extract ticket URL from content
-        $ticketUrl = $this->extractTicketUrlFromBlackwoodContent($content);
-
-        // Clean up description
-        $description = $this->cleanHtmlContent($content);
-
-        // Create the concert
-        Concert::create([
+        $this->saveConcert('blackwood_' . $event['id'], [
             'name' => $title,
-            'slug' => $slug,
-            'description' => $description,
+            'slug' => $event['slug'],
+            'description' => $this->cleanHtmlContent($content),
             'start_datetime' => $startDate,
             'end_datetime' => $endDate,
-            'location' => $location,
-            'poster_url' => $posterUrl,
-            'ticket_url' => $ticketUrl,
+            'location' => $schema['location']['name'] ?? $this->extractLocationFromBlackwoodContent($content),
+            'address' => $schema['location']['address'] ?? null,
+            'poster_url' => $this->extractPosterUrlFromBlackwood($event),
+            'ticket_url' => $this->extractTicketUrlFromBlackwoodContent($content) ?? $schema['offers']['url'] ?? null,
+            'event_url' => $event['link'],
             'ensemble' => 'Blackwood Clarinets',
-            'external_id' => $externalId,
         ]);
-
-        $this->info("Imported Blackwood concert: {$title}");
     }
 
     /**
@@ -175,54 +134,77 @@ class ImportConcerts extends Command
      */
     private function processCirrusConcert($event)
     {
-        $externalId = 'cirrus_' . $event['id'];
+        $this->saveConcert('cirrus_' . $event['id'], [
+            'name' => html_entity_decode($event['title'], ENT_QUOTES | ENT_HTML5),
+            'slug' => $event['slug'],
+            'description' => $this->cleanHtmlContent($event['description']),
+            'start_datetime' => $this->toLocalTime($event['start_date'], $event['timezone'] ?? null),
+            'end_datetime' => $this->toLocalTime($event['end_date'], $event['timezone'] ?? null),
+            'location' => $this->extractLocationFromCirrusVenue($event['venue']),
+            'address' => implode(', ', array_filter([$event['venue']['address'] ?? null, $event['venue']['city'] ?? null, $event['venue']['zip'] ?? null])) ?: null,
+            'poster_url' => $event['image']['url'] ?? null,
+            'ticket_url' => $event['website'] ?: null,
+            'event_url' => $event['url'],
+            'ensemble' => 'Cirrus Clarinet Quartet',
+        ]);
+    }
 
-        // Check if concert already exists
-        $existingConcert = Concert::where('external_id', $externalId)->first();
-        if ($existingConcert) {
-            $this->info("Cirrus concert already exists: {$event['title']['rendered']}");
+    private function pruneMissingConcerts(string $source, array $ids)
+    {
+        $count = Concert::upcoming()
+            ->where('external_id', 'like', $source . '%')
+            ->whereNotIn('external_id', array_map(fn ($id) => $source . $id, $ids))
+            ->delete();
+
+        if ($count > 0) {
+            $this->info("Removed {$count} upcoming concerts no longer listed by the source.");
+        }
+    }
+
+    private function saveConcert(string $externalId, array $attributes)
+    {
+        if ($attributes['start_datetime']->isPast()) {
+            $this->info("Skipping past concert: {$attributes['name']}");
             return;
         }
 
-        // Extract concert details
-        $title = html_entity_decode($event['title']['rendered'], ENT_QUOTES | ENT_HTML5);
-        $slug = $event['slug'];
-        $content = $event['content']['rendered'];
+        $concert = Concert::updateOrCreate(['external_id' => $externalId], $attributes);
 
-        // Extract start and end times from meta data
-        $startDate = Carbon::parse($event['meta']['_EventStartDate']);
-        $endDate = isset($event['meta']['_EventEndDate']) ? Carbon::parse($event['meta']['_EventEndDate']) : null;
+        $this->info(($concert->wasRecentlyCreated ? 'Imported' : 'Updated') . " {$concert->ensemble} concert: {$concert->name}");
+    }
 
-        // Extract location
-        $location = $this->extractLocationFromCirrusContent($event);
+    private function getEventSchema(string $html): ?array
+    {
+        preg_match_all('#<script[^>]*application/ld\+json[^>]*>(.*?)</script>#is', $html, $matches);
 
-        // Extract poster URL
-        $posterUrl = null;
-        if (isset($event['_links']['wp:featuredmedia'][0]['href'])) {
-            $posterUrl = $this->extractPosterUrlFromCirrus($event);
+        foreach ($matches[1] as $json) {
+            $data = json_decode(str_replace("\\'", "'", trim($json)), true);
+
+            if (! is_array($data)) {
+                continue;
+            }
+
+            foreach ($data['@graph'] ?? (array_is_list($data) ? $data : [$data]) as $item) {
+                if (collect((array) ($item['@type'] ?? []))->contains(fn ($type) => str_ends_with($type, 'Event'))) {
+                    return $item;
+                }
+            }
         }
 
-        // Extract ticket URL
-        $ticketUrl = $event['meta']['_EventURL'] ?? null;
+        return null;
+    }
 
-        // Clean up description
-        $description = $this->cleanHtmlContent($content);
+    private function extractTimeRangeFromBlackwoodPage(string $html): array
+    {
+        preg_match('#mec-single-event-time.*?<abbr class="mec-events-abbr">([^<]*)</abbr>#s', $html, $timeBox);
+        preg_match_all('/\d{1,2}:\d{2}\s*[ap]m/i', $timeBox[1] ?? '', $times);
 
-        // Create the concert
-        Concert::create([
-            'name' => $title,
-            'slug' => $slug,
-            'description' => $description,
-            'start_datetime' => $startDate,
-            'end_datetime' => $endDate,
-            'location' => $location,
-            'poster_url' => $posterUrl,
-            'ticket_url' => $ticketUrl,
-            'ensemble' => 'Cirrus Clarinet Quartet',
-            'external_id' => $externalId,
-        ]);
+        return $times[0];
+    }
 
-        $this->info("Imported Cirrus concert: {$title}");
+    private function toLocalTime(string $dateTime, ?string $timezone = null): Carbon
+    {
+        return Carbon::parse($dateTime, $timezone)->setTimezone(config('app.timezone'));
     }
 
     /**
@@ -244,30 +226,6 @@ class ImportConcerts extends Command
     }
 
     /**
-     * Extract time information from Blackwood content.
-     */
-    private function extractTimeFromBlackwoodContent($content)
-    {
-        $result = ['time' => null, 'isPM' => false];
-
-        // Look for time pattern in content (typically after ⏰ emoji)
-        if (preg_match('/⏰\s*<strong>([0-9]{1,2}:[0-9]{2})\s*(AM|PM)?<\/strong>/i', $content, $matches)) {
-            $result['time'] = $matches[1];
-            $result['isPM'] = isset($matches[2]) && strtoupper($matches[2]) === 'PM';
-            return $result;
-        }
-
-        // Alternative pattern
-        if (preg_match('/<strong>([0-9]{1,2}:[0-9]{2})\s*(AM|PM)?<\/strong>/i', $content, $matches)) {
-            $result['time'] = $matches[1];
-            $result['isPM'] = isset($matches[2]) && strtoupper($matches[2]) === 'PM';
-            return $result;
-        }
-
-        return $result;
-    }
-
-    /**
      * Extract ticket URL from Blackwood content.
      */
     private function extractTicketUrlFromBlackwoodContent($content)
@@ -285,8 +243,6 @@ class ImportConcerts extends Command
      */
     private function extractPosterUrlFromBlackwood($event)
     {
-        // In a real implementation, you would make an API request to get the media details
-        // For this example, we'll check if the URL is in the event data
         if (isset($event['yoast_head_json']['og_image'][0]['url'])) {
             return $event['yoast_head_json']['og_image'][0]['url'];
         }
@@ -295,42 +251,11 @@ class ImportConcerts extends Command
     }
 
     /**
-     * Extract location from Cirrus event.
+     * Extract location from a Cirrus event venue.
      */
-    private function extractLocationFromCirrusContent($event)
+    private function extractLocationFromCirrusVenue($venue)
     {
-        // Check if venue information is available in meta
-        if (isset($event['meta']['_VenueAddress']) && !empty($event['meta']['_VenueAddress'])) {
-            $location = $event['meta']['_VenueAddress'];
-
-            if (isset($event['meta']['_VenueCity']) && !empty($event['meta']['_VenueCity'])) {
-                $location .= ', ' . $event['meta']['_VenueCity'];
-            }
-
-            return $location;
-        }
-
-        // Try to extract from content
-        $content = $event['content']['rendered'];
-        if (preg_match('/<div class="tribe-block__venue__name">\s*<h3>([^<]+)<\/h3>/i', $content, $matches)) {
-            return trim($matches[1]);
-        }
-
-        return 'TBA';
-    }
-
-    /**
-     * Extract poster URL from Cirrus featured media.
-     */
-    private function extractPosterUrlFromCirrus($event)
-    {
-        // In a real implementation, you would make an API request to get the media details
-        // For this example, we'll assume the URL is in the event data
-        if (isset($event['_embedded']['wp:featuredmedia'][0]['source_url'])) {
-            return $event['_embedded']['wp:featuredmedia'][0]['source_url'];
-        }
-
-        return null;
+        return implode(', ', array_filter([$venue['venue'] ?? null, $venue['city'] ?? null])) ?: 'TBA';
     }
 
     /**
@@ -353,7 +278,7 @@ class ImportConcerts extends Command
     private function getBlackwoodConcertsData()
     {
         try {
-            $response = Http::get('https://blackwoodclarinets.co.uk/wp-json/wp/v2/mec-events');
+            $response = Http::get('https://blackwoodclarinets.co.uk/wp-json/wp/v2/mec-events', ['per_page' => 100]);
 
             if ($response->successful()) {
                 return $response->json();
@@ -374,10 +299,10 @@ class ImportConcerts extends Command
     private function getCirrusConcertsData()
     {
         try {
-            $response = Http::get('https://cirrusquartet.uk/wp-json/wp/v2/tribe_events');
+            $response = Http::get('https://cirrusquartet.uk/wp-json/tribe/events/v1/events', ['per_page' => 50]);
 
             if ($response->successful()) {
-                return $response->json();
+                return $response->json('events') ?? [];
             } else {
                 $this->error('Failed to fetch Cirrus concerts: HTTP ' . $response->status());
                 return [];

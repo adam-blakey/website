@@ -8,6 +8,17 @@ use Carbon\Carbon;
 
 class Concert extends Model
 {
+    public const ENSEMBLES = [
+        'Blackwood Clarinets' => [
+            'website' => 'https://blackwoodclarinets.co.uk',
+            'icon' => 'https://blackwoodclarinets.co.uk/wp-content/uploads/2024/01/cropped-Icon-32x32.png',
+        ],
+        'Cirrus Clarinet Quartet' => [
+            'website' => 'https://cirrusquartet.uk',
+            'icon' => 'https://cirrusquartet.uk/favicon.ico',
+        ],
+    ];
+
     protected $fillable = [
         'name',
         'slug',
@@ -15,8 +26,10 @@ class Concert extends Model
         'start_datetime',
         'end_datetime',
         'location',
+        'address',
         'poster_url',
         'ticket_url',
+        'event_url',
         'ensemble',
         'external_id',
     ];
@@ -44,6 +57,25 @@ class Concert extends Model
         return route('interests.music', [], false) . '#concert-' . $this->id;
     }
 
+    public function getMapUrlAttribute(): ?string
+    {
+        if ($this->location === 'TBA') {
+            return null;
+        }
+
+        return 'https://www.google.com/maps/search/?api=1&query=' . urlencode(implode(', ', array_filter([$this->location, $this->address])));
+    }
+
+    public function getEnsembleWebsiteAttribute(): ?string
+    {
+        return self::ENSEMBLES[$this->ensemble]['website'] ?? null;
+    }
+
+    public function getEnsembleIconAttribute(): ?string
+    {
+        return self::ENSEMBLES[$this->ensemble]['icon'] ?? null;
+    }
+
     /**
      * Get the formatted start date.
      */
@@ -57,7 +89,7 @@ class Concert extends Model
      */
     public function getFormattedStartTimeAttribute(): string
     {
-        return $this->start_datetime->format('g:i A');
+        return $this->start_datetime->format('H:i');
     }
 
     /**
@@ -65,7 +97,7 @@ class Concert extends Model
      */
     public function getFormattedEndTimeAttribute(): ?string
     {
-        return $this->end_datetime ? $this->end_datetime->format('g:i A') : null;
+        return $this->end_datetime ? $this->end_datetime->format('H:i') : null;
     }
 
     /**
@@ -73,6 +105,10 @@ class Concert extends Model
      */
     public function getFormattedTimeRangeAttribute(): string
     {
+        if ($this->start_datetime->format('H:i') === '00:00') {
+            return 'Time TBC';
+        }
+
         $startTime = $this->formatted_start_time;
         $endTime = $this->formatted_end_time;
 
