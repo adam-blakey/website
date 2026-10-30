@@ -21,23 +21,27 @@
 
     $target = $isExternal ? '_blank' : null;
     $underlineClass = $noUnderline ? '' : 'underline';
-    $ariaLabel = $isExternal ? $ariaLabel . ' (opens in a new tab)' : $ariaLabel;
+    // An aria-label replaces the link text, so only set one when the caller gave a label
+    $ariaLabel = ($isExternal && $ariaLabel) ? $ariaLabel . ' (opens in a new tab)' : $ariaLabel;
 @endphp
 
 @if ($url == "")
     <span {{ $attributes }}>
         {{ $slot }}
         @if($isExternal && !$noExternalIcon)
-            {!! \Mdi\Mdi::mdi('open-in-new', 'inline ml-1', 16) !!}
+            {!! \Mdi\Mdi::mdi('open-in-new', 'inline ml-1', 16, ['aria-hidden' => 'true']) !!}
         @endif
     </span>
 @else
     <a href="{{ $url }}"
         {{ $target ? "target=$target" : '' }}
-        {{ $attributes->merge(['class' => $underlineClass, 'aria-label' => $ariaLabel]) }}>
+        {{ $attributes->merge(array_filter(['class' => $underlineClass, 'aria-label' => $ariaLabel])) }}>
         {{ $slot }}
+        @if($isExternal && !$ariaLabel)
+            <span class="sr-only">(opens in a new tab)</span>
+        @endif
         @if($isExternal && !$noExternalIcon)
-            {!! \Mdi\Mdi::mdi('open-in-new', 'inline ml-1', 16) !!}
+            {!! \Mdi\Mdi::mdi('open-in-new', 'inline ml-1', 16, ['aria-hidden' => 'true']) !!}
         @endif
     </a>
 @endif

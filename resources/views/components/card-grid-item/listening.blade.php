@@ -10,11 +10,11 @@
 @if (is_null($track))
     <x-card-grid-item title="Adam hasn't listened to anything recently ☹️">
         <div class="mt-4">
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-gray-400">
                 @if(config('music-services.lastfm.enabled'))
-                    {!! $si('lastdotfm', 'inline mr-1', 16) !!} View Adam's <x-a href="https://www.last.fm/user/{{ config('music-services.lastfm.username') }}" class="text-blue-500">Last.fm Profile</x-a>
+                    {!! $si('lastdotfm', 'inline mr-1', 16) !!} View Adam's <x-a href="https://www.last.fm/user/{{ config('music-services.lastfm.username') }}" class="text-blue-400">Last.fm Profile</x-a>
                 @elseif(config('music-services.listenbrainz.enabled'))
-                    {!! $si('musicbrainz', 'inline mr-1', 16) !!} View Adam's <x-a href="https://listenbrainz.org/user/{{ config('music-services.listenbrainz.username') }}" class="text-blue-500">ListenBrainz Profile</x-a>
+                    {!! $si('musicbrainz', 'inline mr-1', 16) !!} View Adam's <x-a href="https://listenbrainz.org/user/{{ config('music-services.listenbrainz.username') }}" class="text-blue-400">ListenBrainz Profile</x-a>
                 @endif
             </p>
         </div>
@@ -41,12 +41,12 @@
             <p class="text-sm text-gray-400">{!! $mdi('music-box', 'inline mr-1' . ($playingNow ? ' motion-safe:animate-bounce' : ''), 16) !!} {{ $playingNow ? 'Playing now' : 'Played ' . $track->played_at->diffForHumans(Carbon::now(), CarbonInterface::DIFF_RELATIVE_TO_NOW) }}</p>
                 @if(config('music-services.lastfm.enabled'))
                     <p class="text-sm text-gray-400">
-                        {!! $si('lastdotfm', 'inline mr-1', 16) !!} View Adam's <x-a href="https://www.last.fm/user/{{ config('music-services.lastfm.username') }}" class="text-blue-500">Last.fm Profile</x-a>
+                        {!! $si('lastdotfm', 'inline mr-1', 16) !!} View Adam's <x-a href="https://www.last.fm/user/{{ config('music-services.lastfm.username') }}" class="text-blue-400">Last.fm Profile</x-a>
                     </p>
                 @endif
                 @if(config('music-services.listenbrainz.enabled'))
                     <p class="text-sm text-gray-400">
-                        {!! $si('musicbrainz', 'inline mr-1', 16) !!} View Adam's <x-a href="https://listenbrainz.org/user/{{ config('music-services.listenbrainz.username') }}" class="text-blue-500">ListenBrainz Profile</x-a>
+                        {!! $si('musicbrainz', 'inline mr-1', 16) !!} View Adam's <x-a href="https://listenbrainz.org/user/{{ config('music-services.listenbrainz.username') }}" class="text-blue-400">ListenBrainz Profile</x-a>
                     </p>
                 @endif
         </div>
