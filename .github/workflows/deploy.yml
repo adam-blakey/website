@@ -16,26 +16,15 @@ jobs:
     runs-on: ubuntu-24.04
     container: lorisleiva/laravel-docker:8.5
     outputs:
-      version: ${{ steps.version.outputs.version }}
+      version: ${{ steps.version.outputs.new_tag || steps.version.outputs.previous_tag }}
     steps:
       - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      # Bumps the latest vX.Y.Z tag from the conventional commits since it: breaking change → major, fix without feat → patch, anything else → minor.
       - id: version
-        run: |
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          last=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1)
-          log=$(git log --no-merges --format=%B "${last:+$last..}HEAD")
-          if echo "$log" | grep -qE '^[a-z]+(\([^)]*\))?!:|^BREAKING[ -]CHANGE:'; then
-            bump='{print "v"substr($1,2)+1".0.0"}'
-          elif echo "$log" | grep -qE '^fix(\([^)]*\))?:' && ! echo "$log" | grep -qE '^feat(\([^)]*\))?:'; then
-            bump='{print $1"."$2"."$3+1}'
-          else
-            bump='{print $1"."$2+1".0"}'
-          fi
-          next=$(echo "${last:-v0.0.0}" | awk -F. "$bump")
-          echo "version=$([ "$GITHUB_REF" = refs/heads/main ] && echo "$next" || echo "${last:-$next}")" >> "$GITHUB_OUTPUT"
+        uses: mathieudutour/github-tag-action@v7
+        with:
+          github_token: ${{ github.token }}
+          default_bump: minor
+          dry_run: true
       - uses: actions/cache@v6
         with:
           path: ~/.npm
@@ -111,7 +100,11 @@ jobs:
             export GIT_SSH_COMMAND="ssh -i ~/.ssh/${{ vars.DEPLOY_GIT_KEY }} -o IdentitiesOnly=yes"
             git fetch --tags --force origin ${{ github.sha }}
             git reset --hard FETCH_HEAD
-            echo '${{ needs.build_and_test.outputs.version }}' > VERSION
+            if [ '${{ matrix.domain }}' = '${{ vars.PROD_DOMAIN }}' ]; then
+              echo '${{ needs.build_and_test.outputs.version }}' > VERSION
+            else
+              git describe --tags --always > VERSION
+            fi
             rm -f bootstrap/cache/*.php
             php artisan down
             trap 'php artisan up' EXIT
@@ -125,19 +118,3 @@ jobs:
           for f in public/build/assets/* $($SSH $HOST "cd domains/${{ matrix.domain }} && find public/storage/blog-media -type f"); do
             curl -fsS --retry 2 -o /dev/null -w '%{http_code} %header{cf-cache-status} %{url}\n' "https://${{ matrix.domain }}/${f#public/}"
           done
-
-  release:
-    if: ${{ !cancelled() }}
-    needs: [build_and_test, deploy]
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: write
-    steps:
-      - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
-        run: exit 1
-      - if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v2.6.2
-        with:
-          tag_name: ${{ needs.build_and_test.outputs.version }}
-          target_commitish: ${{ github.sha }}
-          generate_release_notes: true
