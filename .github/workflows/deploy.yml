@@ -13,7 +13,7 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   build_and_test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     container: lorisleiva/laravel-docker:8.5
     outputs:
       version: ${{ steps.version.outputs.version }}
@@ -36,14 +36,14 @@ jobs:
           fi
           next=$(echo "${last:-v0.0.0}" | awk -F. "$bump")
           echo "version=$([ "$GITHUB_REF" = refs/heads/main ] && echo "$next" || echo "${last:-$next}")" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: ~/.npm
           key: npm-${{ hashFiles('package-lock.json') }}
           restore-keys: npm-
       - id: composer-cache
         run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: composer-${{ hashFiles('composer.lock') }}
@@ -62,12 +62,12 @@ jobs:
         if: github.ref == 'refs/heads/main'
       - run: php artisan event:cache
         if: github.ref == 'refs/heads/main'
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: junit
           path: junit.xml
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v7
         with:
           name: build
           path: |
@@ -79,7 +79,7 @@ jobs:
   deploy:
     if: ${{ github.actor != 'dependabot[bot]' && (github.ref == 'refs/heads/main' || github.event_name == 'pull_request') }}
     needs: build_and_test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       max-parallel: 1 # staging first; a failure there skips production
       matrix:
@@ -96,7 +96,7 @@ jobs:
       SSH: ssh -i ~/.ssh/deploy -p ${{ vars.DEPLOY_SSH_PORT }} -o StrictHostKeyChecking=no
       HOST: ${{ vars.DEPLOY_SSH_USER }}@${{ vars.DEPLOY_SSH_HOST }}
     steps:
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v8
         with:
           name: build
       - run: |
@@ -129,7 +129,7 @@ jobs:
   release:
     if: ${{ !cancelled() }}
     needs: [build_and_test, deploy]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
