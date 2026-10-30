@@ -3,10 +3,12 @@
 use App\Models\Concert;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 beforeEach(function () {
     config(['database.default' => 'sqlite', 'database.connections.sqlite.database' => ':memory:']);
+    DB::purge('sqlite');
     Artisan::call('migrate');
     Carbon::setTestNow('2026-10-30 12:00:00');
 });
@@ -51,6 +53,7 @@ function fakeConcertSources(string $blackwoodDate, string $blackwoodTimes, strin
         'cirrusquartet.uk/*' => Http::response(['events' => [[
             'id' => 7,
             'slug' => 'cirrus-live',
+            'url' => 'https://cirrusquartet.uk/event/cirrus-live/',
             'title' => 'Cirrus Live',
             'description' => '<p>Quartets</p>',
             'start_date' => $cirrusStart,
@@ -74,12 +77,14 @@ it('imports concerts at their scheduled time and skips past ones', function () {
     expect($blackwood->start_datetime->format('Y-m-d H:i'))->toBe('2026-11-21 19:00')
         ->and($blackwood->end_datetime->format('H:i'))->toBe('22:00')
         ->and($blackwood->location)->toBe("St George's Church")
-        ->and($blackwood->name)->toBe('Autumn & Winter');
+        ->and($blackwood->name)->toBe('Autumn & Winter')
+        ->and($blackwood->event_url)->toBe('https://blackwoodclarinets.co.uk/events/autumn/');
 
     $cirrus = Concert::firstWhere('external_id', 'cirrus_7');
     expect($cirrus->start_datetime->format('Y-m-d H:i'))->toBe('2026-12-01 19:00')
         ->and($cirrus->location)->toBe('The Studio, Leeds')
-        ->and($cirrus->ticket_url)->toBeNull();
+        ->and($cirrus->ticket_url)->toBeNull()
+        ->and($cirrus->event_url)->toBe('https://cirrusquartet.uk/event/cirrus-live/');
 });
 
 it('updates concerts that have been rescheduled', function () {
@@ -134,4 +139,27 @@ it('shows the time as TBC when a Blackwood page gives no time', function () {
     expect($blackwood->start_datetime->format('Y-m-d H:i'))->toBe('2026-11-21 00:00')
         ->and($blackwood->end_datetime)->toBeNull()
         ->and($blackwood->formatted_time_range)->toBe('Time TBC');
+});
+
+it('links concert cards to the event and the group, in 24-hour time', function () {
+    $this->withoutVite();
+    Concert::create([
+        'name' => 'Winter Concert',
+        'slug' => 'winter-concert',
+        'start_datetime' => '2026-11-21 19:00:00',
+        'end_datetime' => '2026-11-21 22:00:00',
+        'location' => "St George's Church",
+        'ensemble' => 'Blackwood Clarinets',
+        'event_url' => 'https://blackwoodclarinets.co.uk/events/winter-concert/',
+    ]);
+
+    $this->get(route('interests.music'))
+        ->assertOk()
+        ->assertSee('href="https://blackwoodclarinets.co.uk/events/winter-concert/"', false)
+        ->assertSee('href="https://blackwoodclarinets.co.uk"', false)
+        ->assertSee(Concert::ENSEMBLES['Blackwood Clarinets']['icon'])
+        ->assertSee('19:00 – 22:00')
+        ->assertDontSee('View all concerts');
+
+    $this->get('/')->assertOk()->assertSee('View all concerts');
 });

@@ -123,6 +123,7 @@ class ImportConcerts extends Command
             'location' => $schema['location']['name'] ?? $this->extractLocationFromBlackwoodContent($content),
             'poster_url' => $this->extractPosterUrlFromBlackwood($event),
             'ticket_url' => $this->extractTicketUrlFromBlackwoodContent($content) ?? $schema['offers']['url'] ?? null,
+            'event_url' => $event['link'],
             'ensemble' => 'Blackwood Clarinets',
         ]);
     }
@@ -141,6 +142,7 @@ class ImportConcerts extends Command
             'location' => $this->extractLocationFromCirrusVenue($event['venue']),
             'poster_url' => $event['image']['url'] ?? null,
             'ticket_url' => $event['website'] ?: null,
+            'event_url' => $event['url'],
             'ensemble' => 'Cirrus Clarinet Quartet',
         ]);
     }

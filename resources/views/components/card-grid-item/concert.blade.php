@@ -17,7 +17,7 @@
             $title_provided = false;
         }
         else {
-            $title = $concert->name;
+            $title = '';
             $title_provided = false;
         }
     }
@@ -34,9 +34,18 @@
         <div class="flex flex-col md:flex-row space-x-4">
             <div class="flex-1">
                 @if ($title_provided)
-                    <h4 class="text-2xl font-bold">{{ $concert->name }}</h4>
+                    <h4 class="text-2xl font-bold"><x-a href="{{ $concert->event_url }}">{{ $concert->name }}</x-a></h4>
+                @else
+                    <h3 class="text-white"><x-a href="{{ $concert->event_url }}">{{ $concert->name }}</x-a></h3>
                 @endif
-                <p class="text-sm text-gray-400">{{ $concert->ensemble }}</p>
+                <p class="text-sm text-gray-400">
+                    <x-a href="{{ $concert->ensemble_website }}" class="inline-flex items-center gap-1">
+                        @if ($concert->ensemble_icon)
+                            <img src="{{ $concert->ensemble_icon }}" alt="" class="w-4 h-4 rounded-sm" />
+                        @endif
+                        {{ $concert->ensemble }}
+                    </x-a>
+                </p>
                 <time class="text-sm mt-3">
                     <span class="font-medium">{{ $concert->formatted_start_date }}</span> at
                     <span class="font-medium">{{ $concert->formatted_time_range }}</span>
@@ -63,9 +72,11 @@
                     Get tickets
                 </x-a>
             @endif
-            <p class="text-sm text-gray-500 mt-2">
-                {!! $mdi('music', 'inline mr-1', 16) !!} <x-a view="interests.music">View all concerts</x-a>
-            </p>
+            @unless (request()->routeIs('interests.music'))
+                <p class="text-sm text-gray-500 mt-2">
+                    {!! $mdi('music', 'inline mr-1', 16) !!} <x-a view="interests.music">View all concerts</x-a>
+                </p>
+            @endunless
         </div>
    @endif
 </x-card-grid-item>
