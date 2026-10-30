@@ -2,6 +2,9 @@
 
 @php
     $segments = request()->segments() ?: ['welcome'];
+    $versionUrl = preg_match('/\+pr(\d+)$/', $taggedVersion ?? '', $pullRequest)
+        ? "https://github.com/adam-blakey/website/pull/{$pullRequest[1]}"
+        : 'https://github.com/adam-blakey/website/releases/tag/v' . strtok($taggedVersion ?? '1.0.0', '-+');
 @endphp
 
 <footer class="fixed lg:static bottom-0 left-0 right-0 z-30 shrink-0 bg-gray-700 text-xs text-gray-400">
@@ -22,7 +25,7 @@
             </a>
             <a class="flex items-center gap-1 shrink-0 rounded px-1 hover:bg-gray-600 hover:text-white" href="{{ route('now') }}">{!! $mdi('clock-outline', $programmingTime && preg_match('/[1-9]/', $programmingTime) ? 'text-blue-400' : '', 13) !!} {{ $programmingTime ?? '0 hrs' }} programming</a>
             <span class="hidden md:inline">UTF-8</span>
-            <span class="flex items-center gap-1 shrink-0">{!! $mdi('tag-outline', '', 13) !!} v{{ $taggedVersion ?? '1.0.0' }}</span>
+            <a class="flex items-center gap-1 shrink-0 rounded px-1 hover:bg-gray-600 hover:text-white" href="{{ $versionUrl }}">{!! $mdi('tag-outline', '', 13) !!} v{{ $taggedVersion ?? '1.0.0' }}</a>
         </div>
     </div>
 </footer>
