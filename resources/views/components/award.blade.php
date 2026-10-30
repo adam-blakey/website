@@ -9,7 +9,7 @@
                      class="w-full h-full object-cover opacity-40" />
             </div>
             <!-- Dark overlay to improve text visibility -->
-            <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+            <div class="absolute inset-0 bg-black/30"></div>
 
             <!-- Only title and date on top of the image -->
             <div class="relative z-10 p-4">
