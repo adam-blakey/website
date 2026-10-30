@@ -52,6 +52,7 @@ jobs:
           path: |
             vendor
             public/build
+            resources/img/sizes
           include-hidden-files: true
 
   release:
@@ -100,7 +101,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy
           chmod 600 ~/.ssh/deploy
-      - run: rsync -rltz --delete -e "$SSH" vendor public/build --relative "$HOST:domains/${{ matrix.domain }}/"
+      - run: rsync -rltz --delete -e "$SSH" vendor public/build resources/img/sizes --relative "$HOST:domains/${{ matrix.domain }}/"
       - run: |
           $SSH $HOST bash -es <<'EOF'
             set -e
