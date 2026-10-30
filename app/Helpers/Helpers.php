@@ -6,13 +6,6 @@ use Illuminate\Support\Arr;
 
 class Helpers
 {
-    // Stolen from https://stackoverflow.com/a/22964930
-    public static function isExternalUrl(string $url): bool
-    {
-        $components = parse_url($url);
-        return !empty($components['host']) && strcasecmp($components['host'], config('app.url')) !== 0;
-    }
-
     public static function getPageLink($tabs, $currentTab): ?string
     {
         if (is_null($currentTab)) {

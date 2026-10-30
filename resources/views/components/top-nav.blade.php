@@ -1,9 +1,5 @@
 @props(['topMenuEntries'])
 
-@php
-    use App\Helpers\Helpers;
-@endphp
-
 <header class="flex h-10 shrink-0 items-center justify-between gap-2 px-2 text-[13px] text-gray-300">
     <div class="flex items-center gap-1 min-w-0">
         <a class="flex items-center gap-2 rounded-md px-1.5 py-1 font-semibold text-gray-100 hover:bg-gray-600/60 transition-colors" href="/" aria-label="AB adam-blakey home">
@@ -20,14 +16,14 @@
                             @foreach ($entry->subEntries as $item)
                                 <li>
                                     @if ($item->enabled)
-                                        <a class="flex items-center gap-2 rounded-md px-3 py-1.5 text-gray-300 hover:bg-blue-600 hover:text-white select-none" href="{{ url($item->url) }}" {{ Helpers::isExternalUrl($item->url) ? "target='_blank'" : '' }}>
+                                        <x-a href="{{ url($item->url) }}" class="flex items-center gap-2 rounded-md px-3 py-1.5 text-gray-300 hover:bg-blue-600 hover:text-white select-none" :noUnderline="true" :noExternalIcon="true">
                                             @if ($item->use_simple_icons)
                                                 {!! $si($item->icon, 'inline mr-0.5', 12) !!}
                                             @else
                                                 {!! $mdi($item->icon, 'inline', 16) !!}
                                             @endif
                                             {{ $item->name }}
-                                        </a>
+                                        </x-a>
                                     @else
                                         <span class="flex items-center gap-2 rounded-md px-3 py-1.5 text-gray-600 cursor-not-allowed select-none" aria-disabled="true">
                                             @if ($item->use_simple_icons)
