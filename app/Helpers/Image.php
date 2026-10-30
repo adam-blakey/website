@@ -54,12 +54,12 @@ class Image
 
     public function generate(): array
     {
-        $source = GdImage::fromFile(base_path($this->path));
-        $widths = array_values(array_filter(self::WIDTHS, fn ($width) => $width < $source->getWidth()));
+        $image = GdImage::fromFile(base_path($this->path));
+        $widths = array_values(array_filter(self::WIDTHS, fn ($width) => $width < $image->getWidth()));
 
         File::ensureDirectoryExists(base_path(dirname($this->variantPath(0))));
-        foreach ($widths as $width) {
-            (clone $source)->resize($width, null)->save(base_path($this->variantPath($width)), 80);
+        foreach (array_reverse($widths) as $width) {
+            $image->resize($width, null)->save(base_path($this->variantPath($width)), 80);
         }
 
         return $widths;
