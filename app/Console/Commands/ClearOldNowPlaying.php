@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 class ClearOldNowPlaying extends Command
 {
     protected $signature = 'music:clear-old';
-    protected $description = 'Clear music now playing entries older than 2 hours';
+    protected $description = 'Clear music now playing entries older than 2 hours, keeping the latest track';
 
     public function handle(): int
     {
@@ -18,7 +18,11 @@ class ClearOldNowPlaying extends Command
 
         try {
             $cutoffDate = Carbon::now()->subHours(2);
-            $count = MusicNowPlaying::where('played_at', '<', $cutoffDate)->delete();
+            // Keep the latest track (and so its album art) even when it is old.
+            $latestId = MusicNowPlaying::latest('played_at')->value('id');
+            $count = MusicNowPlaying::where('played_at', '<', $cutoffDate)
+                ->when($latestId, fn ($query) => $query->whereKeyNot($latestId))
+                ->delete();
 
             $disk = Storage::disk('public');
             $inUse = MusicNowPlaying::pluck('artwork_url')->map(fn ($url) => 'album-art/' . basename((string) $url));
