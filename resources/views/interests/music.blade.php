@@ -17,6 +17,7 @@
                     <h4 class="font-semibold pt-2">Beyond university</h4>
                     <p>Outside the university, I joined Nottingham Symphonic Winds in 2019 and played with them until 2024. Blackwood Clarinet Choir and Cirrus Clarinet Quartet have been regulars for me since 2021, and I achieved my ARSM diploma in clarinet performance in 2023.</p>
                     <p>In 2025, I started playing Bb/A clarinet with Equilibrium Symphony Orchestra, and in 2026 I decided to swap to bass clarinet in Blackwood.</p>
+                    <x-img src="resources/img/woodwind-concert.jpg" sizes="(min-width: 1024px) 66vw, 100vw" alt="Adam and fellow woodwind players holding their instruments after a concert in a church" class="rounded-lg shadow-lg w-full" />
                 </div>
             </x-card-grid-item>
             <x-card-grid-item :colSpan="1" title="Music in Nottingham">
@@ -32,11 +33,10 @@
                             <span><x-a href="https://cirrusquartet.uk/" class="italic">Cirrus Clarinet Quartet</x-a> — Bb clarinet (since 2021)</span>
                         </li>
                         <li class="flex items-center gap-2">
-                            {!! $si('instagram', 'w-4 h-4', 16) !!}
+                            {!! $mdi('music', 'w-4 h-4', 16) !!}
                             <span><x-a href="https://www.instagram.com/equilibrium_orchestra/" class="italic">Equilibrium Symphony Orchestra</x-a> — Bb/A clarinet (since 2025)</span>
                         </li>
                     </ul>
-                    <x-img src="resources/img/woodwind-concert.jpg" sizes="(min-width: 1024px) 33vw, 100vw" alt="Adam and fellow woodwind players holding their instruments after a concert in a church" class="rounded-lg shadow-lg w-full" />
                 </div>
             </x-card-grid-item>
             <x-card-grid-item :colSpan="3" title="Upcoming concerts ({{ $concerts->count() }})">

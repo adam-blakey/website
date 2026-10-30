@@ -15,7 +15,7 @@ class Concert extends Model
         ],
         'Cirrus Clarinet Quartet' => [
             'website' => 'https://cirrusquartet.uk',
-            'icon' => 'https://cirrusquartet.uk/favicon.ico',
+            'icon' => 'https://cirrusquartet.uk/wp-content/uploads/2024/09/C-white-300x300.png',
         ],
     ];
 
