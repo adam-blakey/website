@@ -10,7 +10,7 @@ class SimpleIconsProvider extends ServiceProvider
     private $defaultAttributes = [
         'fill' => 'currentColor',
         'stroke' => 'none',
-        'role' => 'img',
+        'aria-hidden' => 'true',
     ];
 
     public function register(): void
@@ -30,8 +30,6 @@ class SimpleIconsProvider extends ServiceProvider
     private function getIcon(string $icon, ?string $class = null, int $size = 24, array $attrs = []): string
     {
         $attributes = array_merge($this->defaultAttributes, $attrs);
-
-        $attrs = array_merge($attrs, ['aria-label' => $icon . ' icon', 'role' => 'img']);
 
         if ($class) {
             $attributes['class'] = $class;

@@ -41,10 +41,10 @@
 
         <div class="mt-4">
             <x-a href="{{ $post->url }}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-100 bg-gray-700 border border-gray-600 rounded-lg hover:bg-gray-600 hover:text-white focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-700 focus:text-white" :noUnderline="true">
-                Read more
+                Read more<span class="sr-only"> about {{ $post->title }}</span>
             </x-a>
             <p class="text-sm text-gray-400 mt-2">
-                {!! $mdi('post', 'inline mr-1', 16) !!} <x-a view="blog.index" class="text-blue-500">View all blog posts</x-a>
+                {!! $mdi('post', 'inline mr-1', 16) !!} <x-a view="blog.index" class="text-blue-400">View all blog posts</x-a>
             </p>
         </div>
     </x-card-grid-item>

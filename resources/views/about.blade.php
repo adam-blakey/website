@@ -54,8 +54,8 @@
                             <div class="relative rounded-lg overflow-hidden mb-3">
                                 <!-- Image as background -->
                                 <div class="absolute inset-0">
-                                    <img src="{{ Vite::asset($award->image) }}" alt="{{ $award->title }}"
-                                         class="w-full h-full object-cover opacity-40">
+                                    <x-img :src="$award->image" sizes="(min-width: 1024px) 33vw, 100vw" alt="{{ $award->title }}"
+                                         class="w-full h-full object-cover opacity-40" />
                                 </div>
                                 <!-- Dark overlay to improve text visibility -->
                                 <div class="absolute inset-0 bg-black bg-opacity-30"></div>
@@ -110,7 +110,7 @@
                         <div class="flex items-center mb-2">
                             <h3 class="text-xl font-semibold text-gray-900 dark:text-white">{{ $talk->title }}</h3>
                         </div>
-                        <img src="{{ Vite::asset($talk->image) }}" alt="{{ $talk->title }}" class="mb-3 rounded-lg max-w-full h-auto">
+                        <x-img :src="$talk->image" sizes="(min-width: 1024px) 33vw, 100vw" alt="{{ $talk->title }}" class="mb-3 rounded-lg max-w-full h-auto" />
                         <p class="mb-3 text-base font-normal text-gray-500 dark:text-gray-400">
                             {{ $talk->description }}
                         </p>

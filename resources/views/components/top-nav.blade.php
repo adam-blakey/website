@@ -6,7 +6,7 @@
 
 <header class="flex h-10 shrink-0 items-center justify-between gap-2 px-2 text-[13px] text-gray-300">
     <div class="flex items-center gap-1 min-w-0">
-        <a class="flex items-center gap-2 rounded-md px-1.5 py-1 font-semibold text-gray-100 hover:bg-gray-600/60 transition-colors" href="/" aria-label="Adam's website home">
+        <a class="flex items-center gap-2 rounded-md px-1.5 py-1 font-semibold text-gray-100 hover:bg-gray-600/60 transition-colors" href="/" aria-label="AB adam-blakey home">
             <span class="grid place-items-center size-5 rounded bg-gradient-to-br from-blue-500 to-violet-500 text-[10px] font-bold text-white">AB</span>
             <span class="hidden sm:inline">adam-blakey</span>
             {!! $mdi('chevron-down', 'hidden sm:inline text-gray-500', 14) !!}
@@ -58,7 +58,7 @@
             {!! $mdi('play', 'text-emerald-400', 18) !!}
         </a>
         <a class="rounded-full ring-1 ring-gray-600 hover:ring-blue-400 transition" href="{{ route('about') }}" aria-label="About Adam">
-            <img class="size-6 rounded-full object-cover" src="{{ Vite::asset('resources/img/adam.jpg') }}" alt="">
+            <x-img class="size-6 rounded-full object-cover" src="resources/img/adam.jpg" sizes="24px" alt="" />
         </a>
     </div>
 </header>

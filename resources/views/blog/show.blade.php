@@ -86,7 +86,7 @@
                                             {{ $relatedPost->formatted_date }}
                                         </div>
                                         <x-a href="{{ $relatedPost->url }}" class="text-blue-400 hover:underline text-sm">
-                                            Read more
+                                            Read more<span class="sr-only"> about {{ $relatedPost->title }}</span>
                                         </x-a>
                                     </div>
                                 </div>

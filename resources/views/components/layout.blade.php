@@ -1,3 +1,7 @@
+@props([
+    'description' => "Adam Blakey is a software developer, clarinettist, Scout, and fan of all things maths.",
+])
+
 @php
     use App\Helpers\Helpers;
 @endphp
@@ -9,6 +13,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adam Blakey</title>
+    <meta name="description" content="{{ $description }}">
     <link type="image/x-icon" href="{{ asset('favicon.ico') }}" rel="icon">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')

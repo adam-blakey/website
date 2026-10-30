@@ -13,7 +13,7 @@
         <x-card>
             <div class="flex flex-col md:flex-row">
                 <div class="md:w-1/3 mb-6 md:mb-0 md:mr-6">
-                    <img src="{{ Vite::asset('resources/img/adam-and-pip.jpg') }}" alt="Adam eating a meal with Pip the dog cheekily hoping to get a bite of chicken" class="rounded-lg shadow-lg w-full">
+                    <x-img src="resources/img/adam-and-pip.jpg" sizes="(min-width: 768px) 33vw, 100vw" alt="Adam eating a meal with Pip the dog cheekily hoping to get a bite of chicken" class="rounded-lg shadow-lg w-full" />
                 </div>
                 <div class="md:w-2/3">
                     <h3>Contact Adam</h3>

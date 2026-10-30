@@ -13,7 +13,7 @@
                     <p class="text-sm text-gray-400">{!! $mdi('refresh', 'inline mr-1', 16) !!} Updated {{ $programmingTime->fetched_at->diffForHumans() }}</p>
                 @endif
                 @if ($layoutProgrammingTimeUrl)
-                    <p class="text-sm text-gray-400">{!! $mdi('trophy-outline', 'inline mr-1', 16) !!} View the <x-a href="{{ $layoutProgrammingTimeUrl }}" class="text-blue-500">Wakapi leaderboard</x-a></p>
+                    <p class="text-sm text-gray-400">{!! $mdi('trophy-outline', 'inline mr-1', 16) !!} View the <x-a href="{{ $layoutProgrammingTimeUrl }}" class="text-blue-400">Wakapi leaderboard</x-a></p>
                 @endif
             </div>
         </x-card-grid-item>
