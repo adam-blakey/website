@@ -60,7 +60,7 @@ function fakeConcertSources(string $blackwoodDate, string $blackwoodTimes, strin
             'end_date' => '2026-12-01 21:00:00',
             'timezone' => 'Europe/London',
             'image' => false,
-            'venue' => ['venue' => 'The Studio', 'city' => 'Leeds'],
+            'venue' => ['venue' => 'The Studio', 'address' => '1 High Street', 'city' => 'Leeds', 'zip' => 'LS1 1AA'],
             'website' => '',
         ]]]),
     ]);
@@ -77,12 +77,14 @@ it('imports concerts at their scheduled time and skips past ones', function () {
     expect($blackwood->start_datetime->format('Y-m-d H:i'))->toBe('2026-11-21 19:00')
         ->and($blackwood->end_datetime->format('H:i'))->toBe('22:00')
         ->and($blackwood->location)->toBe("St George's Church")
+        ->and($blackwood->address)->toBe('14 Church Ln, Ticknall, Derby DE73 7JU')
         ->and($blackwood->name)->toBe('Autumn & Winter')
         ->and($blackwood->event_url)->toBe('https://blackwoodclarinets.co.uk/events/autumn/');
 
     $cirrus = Concert::firstWhere('external_id', 'cirrus_7');
     expect($cirrus->start_datetime->format('Y-m-d H:i'))->toBe('2026-12-01 19:00')
         ->and($cirrus->location)->toBe('The Studio, Leeds')
+        ->and($cirrus->address)->toBe('1 High Street, Leeds, LS1 1AA')
         ->and($cirrus->ticket_url)->toBeNull()
         ->and($cirrus->event_url)->toBe('https://cirrusquartet.uk/event/cirrus-live/');
 });
@@ -149,6 +151,7 @@ it('links concert cards to the event and the group, in 24-hour time', function (
         'start_datetime' => '2026-11-21 19:00:00',
         'end_datetime' => '2026-11-21 22:00:00',
         'location' => "St George's Church",
+        'address' => '14 Church Ln, Ticknall, Derby DE73 7JU',
         'ensemble' => 'Blackwood Clarinets',
         'event_url' => 'https://blackwoodclarinets.co.uk/events/winter-concert/',
     ]);
@@ -159,6 +162,7 @@ it('links concert cards to the event and the group, in 24-hour time', function (
         ->assertSee('href="https://blackwoodclarinets.co.uk"', false)
         ->assertSee(Concert::ENSEMBLES['Blackwood Clarinets']['icon'])
         ->assertSee('19:00 – 22:00')
+        ->assertSee('href="https://www.google.com/maps/search/?api=1&amp;query=St+George%27s+Church%2C+14+Church+Ln%2C+Ticknall%2C+Derby+DE73+7JU"', false)
         ->assertDontSee('View all concerts');
 
     $this->get('/')->assertOk()->assertSee('View all concerts');

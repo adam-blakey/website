@@ -26,6 +26,7 @@ class Concert extends Model
         'start_datetime',
         'end_datetime',
         'location',
+        'address',
         'poster_url',
         'ticket_url',
         'event_url',
@@ -54,6 +55,15 @@ class Concert extends Model
     public function getUrlAttribute(): string
     {
         return route('interests.music', [], false) . '#concert-' . $this->id;
+    }
+
+    public function getMapUrlAttribute(): ?string
+    {
+        if ($this->location === 'TBA') {
+            return null;
+        }
+
+        return 'https://www.google.com/maps/search/?api=1&query=' . urlencode(implode(', ', array_filter([$this->location, $this->address])));
     }
 
     public function getEnsembleWebsiteAttribute(): ?string
