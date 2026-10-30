@@ -31,7 +31,7 @@
             </p>
         </div>
     @else
-        <div class="flex flex-col md:flex-row space-x-4">
+        <div class="flex flex-col gap-4">
             <div class="flex-1">
                 @if ($title_provided)
                     <h4 class="text-2xl font-bold"><x-a :href="$concert->event_url">{{ $concert->name }}</x-a></h4>
@@ -59,6 +59,7 @@
                 <div class="flex-1">
                     <x-a :href="$concert->ticket_url" :noExternalIcon="true">
                         <img class="w-full h-auto rounded-lg object-contain"
+                             onload="this.closest('.flex-col').classList.toggle('md:flex-row', this.naturalHeight > this.naturalWidth)"
                              src="{{ $concert->poster_url }}"
                              alt="Poster for {{ $concert->name }}" />
                     </x-a>
