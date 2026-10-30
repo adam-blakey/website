@@ -20,6 +20,13 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ImportWordPressPosts extends Command
 {
+    private const IMAGE_EXTENSIONS = [
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/gif' => 'gif',
+        'image/webp' => 'webp',
+    ];
+
     /**
      * The name and signature of the console command.
      *
@@ -439,46 +446,27 @@ class ImportWordPressPosts extends Command
      */
     private function downloadAndSaveMedia(string $url, string $filenamePrefix): ?int
     {
-        // Determine file extension from URL or content type
-        $extension = pathinfo($url, PATHINFO_EXTENSION);
-
-        // If no extension in URL, try to get it from the content type
-        if (empty($extension)) {
-            try {
-                $response = $this->httpClient()->request('HEAD', $url);
-                $contentType = ($response->getHeaders(false)['content-type'][0] ?? '');
-                $extension = $this->getExtensionFromMimeType($contentType);
-            } catch (\Exception $e) {
-                // Default to jpg if we can't determine the extension
-                $extension = 'jpg';
-            }
-        }
-
-        // Generate a unique filename
-        $filename = $filenamePrefix . '_' . time() . '.' . $extension;
-        $path = 'blog-media/' . $filename;
-
         try {
-            // Download the file with a timeout
             $response = $this->httpClient()->request('GET', $url);
             if ($response->getStatusCode() < 300) {
-                $contentType = ($response->getHeaders(false)['content-type'][0] ?? '');
+                $contents = $response->getContent(false);
+                $mimeType = self::detectImageMimeType($contents);
 
-                // Verify it's an image
-                if (!$this->isImageContentType($contentType)) {
-                    $this->warn("Skipping non-image file: {$url} (Content-Type: {$contentType})");
+                if (!$mimeType) {
+                    $this->warn("Skipping file that isn't a JPEG, PNG, GIF or WebP image: {$url}");
                     return null;
                 }
 
-                // Save the file
-                Storage::disk('public')->put($path, $response->getContent(false));
+                $filename = $filenamePrefix . '_' . time() . '.' . self::IMAGE_EXTENSIONS[$mimeType];
+                $path = 'blog-media/' . $filename;
 
-                // Create media record
+                Storage::disk('public')->put($path, $contents);
+
                 $media = BlogMedia::create([
                     'filename' => $filename,
                     'original_url' => $url,
                     'path' => 'storage/' . $path,
-                    'mime_type' => $contentType,
+                    'mime_type' => $mimeType,
                 ]);
                 $this->info("Downloaded media: {$url} -> {$filename}");
                 return $media->id;
@@ -486,7 +474,6 @@ class ImportWordPressPosts extends Command
                 $this->warn("Failed to download media (HTTP " . $response->getStatusCode() . "): {$url}");
             }
         } catch (\Exception $e) {
-            // Log error but continue with import
             $this->error("Failed to download media: {$url} - {$e->getMessage()}");
             report($e);
         }
@@ -494,39 +481,11 @@ class ImportWordPressPosts extends Command
         return null;
     }
 
-    /**
-     * Check if the content type is an image.
-     */
-    private function isImageContentType(?string $contentType): bool
+    public static function detectImageMimeType(string $contents): ?string
     {
-        if (empty($contentType)) {
-            return false;
-        }
+        $mimeType = (new \finfo(FILEINFO_MIME_TYPE))->buffer($contents);
 
-        return str_starts_with($contentType, 'image/');
-    }
-
-    /**
-     * Get file extension from MIME type.
-     */
-    private function getExtensionFromMimeType(?string $mimeType): string
-    {
-        if (empty($mimeType)) {
-            return 'jpg';
-        }
-
-        $map = [
-            'image/jpeg' => 'jpg',
-            'image/jpg' => 'jpg',
-            'image/png' => 'png',
-            'image/gif' => 'gif',
-            'image/webp' => 'webp',
-            'image/svg+xml' => 'svg',
-            'image/bmp' => 'bmp',
-            'image/tiff' => 'tiff',
-        ];
-
-        return $map[$mimeType] ?? 'jpg';
+        return isset(self::IMAGE_EXTENSIONS[$mimeType]) ? $mimeType : null;
     }
 
     /**
