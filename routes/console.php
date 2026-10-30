@@ -19,3 +19,4 @@ Schedule::call($artisan('blog:generate-responsive-images'))->name('blog:generate
 Schedule::call($artisan('concerts:import'))->name('concerts:import')->hourly();
 
 Schedule::call($artisan('music:clear-old'))->name('music:clear-old')->hourly();
+Schedule::call($artisan('cloudflare:reload'))->name('cloudflare:reload')->daily();

@@ -75,7 +75,7 @@ jobs:
       name: ${{ matrix.domain == vars.PROD_DOMAIN && 'production' || 'staging' }}
       url: https://${{ matrix.domain }}
     env:
-      SSH: ssh -i ~/.ssh/deploy -p ${{ vars.DEPLOY_SSH_PORT }} -o StrictHostKeyChecking=no
+      SSH: ssh -i ~/.ssh/deploy -p ${{ vars.DEPLOY_SSH_PORT }} -o StrictHostKeyChecking=yes
       HOST: ${{ vars.DEPLOY_SSH_USER }}@${{ vars.DEPLOY_SSH_HOST }}
     steps:
       - name: Cancel if a newer run is on its way
@@ -99,10 +99,15 @@ jobs:
       - uses: actions/download-artifact@v8
         with:
           name: build
-      - run: |
+      - env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          KNOWN_HOSTS: ${{ vars.DEPLOY_SSH_KNOWN_HOSTS }}
+        run: |
+          : "${KNOWN_HOSTS:?Set the DEPLOY_SSH_KNOWN_HOSTS repository variable to the output of ssh-keyscan -p <port> <host>}"
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy
+          printf '%s\n' "$PRIVATE_KEY" > ~/.ssh/deploy
           chmod 600 ~/.ssh/deploy
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
       - run: rsync -rltz --delete -e "$SSH" vendor public/build resources/img/sizes --relative "$HOST:domains/${{ matrix.domain }}/"
       - run: |
           $SSH $HOST bash -es <<'EOF'
@@ -122,6 +127,7 @@ jobs:
             php artisan migrate --force
             php artisan optimize
             php artisan event:cache
+            php artisan cloudflare:reload
             php artisan queue:restart
           EOF
       - name: Warm Cloudflare cache
