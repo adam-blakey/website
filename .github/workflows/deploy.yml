@@ -91,7 +91,7 @@ jobs:
           fi
       - id: version
         if: matrix.domain == vars.PROD_DOMAIN
-        uses: mathieudutour/github-tag-action@af99e60ce8132224b8e6ebab5023449fe256ed46
+        uses: mathieudutour/github-tag-action@v7
         with:
           github_token: ${{ github.token }}
           default_bump: minor
@@ -136,7 +136,7 @@ jobs:
             curl -fsS --retry 2 -o /dev/null -w '%{http_code} %header{cf-cache-status} %{url}\n' "https://${{ matrix.domain }}/${f#public/}"
           done
       - if: matrix.domain == vars.PROD_DOMAIN
-        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
+        uses: softprops/action-gh-release@v2.6.2
         with:
           tag_name: ${{ steps.version.outputs.new_tag || steps.version.outputs.previous_tag }}
           target_commitish: ${{ github.sha }}
