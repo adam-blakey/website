@@ -58,6 +58,8 @@ class ImportConcerts extends Command
                 $this->processBlackwoodConcert($event);
             }
 
+            $this->pruneMissingConcerts('blackwood_', array_column($response, 'id'));
+
             $this->info('Blackwood Clarinets concerts imported successfully.');
         } catch (\Exception $e) {
             $this->error('Error importing Blackwood Clarinets concerts: ' . $e->getMessage());
@@ -83,6 +85,8 @@ class ImportConcerts extends Command
             foreach ($response as $event) {
                 $this->processCirrusConcert($event);
             }
+
+            $this->pruneMissingConcerts('cirrus_', array_column($response, 'id'));
 
             $this->info('Cirrus Clarinet Quartet concerts imported successfully.');
         } catch (\Exception $e) {
@@ -153,6 +157,18 @@ class ImportConcerts extends Command
             'ticket_url' => $event['website'] ?: null,
             'ensemble' => 'Cirrus Clarinet Quartet',
         ]);
+    }
+
+    private function pruneMissingConcerts(string $source, array $ids)
+    {
+        $count = Concert::upcoming()
+            ->where('external_id', 'like', $source . '%')
+            ->whereNotIn('external_id', array_map(fn ($id) => $source . $id, $ids))
+            ->delete();
+
+        if ($count > 0) {
+            $this->info("Removed {$count} upcoming concerts no longer listed by the source.");
+        }
     }
 
     private function saveConcert(string $externalId, array $attributes)
@@ -300,7 +316,7 @@ class ImportConcerts extends Command
     private function getBlackwoodConcertsData()
     {
         try {
-            $response = Http::get('https://blackwoodclarinets.co.uk/wp-json/wp/v2/mec-events');
+            $response = Http::get('https://blackwoodclarinets.co.uk/wp-json/wp/v2/mec-events', ['per_page' => 100]);
 
             if ($response->successful()) {
                 return $response->json();

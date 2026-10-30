@@ -74,3 +74,33 @@ it('updates concerts that have been rescheduled', function () {
         ->and(Concert::firstWhere('external_id', 'blackwood_1')->start_datetime->format('Y-m-d H:i'))->toBe('2026-11-21 18:00')
         ->and(Concert::firstWhere('external_id', 'cirrus_7')->start_datetime->format('H:i'))->toBe('20:00');
 });
+
+it('removes upcoming concerts that a source no longer lists, keeping manual ones', function () {
+    fakeConcertSources('2026-11-14T19:30:00+00:00', '2026-12-01 19:00:00');
+    Artisan::call('concerts:import');
+    Concert::create(['name' => 'Solo recital', 'slug' => 'solo', 'start_datetime' => '2026-12-05 19:00:00', 'location' => 'Home', 'ensemble' => 'Blackwood Clarinets']);
+
+    Http::swap(new Illuminate\Http\Client\Factory);
+    Http::fake([
+        'blackwoodclarinets.co.uk/wp-json/*' => Http::response([[
+            'id' => 2,
+            'slug' => 'spring',
+            'link' => 'https://blackwoodclarinets.co.uk/events/spring/',
+            'title' => ['rendered' => 'Spring'],
+            'content' => ['rendered' => ''],
+        ]]),
+        'blackwoodclarinets.co.uk/events/spring/' => Http::response('<script type="application/ld+json">{"@type":"Event","startDate":"2026-04-01T19:30:00+01:00"}</script>'),
+        'cirrusquartet.uk/*' => Http::response(['events' => []]),
+    ]);
+    Artisan::call('concerts:import');
+
+    expect(Concert::pluck('slug')->sort()->values()->all())->toBe(['cirrus-live', 'solo']);
+});
+
+it('clears all concerts', function () {
+    fakeConcertSources('2026-11-14T19:30:00+00:00', '2026-12-01 19:00:00');
+    Artisan::call('concerts:import');
+
+    expect(Artisan::call('concerts:clear', ['--force' => true]))->toBe(0)
+        ->and(Concert::count())->toBe(0);
+});
