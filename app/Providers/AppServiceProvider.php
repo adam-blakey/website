@@ -95,9 +95,6 @@ class AppServiceProvider extends ServiceProvider
         View::share('layoutProgrammingTimeUrl', $programmingTimeUrl);
     }
 
-    /**
-     * Deserialise resources/data/{name}.json into an array of $class objects.
-     */
     private function loadData(string $name, string $class): array
     {
         $rows = json_decode(file_get_contents(resource_path("data/{$name}.json")), true, flags: JSON_THROW_ON_ERROR);
