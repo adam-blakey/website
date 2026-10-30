@@ -24,6 +24,7 @@ jobs:
       # Bumps the latest vX.Y.Z tag from the conventional commits since it: breaking change → major, fix without feat → patch, anything else → minor.
       - id: version
         run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
           last=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1)
           log=$(git log --no-merges --format=%B "${last:+$last..}HEAD")
           if echo "$log" | grep -qE '^[a-z]+(\([^)]*\))?!:|^BREAKING[ -]CHANGE:'; then
