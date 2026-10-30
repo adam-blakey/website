@@ -17,7 +17,7 @@ class ContactController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'message' => 'required|string',
+            'message' => 'required|string|max:5000',
             'g-recaptcha-response' => 'required|recaptchav3:contact,0.5',
         ]);
 

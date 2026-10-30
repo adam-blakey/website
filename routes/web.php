@@ -52,7 +52,7 @@ Route::get('/now', function() {
 })->name('now');
 
 Route::get('/contact', [\App\Http\Controllers\ContactController::class, 'show'])->name('contact');
-Route::post('/contact', [\App\Http\Controllers\ContactController::class, 'submit'])->name('contact.submit');
+Route::post('/contact', [\App\Http\Controllers\ContactController::class, 'submit'])->middleware('throttle:5,60')->name('contact.submit');
 
 // Blog routes
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
