@@ -73,6 +73,10 @@ class Concert extends Model
      */
     public function getFormattedTimeRangeAttribute(): string
     {
+        if ($this->start_datetime->format('H:i') === '00:00') {
+            return 'Time TBC';
+        }
+
         $startTime = $this->formatted_start_time;
         $endTime = $this->formatted_end_time;
 

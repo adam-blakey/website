@@ -101,7 +101,8 @@ class ImportConcerts extends Command
     private function processBlackwoodConcert($event)
     {
         $title = html_entity_decode($event['title']['rendered'], ENT_QUOTES | ENT_HTML5);
-        $schema = $this->getEventSchema($event['link']);
+        $page = Http::get($event['link']);
+        $schema = $page->successful() ? $this->getEventSchema($page->body()) : null;
 
         if (! isset($schema['startDate'])) {
             $this->warn("No event schedule found for Blackwood concert: {$title}");
@@ -109,24 +110,9 @@ class ImportConcerts extends Command
         }
 
         $content = $event['content']['rendered'];
-        $startDate = $this->toLocalTime($schema['startDate']);
-        $timeInfo = $this->extractTimeFromBlackwoodContent($content);
-
-        if (! $this->hasTime($schema['startDate']) && $timeInfo['time']) {
-            $timeParts = explode(':', $timeInfo['time']);
-            $hour = (int)$timeParts[0];
-            $minute = isset($timeParts[1]) ? (int)$timeParts[1] : 0;
-
-            if ($timeInfo['isPM'] && $hour < 12) {
-                $hour += 12;
-            }
-
-            $startDate->setTime($hour, $minute);
-        }
-
-        $endDate = isset($schema['endDate']) && $this->hasTime($schema['endDate'])
-            ? $this->toLocalTime($schema['endDate'])
-            : $startDate->copy()->addHours(1)->addMinutes(30);
+        [$startTime, $endTime] = $this->extractTimeRangeFromBlackwoodPage($page->body()) + [null, null];
+        $startDate = $this->toLocalTime(substr($schema['startDate'], 0, 10) . ' ' . $startTime);
+        $endDate = $endTime ? $this->toLocalTime(substr($schema['endDate'] ?? $schema['startDate'], 0, 10) . ' ' . $endTime) : null;
 
         $this->saveConcert('blackwood_' . $event['id'], [
             'name' => $title,
@@ -183,19 +169,12 @@ class ImportConcerts extends Command
         $this->info(($concert->wasRecentlyCreated ? 'Imported' : 'Updated') . " {$concert->ensemble} concert: {$concert->name}");
     }
 
-    private function getEventSchema(string $url): ?array
+    private function getEventSchema(string $html): ?array
     {
-        $response = Http::get($url);
-
-        if (! $response->successful()) {
-            $this->error("Failed to fetch {$url}: HTTP " . $response->status());
-            return null;
-        }
-
-        preg_match_all('#<script[^>]*application/ld\+json[^>]*>(.*?)</script>#is', $response->body(), $matches);
+        preg_match_all('#<script[^>]*application/ld\+json[^>]*>(.*?)</script>#is', $html, $matches);
 
         foreach ($matches[1] as $json) {
-            $data = json_decode(trim($json), true);
+            $data = json_decode(str_replace("\\'", "'", trim($json)), true);
 
             if (! is_array($data)) {
                 continue;
@@ -211,9 +190,12 @@ class ImportConcerts extends Command
         return null;
     }
 
-    private function hasTime(string $dateTime): bool
+    private function extractTimeRangeFromBlackwoodPage(string $html): array
     {
-        return str_contains($dateTime, 'T') || str_contains($dateTime, ':');
+        preg_match('#mec-single-event-time.*?<abbr class="mec-events-abbr">([^<]*)</abbr>#s', $html, $timeBox);
+        preg_match_all('/\d{1,2}:\d{2}\s*[ap]m/i', $timeBox[1] ?? '', $times);
+
+        return $times[0];
     }
 
     private function toLocalTime(string $dateTime, ?string $timezone = null): Carbon
@@ -237,30 +219,6 @@ class ImportConcerts extends Command
         }
 
         return 'TBA';
-    }
-
-    /**
-     * Extract time information from Blackwood content.
-     */
-    private function extractTimeFromBlackwoodContent($content)
-    {
-        $result = ['time' => null, 'isPM' => false];
-
-        // Look for time pattern in content (typically after ⏰ emoji)
-        if (preg_match('/⏰\s*<strong>([0-9]{1,2}:[0-9]{2})\s*(AM|PM)?<\/strong>/i', $content, $matches)) {
-            $result['time'] = $matches[1];
-            $result['isPM'] = isset($matches[2]) && strtoupper($matches[2]) === 'PM';
-            return $result;
-        }
-
-        // Alternative pattern
-        if (preg_match('/<strong>([0-9]{1,2}:[0-9]{2})\s*(AM|PM)?<\/strong>/i', $content, $matches)) {
-            $result['time'] = $matches[1];
-            $result['isPM'] = isset($matches[2]) && strtoupper($matches[2]) === 'PM';
-            return $result;
-        }
-
-        return $result;
     }
 
     /**
