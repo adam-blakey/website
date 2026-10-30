@@ -15,6 +15,16 @@ it('returns a successful response for about page', function () {
     $response->assertStatus(200);
 });
 
+it('returns a successful response for awards page', function () {
+    $response = $this->get('/about/awards');
+    $response->assertStatus(200);
+});
+
+it('returns a successful response for talks page', function () {
+    $response = $this->get('/about/talks');
+    $response->assertStatus(200);
+});
+
 it('returns a successful response for interests page', function () {
     $response = $this->get('/interests');
     $response->assertStatus(200);
