@@ -87,7 +87,7 @@ jobs:
           - ${{ vars.PROD_DOMAIN }}
         exclude:
           - domain: ${{ github.event_name == 'pull_request' && vars.PROD_DOMAIN || '' }}
-    concurrency: deploy-${{ matrix.domain }} # one deploy per environment at a time, across runs (PRs and main share staging)
+    concurrency: deploy-${{ matrix.domain }}
     env:
       SSH: ssh -i ~/.ssh/deploy -p ${{ vars.DEPLOY_SSH_PORT }} -o StrictHostKeyChecking=no
       HOST: ${{ vars.DEPLOY_SSH_USER }}@${{ vars.DEPLOY_SSH_HOST }}
