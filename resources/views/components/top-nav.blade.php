@@ -9,7 +9,6 @@
         <a class="flex items-center gap-2 rounded-md px-1.5 py-1 font-semibold text-gray-100 hover:bg-gray-600/60 transition-colors" href="/" aria-label="AB adam-blakey home">
             <span class="grid place-items-center size-5 rounded bg-gradient-to-br from-blue-500 to-violet-500 text-[10px] font-bold text-white">AB</span>
             <span class="hidden sm:inline">adam-blakey</span>
-            {!! $mdi('chevron-down', 'hidden sm:inline text-gray-500', 14) !!}
         </a>
 
         <div class="flex items-center p-0">
@@ -47,7 +46,7 @@
             @endforeach
         </div>
 
-        <x-a href="https://github.com/adam-blakey/adam-website-2024" class="hidden md:flex items-center gap-1.5 rounded-md px-2 py-1 hover:bg-gray-600/60 hover:text-white transition-colors" :noUnderline="true" :noExternalIcon="true" title="View source on GitHub" aria-label="View source on GitHub">
+        <x-a href="https://github.com/adam-blakey/website" class="hidden md:flex items-center gap-1.5 rounded-md px-2 py-1 hover:bg-gray-600/60 hover:text-white transition-colors" :noUnderline="true" :noExternalIcon="true" title="View source on GitHub" aria-label="View source on GitHub">
             {!! $mdi('source-branch', 'text-gray-400', 15) !!} main
         </x-a>
     </div>
