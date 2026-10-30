@@ -11,7 +11,7 @@
     <title>Adam Blakey</title>
     <link type="image/x-icon" href="{{ asset('favicon.ico') }}" rel="icon">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    {!! RecaptchaV3::initJs() !!}
+    @stack('head')
     <script>
         // Default saveFile function for menu items when not in editor
         window.saveFile = function() {
