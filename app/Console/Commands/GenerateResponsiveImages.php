@@ -122,6 +122,7 @@ class GenerateResponsiveImages extends Command
             $this->info("Successfully processed media: {$media->filename}");
         } catch (\Exception $e) {
             $this->error("Failed to process media {$media->filename}: {$e->getMessage()}");
+            report($e);
         }
     }
 

@@ -282,6 +282,7 @@ class ImportWordPressPosts extends Command
             }
         } catch (\Exception $e) {
             $this->error("Failed to fetch term data: {$e->getMessage()}");
+            report($e);
         }
 
         return [];
@@ -331,6 +332,7 @@ class ImportWordPressPosts extends Command
                 }
             } catch (\Exception $e) {
                 $this->error("Failed to fetch category details: {$e->getMessage()}");
+                report($e);
             }
         }
 
@@ -388,6 +390,7 @@ class ImportWordPressPosts extends Command
                 }
             } catch (\Exception $e) {
                 $this->error("Failed to fetch tag details: {$e->getMessage()}");
+                report($e);
             }
         }
 
@@ -485,6 +488,7 @@ class ImportWordPressPosts extends Command
         } catch (\Exception $e) {
             // Log error but continue with import
             $this->error("Failed to download media: {$url} - {$e->getMessage()}");
+            report($e);
         }
 
         return null;
