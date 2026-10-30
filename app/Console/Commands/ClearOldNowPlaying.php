@@ -18,7 +18,6 @@ class ClearOldNowPlaying extends Command
 
         try {
             $cutoffDate = Carbon::now()->subHours(2);
-            // Keep the latest track (and so its album art) even when it is old.
             $latestId = MusicNowPlaying::latest('played_at')->value('id');
             $count = MusicNowPlaying::where('played_at', '<', $cutoffDate)
                 ->when($latestId, fn ($query) => $query->whereKeyNot($latestId))
