@@ -5,22 +5,13 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   commit_messages:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - uses: wagoid/commitlint-github-action@v6
         with:
-          fetch-depth: 0
-      - env:
-          BASE: ${{ github.event.pull_request.base.sha }}
-          HEAD: ${{ github.event.pull_request.head.sha }}
-        run: |
-          bad=$(git log --no-merges --format='%h %s' "$BASE..$HEAD" | grep -Ev '^[0-9a-f]+ (build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([^)]+\))?!?: .+' || true)
-          if [ -n "$bad" ]; then
-            echo "$bad" | sed 's/^/::error::Not a conventional commit: /'
-            echo "Use 'type(optional scope): description', e.g. 'feat(blog): add tag pages'. Types: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test. Add '!' after the type for a breaking change. See .github/pull_request_template.md."
-            echo "Reword with 'git rebase -i $BASE' and force-push."
-            exit 1
-          fi
+          helpURL: https://github.com/${{ github.repository }}/blob/main/.github/pull_request_template.md
