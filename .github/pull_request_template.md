@@ -11,5 +11,5 @@ The release version is worked out from the commits:
   fix(contact): validate email      → patch (also perf; only when there's no feat)
   anything else                     → minor
 
-Merges deploy straight away. Releases are cut every morning at 07:30 UK time, or on demand from Actions → Release → Run workflow.
+Merges to main wait 15 minutes before deploying and releasing; another merge in that time restarts the wait, so a burst of merges ships as one release.
 -->
