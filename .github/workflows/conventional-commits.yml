@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   commit_messages:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
       - uses: wagoid/commitlint-github-action@v6

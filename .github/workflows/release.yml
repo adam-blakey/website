@@ -19,7 +19,7 @@ env:
 jobs:
   release:
     if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - id: deployed
         run: echo "sha=$(gh run list --workflow deploy.yml --branch main --status success --limit 1 --json headSha --jq '.[0].headSha')" >> "$GITHUB_OUTPUT"
