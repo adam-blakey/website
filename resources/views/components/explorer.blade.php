@@ -1,7 +1,12 @@
 @props(['tabEntries', 'active'])
 
 @php
-    $interestFiles = ['music' => 'music-note', 'scouts' => 'campfire', 'software' => 'code-tags'];
+    $folders = [
+        'about' => ['awards' => 'trophy', 'talks' => 'presentation'],
+        'interests' => ['music' => 'music-note', 'scouts' => 'campfire', 'software' => 'code-tags'],
+    ];
+    $folderColors = ['about' => 'text-violet-400/80', 'interests' => 'text-rose-400/80'];
+    $inFolder = request()->routeIs(...array_map(fn ($folder) => $folder . '.*', array_keys($folders)));
     $row = 'flex items-center gap-1.5 h-7 rounded-md pr-2 transition-colors';
     $rowState = fn ($on) => $on ? 'bg-blue-600/25 text-white' : 'text-gray-300 hover:bg-gray-700';
 @endphp
@@ -16,16 +21,18 @@
             {!! $mdi('chevron-down', 'text-gray-500', 14) !!} {!! $mdi('folder', 'text-blue-400', 16) !!}
             <span class="font-semibold">adam-blakey</span> <span class="text-gray-400 truncate">~/website</span>
         </div>
-        <div class="{{ $row }} pl-5 text-gray-300">
-            {!! $mdi('chevron-down', 'text-gray-500', 14) !!} {!! $mdi('folder-outline', 'text-gray-400', 16) !!} interests
-        </div>
-        @foreach ($interestFiles as $file => $icon)
-            <a class="{{ $row }} {{ $rowState(request()->routeIs('interests.' . $file)) }} pl-[3.25rem]" href="{{ route('interests.' . $file) }}">
-                {!! $mdi($icon, 'text-rose-400/80', 16) !!} {{ $file }}.md
-            </a>
+        @foreach ($folders as $folder => $files)
+            <div class="{{ $row }} pl-5 text-gray-300">
+                {!! $mdi('chevron-down', 'text-gray-500', 14) !!} {!! $mdi('folder-outline', 'text-gray-400', 16) !!} {{ $folder }}
+            </div>
+            @foreach ($files as $file => $icon)
+                <a class="{{ $row }} {{ $rowState(request()->routeIs($folder . '.' . $file)) }} pl-[3.25rem]" href="{{ route($folder . '.' . $file) }}">
+                    {!! $mdi($icon, $folderColors[$folder], 16) !!} {{ $file }}.md
+                </a>
+            @endforeach
         @endforeach
         @foreach ($tabEntries as $key => $link)
-            <a class="{{ $row }} {{ $rowState($key === $active && !request()->is('interests/*')) }} pl-9" href="{{ route($link->path) }}">
+            <a class="{{ $row }} {{ $rowState($key === $active && !$inFolder) }} pl-9" href="{{ route($link->path) }}">
                 {!! $mdi($link->icon, $link->color, 16) !!} {{ explode('.', $link->path)[0] }}.md
             </a>
         @endforeach

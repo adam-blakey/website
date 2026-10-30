@@ -87,7 +87,7 @@ class AppServiceProvider extends ServiceProvider
         View::share('layoutActiveTab', $active);
         View::share('layoutTopMenuEntries', $topMenuEntries);
         View::share('layoutTimelineEntries', $timelineEntries);
-        View::share('layoutAwards', collect($awards)->where('featured', true));
+        View::share('layoutAwards', collect($awards)->where('featured', true)->sortByDesc('date')->values());
         View::share('layoutTalks', collect($talks)->where('featured', true));
         View::share('layoutTaggedVersion', $taggedVersion);
         View::share('layoutLatestTrack', $latestTrack);
