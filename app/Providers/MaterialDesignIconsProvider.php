@@ -18,12 +18,10 @@ class MaterialDesignIconsProvider extends ServiceProvider
             'role' => 'img',
         ]);
         $iconsPath = base_path('/node_modules/@mdi/svg/svg/');
-        if (is_dir($iconsPath)) {
-            Mdi::withIconsPath($iconsPath);
+        if (!is_dir($iconsPath)) {
+            throw new \RuntimeException("Material Design Icons not found at {$iconsPath}. Run npm ci.");
         }
-        else {
-            exit(1);
-        }
+        Mdi::withIconsPath($iconsPath);
     }
 
     /**

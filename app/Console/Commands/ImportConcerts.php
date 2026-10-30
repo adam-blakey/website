@@ -67,6 +67,7 @@ class ImportConcerts extends Command
             $this->info('Blackwood Clarinets concerts imported successfully.');
         } catch (\Exception $e) {
             $this->error('Error importing Blackwood Clarinets concerts: ' . $e->getMessage());
+            report($e);
         }
     }
 
@@ -94,6 +95,7 @@ class ImportConcerts extends Command
             $this->info('Cirrus Clarinet Quartet concerts imported successfully.');
         } catch (\Exception $e) {
             $this->error('Error importing Cirrus Clarinet Quartet concerts: ' . $e->getMessage());
+            report($e);
         }
     }
 
@@ -361,6 +363,7 @@ class ImportConcerts extends Command
             }
         } catch (\Exception $e) {
             $this->error('Exception when fetching Blackwood concerts: ' . $e->getMessage());
+            report($e);
             return [];
         }
     }
@@ -381,6 +384,7 @@ class ImportConcerts extends Command
             }
         } catch (\Exception $e) {
             $this->error('Exception when fetching Cirrus concerts: ' . $e->getMessage());
+            report($e);
             return [];
         }
     }
