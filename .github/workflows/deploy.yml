@@ -55,28 +55,13 @@ jobs:
             resources/img/sizes
           include-hidden-files: true
 
-  debounce:
-    if: github.ref == 'refs/heads/main'
+  deploy:
+    if: ${{ github.actor != 'dependabot[bot]' && (github.ref == 'refs/heads/main' || github.event_name == 'pull_request') }}
     needs: build_and_test
     runs-on: ubuntu-24.04
-    environment: debounce
-    concurrency:
-      group: debounce
-      cancel-in-progress: true
-    outputs:
-      version: ${{ steps.version.outputs.new_tag || steps.version.outputs.previous_tag }}
-    steps:
-      - id: version
-        uses: mathieudutour/github-tag-action@v7
-        with:
-          github_token: ${{ github.token }}
-          default_bump: minor
-          dry_run: true
-
-  deploy:
-    if: ${{ !cancelled() && needs.build_and_test.result == 'success' && (needs.debounce.result == 'success' || needs.debounce.result == 'skipped') && github.actor != 'dependabot[bot]' && (github.ref == 'refs/heads/main' || github.event_name == 'pull_request') }}
-    needs: [build_and_test, debounce]
-    runs-on: ubuntu-24.04
+    permissions:
+      actions: write
+      contents: write
     strategy:
       max-parallel: 1 # staging first; a failure there skips production
       matrix:
@@ -93,6 +78,24 @@ jobs:
       SSH: ssh -i ~/.ssh/deploy -p ${{ vars.DEPLOY_SSH_PORT }} -o StrictHostKeyChecking=no
       HOST: ${{ vars.DEPLOY_SSH_USER }}@${{ vars.DEPLOY_SSH_HOST }}
     steps:
+      - name: Cancel if a newer run is on its way
+        if: matrix.domain == vars.PROD_DOMAIN
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          newer=$(gh run list --workflow deploy.yml --branch main --json databaseId,status --jq 'map(select(.databaseId > ${{ github.run_id }} and .status != "completed")) | length')
+          if [ "$newer" -gt 0 ]; then
+            gh run cancel ${{ github.run_id }}
+            sleep 300
+          fi
+      - id: version
+        if: matrix.domain == vars.PROD_DOMAIN
+        uses: mathieudutour/github-tag-action@v7
+        with:
+          github_token: ${{ github.token }}
+          default_bump: minor
+          dry_run: true
       - uses: actions/download-artifact@v8
         with:
           name: build
@@ -109,7 +112,7 @@ jobs:
             git fetch --tags --force origin ${{ github.sha }}
             git reset --hard FETCH_HEAD
             if [ '${{ matrix.domain }}' = '${{ vars.PROD_DOMAIN }}' ]; then
-              echo '${{ needs.debounce.outputs.version }}' > VERSION
+              echo '${{ steps.version.outputs.new_tag || steps.version.outputs.previous_tag }}' > VERSION
             else
               git describe --tags --always > VERSION
             fi
@@ -126,19 +129,9 @@ jobs:
           for f in public/build/assets/* $($SSH $HOST "cd domains/${{ matrix.domain }} && find public/storage/blog-media -type f"); do
             curl -fsS --retry 2 -o /dev/null -w '%{http_code} %header{cf-cache-status} %{url}\n' "https://${{ matrix.domain }}/${f#public/}"
           done
-
-  release:
-    if: ${{ !cancelled() && needs.debounce.result != 'cancelled' }}
-    needs: [build_and_test, debounce, deploy]
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: write
-    steps:
-      - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
-        run: exit 1
-      - if: github.ref == 'refs/heads/main'
+      - if: matrix.domain == vars.PROD_DOMAIN
         uses: softprops/action-gh-release@v2.6.2
         with:
-          tag_name: ${{ needs.debounce.outputs.version }}
+          tag_name: ${{ steps.version.outputs.new_tag || steps.version.outputs.previous_tag }}
           target_commitish: ${{ github.sha }}
           generate_release_notes: true

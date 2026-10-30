@@ -11,5 +11,5 @@ The release version is worked out from the commits:
   fix(contact): validate email      → patch (also perf; only when there's no feat)
   anything else                     → minor
 
-Merges to main wait 15 minutes before deploying and releasing; another merge in that time restarts the wait, so a burst of merges ships as one release.
+Merges to main deploy to staging straight away and to production after the production environment's wait timer. A run that finds a newer one still going when its wait ends cancels itself, so a burst of merges ships as one release.
 -->
