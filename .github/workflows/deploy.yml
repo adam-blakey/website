@@ -9,12 +9,24 @@ on:
 permissions:
   contents: read
 
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
     container: lorisleiva/laravel-docker:8.5
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      # Patch bump of the latest vX.Y.Z tag (v0.0.1 if none). For a minor/major bump, push the tag by hand.
+      - id: version
+        run: |
+          last=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1)
+          next=$(echo "${last:-v0.0.0}" | awk -F. '{print $1"."$2"."$3+1}')
+          echo "version=$([ "$GITHUB_REF" = refs/heads/main ] && echo "$next" || echo "${last:-$next}")" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@v4
         with:
           path: ~/.npm
@@ -55,31 +67,9 @@ jobs:
             resources/img/sizes
           include-hidden-files: true
 
-  release:
-    if: github.ref == 'refs/heads/main'
-    needs: build_and_test
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    concurrency: release # serialise so two pushes can't compute the same version
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      # Patch bump of the latest vX.Y.Z tag (v0.0.1 if none). For a minor/major bump, push the tag by hand.
-      - id: version
-        run: |
-          last=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1)
-          echo "next=$(echo "${last:-v0.0.0}" | awk -F. '{print $1"."$2"."$3+1}')" >> "$GITHUB_OUTPUT"
-      - uses: softprops/action-gh-release@v2.6.2
-        with:
-          tag_name: ${{ steps.version.outputs.next }}
-          target_commitish: ${{ github.sha }}
-          generate_release_notes: true
-
   deploy:
-    if: ${{ !failure() && !cancelled() && github.actor != 'dependabot[bot]' && (github.ref == 'refs/heads/main' || github.event_name == 'pull_request') }}
-    needs: [build_and_test, release]
+    if: ${{ github.actor != 'dependabot[bot]' && (github.ref == 'refs/heads/main' || github.event_name == 'pull_request') }}
+    needs: build_and_test
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1 # staging first; a failure there skips production
@@ -90,6 +80,9 @@ jobs:
         exclude:
           - domain: ${{ github.event_name == 'pull_request' && vars.PROD_DOMAIN || '' }}
     concurrency: deploy-${{ matrix.domain }}
+    environment:
+      name: ${{ matrix.domain == vars.PROD_DOMAIN && 'production' || 'staging' }}
+      url: https://${{ matrix.domain }}
     env:
       SSH: ssh -i ~/.ssh/deploy -p ${{ vars.DEPLOY_SSH_PORT }} -o StrictHostKeyChecking=no
       HOST: ${{ vars.DEPLOY_SSH_USER }}@${{ vars.DEPLOY_SSH_HOST }}
@@ -109,7 +102,7 @@ jobs:
             export GIT_SSH_COMMAND="ssh -i ~/.ssh/${{ vars.DEPLOY_GIT_KEY }} -o IdentitiesOnly=yes"
             git fetch --tags --force origin ${{ github.sha }}
             git reset --hard FETCH_HEAD
-            git describe --tags --abbrev=0 --always > VERSION
+            echo '${{ needs.build_and_test.outputs.version }}' > VERSION
             rm -f bootstrap/cache/*.php
             php artisan down
             trap 'php artisan up' EXIT
@@ -123,3 +116,19 @@ jobs:
           for f in public/build/assets/* $($SSH $HOST "cd domains/${{ matrix.domain }} && find public/storage/blog-media -type f"); do
             curl -fsS --retry 2 -o /dev/null -w '%{http_code} %header{cf-cache-status} %{url}\n' "https://${{ matrix.domain }}/${f#public/}"
           done
+
+  release:
+    if: ${{ !cancelled() }}
+    needs: [build_and_test, deploy]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: exit 1
+      - if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2.6.2
+        with:
+          tag_name: ${{ needs.build_and_test.outputs.version }}
+          target_commitish: ${{ github.sha }}
+          generate_release_notes: true
