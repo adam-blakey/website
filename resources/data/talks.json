@@ -1,0 +1,61 @@
+[
+    {
+        "title": "C# in the Browser",
+        "description": "In this talk we'll explore Blazor, Microsoft's framework for building web apps with .NET, and how it can leverage WebAssembly to run C# directly in the browser.",
+        "image": "resources/img/dotnet-notts-thumbnail.avif",
+        "pdf_link": "https://files.blakey.family/DotNetNotts_2026.pdf",
+        "pptx_link": "https://files.blakey.family/DotNetNotts_2026.pptx",
+        "rsvp_link": null,
+        "rsvp_expiry": null,
+        "featured": true,
+        "code_link": "https://github.com/adam-blakey/BlazorTalk",
+        "recording_link": "https://youtu.be/8r_uJh0upFo",
+        "demo_link": "https://blazor.blakey.family"
+    },
+    {
+        "title": "Lights, Camera, Blazor",
+        "description": "This talk is very similar to the more-recent 'C# in the Browser' talk; it takes you through what Blazor is, what WebAssembly is and how it differs from JavaScript, as well as some of the challenges we at Savoy Systems have come across while rewriting our software in Blazor.",
+        "image": "resources/img/techfast-thumbnail.avif",
+        "pdf_link": "https://files.blakey.family/TechFast_2025.pdf",
+        "pptx_link": "https://files.blakey.family/TechFast_2025.pptx",
+        "rsvp_link": null,
+        "rsvp_expiry": null,
+        "featured": true,
+        "code_link": "https://github.com/adam-blakey/BlazorTalk/tree/TechFast2025",
+        "recording_link": "https://youtu.be/cAUVci6NP8s",
+        "demo_link": "https://techfast.blakey.family"
+    },
+    {
+        "title": "Placental Haemodynamics",
+        "description": "Talk given several times during my PhD. It gives an introduction to FEMs, placentas, and porous medium modelling. Contains results on flow and transport with the additional of septal veins.",
+        "image": "resources/img/placental-haemodynamics-thumbnail.jpg",
+        "pdf_link": "https://files.blakey.family/Placental_Haemodynamics_May23.pdf",
+        "pptx_link": "https://r.blakey.family/ph-nov22",
+        "featured": true,
+        "code_link": null,
+        "recording_link": null,
+        "demo_link": null
+    },
+    {
+        "title": "A recipe for adaptive hp-FEMs",
+        "description": "Overview of FEMs with an interactive example. Shows code I wrote in C++ during my Master’s dissertation",
+        "image": "resources/img/blakey-bakery-thumbnail.png",
+        "pdf_link": "https://files.blakey.family/Blakey-Bakery-—-hp-FEM-Recipes.pdf",
+        "pptx_link": "https://r.blakey.family/blakeybakery",
+        "featured": true,
+        "code_link": null,
+        "recording_link": null,
+        "demo_link": "https://fem.blakey.family"
+    },
+    {
+        "title": "Maths “Careers” Talk",
+        "description": "Written in the first year of My PhD, giving an insight into the before and during of my PhD.",
+        "image": "resources/img/careers-talk-thumbnail.png",
+        "pdf_link": "https://files.blakey.family/Maths-Career-Event-20210215.pdf",
+        "pptx_link": null,
+        "featured": true,
+        "code_link": null,
+        "recording_link": null,
+        "demo_link": null
+    }
+]

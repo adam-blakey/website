@@ -25,7 +25,7 @@ class Talk {
         $this->pdf_link = $attributes['pdf_link'] ?? '';
         $this->pptx_link = $attributes['pptx_link'] ?? '';
         $this->rsvp_link = $attributes['rsvp_link'] ?? '';
-        $this->rsvp_expiry = $attributes['rsvp_expiry'] ?? Carbon::now();
+        $this->rsvp_expiry = Carbon::parse($attributes['rsvp_expiry'] ?? 'now');
         $this->featured = $attributes['featured'] ?? false;
         $this->code_link = $attributes['code_link'] ?? '';
         $this->recording_link = $attributes['recording_link'] ?? '';

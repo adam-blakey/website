@@ -19,8 +19,8 @@ class TimelineEntry {
         $this->title = $attributes['title'] ?? '';
         $this->company = $attributes['company'] ?? '';
         $this->company_url = $attributes['company_url'] ?? '';
-        $this->start_date = $attributes['start_date'] ?? Carbon::now();
-        $this->end_date = $attributes['end_date'];
+        $this->start_date = Carbon::parse($attributes['start_date'] ?? 'now');
+        $this->end_date = isset($attributes['end_date']) ? Carbon::parse($attributes['end_date']) : null;
         $this->description = $attributes['description'] ?? '';
         $this->buttons = $attributes['buttons'] ?? [];
         $this->icon = $attributes['icon'] ?? '';
