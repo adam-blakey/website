@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-24.04
     container: lorisleiva/laravel-docker:8.5
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: actions/cache@v6
         with:
           path: ~/.npm
@@ -137,7 +137,7 @@ jobs:
             curl -fsS --retry 2 -o /dev/null -w '%{http_code} %header{cf-cache-status} %{url}\n' "https://${{ matrix.domain }}/${f#public/}"
           done
       - if: matrix.domain == vars.PROD_DOMAIN
-        uses: softprops/action-gh-release@v2.6.2
+        uses: softprops/action-gh-release@v3.0.3
         with:
           tag_name: ${{ steps.version.outputs.new_tag || steps.version.outputs.previous_tag }}
           target_commitish: ${{ github.sha }}
