@@ -20,4 +20,9 @@ jobs:
       GH_REPO: ${{ github.repository }}
       PR_NUMBER: ${{ github.event.issue.number }}
     steps:
-      - run: gh workflow run deploy.yml --ref "$(gh pr view "$PR_NUMBER" --json headRefName --jq .headRefName)"
+      - run: |
+          read -r branch sha <<< "$(gh pr view "$PR_NUMBER" --json headRefName,headRefOid --jq '.headRefName + " " + .headRefOid')"
+          gh workflow run deploy.yml --ref "$branch"
+          gh run list --commit "$sha" --json databaseId,workflowName \
+            --jq 'map(select(.workflowName != "Build, Test & Deploy")) | group_by(.workflowName) | map(max_by(.databaseId).databaseId) | .[]' \
+            | xargs -rn1 gh run rerun
