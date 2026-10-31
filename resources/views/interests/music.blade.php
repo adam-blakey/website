@@ -39,6 +39,17 @@
                     </ul>
                 </div>
             </x-card-grid-item>
+            <x-card-grid-item :colSpan="2" title="The Online-aganzas">
+                <div class="mb-4 space-y-2">
+                    <p>In March 2020, Blowsoc's big end-of-year concert was cancelled because of COVID-19. I was the Publicity and Marketing Officer at the time and decided to turn it into something we could do from our bedrooms: the <x-a href="https://youtu.be/sPWU0MB4zMg">Online-aganza</x-a>.</p>
+                    <p>The idea was simple, even if the editing wasn't 🫠 Every player recorded their own part at home, playing along to the same reference track so that everything would line up afterwards. Over 50 separate videos were then synced up, mixed together, and arranged into one big grid to make a virtual performance of selections from Pixar's <span class="italic">Up</span>. It was released on 4th April 2020 and raised over £1,800 (including Gift Aid) for Teenage Cancer Trust, in support of Matthew, our Brass Band manager, who was being treated for cancer at the time. It was one of the most successful things we ever did as a society, with around 24,000 views on Facebook alone. We even put together a <x-a href="https://youtu.be/Ksta3Wr3lfs">tutorial</x-a> so that other groups could make their own.</p>
+                    <p>After a few smaller ensemble-specific Online-aganzas, we made Online-aganza 2 in the summer, this time getting our alumni involved too. We played ‘Robin Hood: Prince of Thieves’ by Michael Kamen (arr. Paul Lavender) — a staple of every Blowsoc tour, which felt fitting given we couldn't go on our tour to Belgium that year. The performers voted to raise money for Nottinghamshire Independent Domestic Abuse Services (NIDAS).</p>
+                    <p>Finally, we finished 2020 with a virtual advent calendar, where a new video every day in December, from solos to small ensembles, with members and alumni rehearsing, recording and editing everything themselves. It ended on Christmas Day with the <x-a href="https://youtu.be/U5qIzYH3yH0">Christmas Online-aganza</x-a>, a full-band performance of Leroy Anderson's ‘Sleigh Ride’, raising money for Centrepoint.</p>
+                </div>
+            </x-card-grid-item>
+            <x-card-grid-item :colSpan="1" title="Online-aganza 2">
+                <iframe class="w-full aspect-video rounded" src="https://www.youtube-nocookie.com/embed/arN2Efue_LI" title="Blowsoc's Online-aganza 2 — Robin Hood: Prince of Thieves" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>
+            </x-card-grid-item>
             <x-card-grid-item :colSpan="3" title="Upcoming concerts ({{ $concerts->count() }})">
                 @if($concerts->isEmpty())
                     <p class="text-sm text-gray-500 mt-4">No upcoming concerts at the moment. Check back later!</p>
