@@ -17,14 +17,6 @@
     <link type="image/x-icon" href="{{ asset('favicon.ico') }}" rel="icon">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
-    <script>
-        // Default saveFile function for menu items when not in editor
-        window.saveFile = function() {
-            if (window.location.pathname !== '/editor') {
-                window.location.href = '{{ route("editor.show") }}';
-            }
-        };
-    </script>
 </head>
 
 <body class="font-sans text-white bg-gray-700 antialiased lg:flex lg:flex-col lg:h-screen lg:overflow-hidden">

@@ -2,6 +2,7 @@ name: Conventional Commits
 
 on:
   pull_request:
+    types: [opened, edited, synchronize, reopened]
 
 permissions:
   contents: read
@@ -15,3 +16,6 @@ jobs:
       - uses: wagoid/commitlint-github-action@v6
         with:
           helpURL: https://github.com/${{ github.repository }}/blob/main/.github/pull_request_template.md
+      - run: echo "$PR_TITLE" | npx --yes -p @commitlint/cli@20 -p @commitlint/config-conventional@20 commitlint
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
