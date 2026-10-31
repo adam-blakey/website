@@ -133,7 +133,7 @@ jobs:
       - name: Warm Cloudflare cache
         if: matrix.domain == vars.PROD_DOMAIN
         run: |
-          for f in public/build/assets/* $($SSH $HOST "cd domains/${{ matrix.domain }} && find public/storage/blog-media -type f"); do
+          for f in public/build/assets/* $($SSH $HOST "cd domains/${{ matrix.domain }} && find public/storage/blog-media -type f ! -name '*.mp4'"); do
             curl -fsS --retry 2 -o /dev/null -w '%{http_code} %header{cf-cache-status} %{url}\n' "https://${{ matrix.domain }}/${f#public/}"
           done
       - if: matrix.domain == vars.PROD_DOMAIN
