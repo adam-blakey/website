@@ -63,5 +63,9 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-window.saveFile = saveFile;
+document.querySelector('a[href="#save-file"]').addEventListener('click', (e) => {
+    e.preventDefault();
+    saveFile();
+});
+
 editor.focus();
