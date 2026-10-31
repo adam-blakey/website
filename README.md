@@ -5,7 +5,7 @@
 [![Latest release](https://img.shields.io/github/v/release/adam-blakey/website)](https://github.com/adam-blakey/website/releases)
 
 ![PHP 8.5](https://img.shields.io/badge/PHP-8.5-777BB4?logo=php&logoColor=white)
-![Laravel 12](https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel&logoColor=white)
+![Laravel 13](https://img.shields.io/badge/Laravel-13-FF2D20?logo=laravel&logoColor=white)
 ![Tailwind CSS 4](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
 ![Vite 8](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
 ![Pest](https://img.shields.io/badge/tested_with-Pest-F28D1A)
