@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Services\MusicServiceManager;
 use App\Services\MusicServices\LastFmService;
 use App\Services\MusicServices\ListenBrainzService;
+use App\Services\MusicServices\SpotifyService;
 use Illuminate\Console\Command;
 
 class FetchNowPlaying extends Command
@@ -15,6 +16,14 @@ class FetchNowPlaying extends Command
     public function handle(MusicServiceManager $manager): int
     {
         $this->info('Fetching latest tracks from music services...');
+
+        if (config('music-services.spotify.enabled')) {
+            $spotifyTrack = (new MusicServiceManager())->addService(new SpotifyService())->fetchFromAllSources()->first();
+            if ($spotifyTrack) {
+                $this->info("[spotify] Updated: {$spotifyTrack->artist_name} - {$spotifyTrack->track_name}");
+                return self::SUCCESS;
+            }
+        }
 
         // Add configured services
         if (config('music-services.lastfm.enabled')) {
