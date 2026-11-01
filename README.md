@@ -47,6 +47,8 @@ php artisan serve
 
 Set `LARAVEL_CLOUDFLARE_ENABLED=false` in `.env` if the machine can't reach Cloudflare's IP list. API keys for Last.fm, ListenBrainz, Wakapi and the WordPress import go in `.env`; see `.env.example`.
 
+OpenTelemetry traces and metrics are sent over OTLP to the collector at `OTEL_EXPORTER_OTLP_ENDPOINT` (e.g. `http://localhost:4318`). Leave it unset to turn OpenTelemetry off. Other standard `OTEL_*` variables, such as `OTEL_EXPORTER_OTLP_HEADERS` for auth, work too.
+
 ### Scheduled commands
 
 `routes/console.php` runs these via `php artisan schedule:run`:
