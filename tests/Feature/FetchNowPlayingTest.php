@@ -50,7 +50,7 @@ it('saves the spotify track and skips last.fm while spotify is playing', functio
         ],
     ]);
 
-    $this->artisan('music:fetch')->assertSuccessful();
+    expect(Artisan::call('music:fetch'))->toBe(0);
 
     $track = MusicNowPlaying::sole();
     expect($track->source)->toBe('spotify')
@@ -64,7 +64,7 @@ it('saves the spotify track and skips last.fm while spotify is playing', functio
 it('falls back to last.fm when spotify has nothing playing', function (array|int $spotifyNowPlaying) {
     fakeMusicApis($spotifyNowPlaying);
 
-    $this->artisan('music:fetch')->assertSuccessful();
+    expect(Artisan::call('music:fetch'))->toBe(0);
 
     expect(MusicNowPlaying::sole()->source)->toBe('lastfm');
 })->with([
