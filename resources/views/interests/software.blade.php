@@ -4,12 +4,7 @@
         <x-card-grid :columns="3">
             <x-card-grid-item :colSpan="1" title="My software development experience">
                 <div class="mb-4">
-                    <p class="mb-2">I'm currently a Software Developer at Savoy Systems, where I work on a diverse range of projects; the small size of the company naturally makes this a full-stack developer role, working on our backend server, web server, and desktop and mobile apps. My professional work includes:</p>
-                    <ul class="list-disc pl-6 mb-4">
-                        <li>Data visualisation for venue owners</li>
-                        <li>Automated testing of key backend functionality</li>
-                        <li>Modernisation of our client apps, porting from Delphi to C#</li>
-                    </ul>
+                    <p class="mb-2">I'm currently a Software Engineer at Capital One, where I'm working in one of the Site Reliability Engineer teams (SRE). We looks after the services that support new customer applications.</p>
                 </div>
             </x-card-grid-item>
             <x-card-grid-item :colSpan="1" title="Technical skills">
@@ -20,6 +15,7 @@
                         <li>Delphi for backend server code and legacy UI desktop applications</li>
                         <li>Fortran for high-performance scientific computation applications</li>
                         <li>HTML, JavaScript, and CSS for front-end web development</li>
+                        <li>Java for backend microservices</li>
                         <li>PHP (and Laravel) for web development and server-side applications</li>
                         <li>Python for data analysis, scientific computing, and teaching</li>
                         <li>SQL for database design and management</li>
@@ -36,6 +32,7 @@
                         <li>Visualising and analysing simulation results</li>
                         <li>Collaborating with interdisciplinary teams of mathematicians, computer scientists, and medical researchers</li>
                     </ul>
+                    <p class="mb-2">You can read my thesis <x-a href="https://r.blakey.family/phd">here</x-a>, and you can read a paper on synthetic MRI <x-a href="https://doi.org/10.1002/mrm.30379">here</x-a>.</p>
                 </div>
             </x-card-grid-item>
             <x-card-grid-item :colSpan="1" title="Teaching experience">
@@ -53,11 +50,12 @@
                 <div class="mb-4">
                     <p class="mb-2">In my spare time, I enjoy developing websites and bespoke software. Some of my personal projects include:</p>
                     <ul class="list-disc pl-6 mb-4">
-                        <li>Pollererer: </li>
-                        <li>2nd Beeston Sea Scouts: </li>
-                        <li>SW Notts Scouts: </li>
-                        <li>Keiron Anderson: </li>
-                        <li>Blowsoc: </li>
+                        <li><em>This</em> website: github.com/adam-blakey/website</li>
+                        <li>Readererer: github.com/adam-blakey/readererer</li>
+                        <li>2nd Beeston Sea Scouts: 2ndbeeston.org.uk</li>
+                        <li>SW Notts Scouts: swnotts-scouts.org.uk</li>
+                        <li>Keiron Anderson: keironanderson.co.uk</li>
+                        <li>Nottingham Symphonic Winds: nsw.org.uk</li>
                     </ul>
                 </div>
             </x-card-grid-item>
