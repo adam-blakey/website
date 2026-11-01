@@ -23,7 +23,7 @@ My personal website, styled like a code editor: pages are "files" in a project t
 ## Features
 
 - **Blog** imported from WordPress, with categories, tags, responsive images and embedded video.
-- **Now playing** from Last.fm or ListenBrainz, and **programming time** from Wakapi.
+- **Now playing** from Spotify, falling back to Last.fm or ListenBrainz when Spotify isn't playing, and **programming time** from Wakapi.
 - **Upcoming concerts**, awards and talks.
 - **Contact form** with reCAPTCHA v3, rate limiting and confirmation emails.
 - **Markdown editor** (CodeMirror) at `/editor`.
@@ -45,7 +45,7 @@ npm run build
 php artisan serve
 ```
 
-Set `LARAVEL_CLOUDFLARE_ENABLED=false` in `.env` if the machine can't reach Cloudflare's IP list. API keys for Last.fm, ListenBrainz, Wakapi and the WordPress import go in `.env`; see `.env.example`.
+Set `LARAVEL_CLOUDFLARE_ENABLED=false` in `.env` if the machine can't reach Cloudflare's IP list. API keys for Spotify, Last.fm, ListenBrainz, Wakapi and the WordPress import go in `.env`; see `.env.example`.
 
 ### Scheduled commands
 
@@ -56,6 +56,31 @@ Set `LARAVEL_CLOUDFLARE_ENABLED=false` in `.env` if the machine can't reach Clou
 | `music:fetch`, `programming-time:fetch`, `app:send-contact-confirmation-emails` | every minute |
 | `blog:import-wordpress`, `blog:generate-responsive-images`, `concerts:import`, `music:clear-old` | hourly |
 | `cloudflare:reload` | daily |
+
+### Spotify now playing
+
+`music:fetch` asks Spotify first. When Spotify has nothing playing (stopped, paused, a podcast, or an API error) it falls back to Last.fm and ListenBrainz. To set it up:
+
+1. In the [Spotify developer dashboard](https://developer.spotify.com/dashboard), create an app with the **Web API** and the redirect URI `http://127.0.0.1:8888/callback`. Copy its client ID and client secret.
+2. Sign in to Spotify as yourself and open this URL, with your client ID filled in, and approve:
+   `https://accounts.spotify.com/authorize?response_type=code&scope=user-read-currently-playing&redirect_uri=http://127.0.0.1:8888/callback&client_id=CLIENT_ID`
+3. The browser lands on `http://127.0.0.1:8888/callback?code=...` and fails to load. That's fine: copy the `code` from the address bar and swap it for a refresh token within a few minutes:
+
+   ```bash
+   curl -X POST https://accounts.spotify.com/api/token -u CLIENT_ID:CLIENT_SECRET -d grant_type=authorization_code -d redirect_uri=http://127.0.0.1:8888/callback -d code=CODE
+   ```
+
+4. Put the `refresh_token` from the response in `.env`, with your Spotify username (shown on [your account page](https://www.spotify.com/account/profile/)) for the profile link:
+
+   ```
+   SPOTIFY_ENABLED=true
+   SPOTIFY_CLIENT_ID=...
+   SPOTIFY_CLIENT_SECRET=...
+   SPOTIFY_REFRESH_TOKEN=...
+   SPOTIFY_USER_ID=...
+   ```
+
+The refresh token doesn't expire unless you remove the app's access from your Spotify account. If you do, repeat steps 2 to 4.
 
 ## Tests
 
