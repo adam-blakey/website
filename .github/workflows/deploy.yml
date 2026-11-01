@@ -5,31 +5,35 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * 6'
+      timezone: Europe/London
 
 permissions:
   contents: read
 
 jobs:
   build_and_test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     container: lorisleiva/laravel-docker:8.5
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/cache@v4
+      - uses: actions/checkout@v7
+      - uses: actions/cache@v6
         with:
           path: ~/.npm
           key: npm-${{ hashFiles('package-lock.json') }}
           restore-keys: npm-
       - id: composer-cache
         run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: composer-${{ hashFiles('composer.lock') }}
           restore-keys: composer-
       - run: npm ci
-      - run: npm run build
       - run: composer install --no-interaction --no-dev --prefer-dist
+      - run: php artisan images:resize
+      - run: npm run build
       - run: touch database/database.sqlite
       - run: cp .env.example .env
       - run: php artisan key:generate
@@ -40,76 +44,104 @@ jobs:
         if: github.ref == 'refs/heads/main'
       - run: php artisan event:cache
         if: github.ref == 'refs/heads/main'
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: junit
           path: junit.xml
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v7
         with:
           name: build
           path: |
             vendor
             public/build
+            resources/img/sizes
           include-hidden-files: true
 
-  release:
-    if: github.ref == 'refs/heads/main'
-    needs: build_and_test
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    concurrency: release # serialise so two pushes can't compute the same version
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      # Patch bump of the latest vX.Y.Z tag (v0.0.1 if none). For a minor/major bump, push the tag by hand.
-      - id: version
-        run: |
-          last=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n1)
-          echo "next=$(echo "${last:-v0.0.0}" | awk -F. '{print $1"."$2"."$3+1}')" >> "$GITHUB_OUTPUT"
-      - uses: softprops/action-gh-release@v2.6.2
-        with:
-          tag_name: ${{ steps.version.outputs.next }}
-          target_commitish: ${{ github.sha }}
-          generate_release_notes: true
-
   deploy:
-    if: github.ref == 'refs/heads/main'
-    needs: [build_and_test, release]
-    runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    needs: build_and_test
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: write
+      contents: write
     strategy:
       max-parallel: 1 # staging first; a failure there skips production
       matrix:
         domain:
           - ${{ vars.STAGING_DOMAIN }}
           - ${{ vars.PROD_DOMAIN }}
+        exclude:
+          - domain: ${{ github.ref != 'refs/heads/main' && vars.PROD_DOMAIN || '' }}
+    concurrency: deploy-${{ matrix.domain }}
+    environment:
+      name: ${{ matrix.domain == vars.PROD_DOMAIN && 'production' || 'staging' }}
+      url: https://${{ matrix.domain }}
     env:
-      SSH: ssh -i ~/.ssh/deploy -p ${{ vars.DEPLOY_SSH_PORT }} -o StrictHostKeyChecking=no
+      SSH: ssh -i ~/.ssh/deploy -p ${{ vars.DEPLOY_SSH_PORT }} -o StrictHostKeyChecking=yes
       HOST: ${{ vars.DEPLOY_SSH_USER }}@${{ vars.DEPLOY_SSH_HOST }}
     steps:
-      - uses: actions/download-artifact@v5
+      - name: Cancel if a newer run is on its way
+        if: matrix.domain == vars.PROD_DOMAIN
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          newer=$(gh run list --workflow deploy.yml --branch main --json databaseId,status --jq 'map(select(.databaseId > ${{ github.run_id }} and .status != "completed")) | length')
+          if [ "$newer" -gt 0 ]; then
+            gh run cancel ${{ github.run_id }}
+            sleep 300
+          fi
+      - id: version
+        if: matrix.domain == vars.PROD_DOMAIN
+        uses: mathieudutour/github-tag-action@v7
+        with:
+          github_token: ${{ github.token }}
+          default_bump: ${{ github.event_name == 'schedule' && 'false' || 'minor' }}
+          dry_run: true
+      - uses: actions/download-artifact@v8
         with:
           name: build
-      - run: |
+      - env:
+          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          KNOWN_HOSTS: ${{ vars.DEPLOY_SSH_KNOWN_HOSTS }}
+        run: |
+          : "${KNOWN_HOSTS:?Set the DEPLOY_SSH_KNOWN_HOSTS repository variable to the output of ssh-keyscan -p <port> <host>}"
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy
+          printf '%s\n' "$PRIVATE_KEY" > ~/.ssh/deploy
           chmod 600 ~/.ssh/deploy
-      - run: rsync -rltz --delete -e "$SSH" vendor public/build --relative "$HOST:domains/${{ matrix.domain }}/"
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+      - run: rsync -rltz --delete -e "$SSH" vendor public/build resources/img/sizes --relative "$HOST:domains/${{ matrix.domain }}/"
       - run: |
           $SSH $HOST bash -es <<'EOF'
             set -e
             cd domains/${{ matrix.domain }}
             export GIT_SSH_COMMAND="ssh -i ~/.ssh/${{ vars.DEPLOY_GIT_KEY }} -o IdentitiesOnly=yes"
-            git fetch --tags --force origin main
-            git reset --hard origin/main
-            git describe --tags --abbrev=0 --always > VERSION
+            git fetch --tags --force origin ${{ github.sha }}
+            git reset --hard FETCH_HEAD
+            if [ '${{ matrix.domain }}' = '${{ vars.PROD_DOMAIN }}' ]; then
+              echo '${{ steps.version.outputs.new_tag || steps.version.outputs.previous_tag }}' > VERSION
+            else
+              echo "$(git describe --tags --always)${{ github.event.pull_request.number && format('+pr{0}', github.event.pull_request.number) || '' }}" > VERSION
+            fi
             rm -f bootstrap/cache/*.php
             php artisan down
             trap 'php artisan up' EXIT
             php artisan migrate --force
             php artisan optimize
             php artisan event:cache
+            php artisan cloudflare:reload
             php artisan queue:restart
           EOF
+      - name: Warm Cloudflare cache
+        if: matrix.domain == vars.PROD_DOMAIN
+        run: |
+          for f in public/build/assets/* $($SSH $HOST "cd domains/${{ matrix.domain }} && find public/storage/blog-media -type f ! -name '*.mp4'"); do
+            curl -fsS --retry 2 -o /dev/null -w '%{http_code} %header{cf-cache-status} %{url}\n' "https://${{ matrix.domain }}/${f#public/}"
+          done
+      - if: matrix.domain == vars.PROD_DOMAIN && steps.version.outputs.new_tag
+        uses: softprops/action-gh-release@v3.0.3
+        with:
+          tag_name: ${{ steps.version.outputs.new_tag || steps.version.outputs.previous_tag }}
+          target_commitish: ${{ github.sha }}
+          generate_release_notes: true

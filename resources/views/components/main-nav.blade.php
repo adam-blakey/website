@@ -1,17 +1,18 @@
 @props(['tabEntries', 'active'])
 
 <nav
-    class="flex items-center px-4 text-sm bg-gray-800 w-screen
-        overflow-x-auto border-b border-gray-700
-        [&::-webkit-scrollbar]:w-full
-        [&::-webkit-scrollbar]:h-2
+    class="flex items-center gap-1 h-10 shrink-0 px-2 text-[13px] border-b border-gray-700/70
+        overflow-x-auto overflow-y-hidden
+        [&::-webkit-scrollbar]:h-1
         [&::-webkit-scrollbar-thumb]:bg-gray-600">
-    <div class="flex items-center space-x-2 tabs-container">
-        @foreach ($tabEntries as $link)
-            <a class="{{ !request()->is($link->path) && !(request()->is('/') && $link->path == 'welcome') ? 'bg-gray-700' : 'bg-gray-600' }} whitespace-nowrap rounded-t px-2 pb-1 pt-1 text-white whitespace-wrap select-none"
-                href="{{ route($link->path) }}">
-                {!! $mdi($link->icon, 'inline mr-1', 16) !!} {{ explode('.', $link->path)[0] }}.md
-            </a>
-        @endforeach
-    </div>
+    @foreach ($tabEntries as $key => $link)
+        <a class="{{ $key === $active ? 'bg-gray-700 text-white' : 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-200' }} flex items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 h-7 select-none transition-colors"
+            href="{{ route($link->path) }}" @if ($key === $active) aria-current="page" @endif>
+            {!! $mdi($link->icon, $link->color, 15) !!} {{ explode('.', $link->path)[0] }}.md
+        </a>
+    @endforeach
 </nav>
+<script>
+    // Keep the open tab visible when the tab bar overflows on small screens
+    document.querySelector('nav [aria-current="page"]')?.scrollIntoView({ block: 'nearest', inline: 'center' });
+</script>

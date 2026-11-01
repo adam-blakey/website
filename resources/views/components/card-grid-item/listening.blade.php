@@ -7,20 +7,8 @@
     'track'
 ])
 
-@if (is_null($track))
-    <x-card-grid-item title="Adam hasn't listened to anything recently ☹️">
-        <div class="mt-4">
-            <p class="text-sm text-gray-500">
-                @if(config('music-services.lastfm.enabled'))
-                    {!! $si('lastdotfm', 'inline mr-1', 16) !!} View Adam's <x-a href="https://www.last.fm/user/{{ config('music-services.lastfm.username') }}" class="text-blue-500">Last.fm Profile</x-a>
-                @elseif(config('music-services.listenbrainz.enabled'))
-                    {!! $si('musicbrainz', 'inline mr-1', 16) !!} View Adam's <x-a href="https://listenbrainz.org/user/{{ config('music-services.listenbrainz.username') }}" class="text-blue-500">ListenBrainz Profile</x-a>
-                @endif
-            </p>
-        </div>
-    </x-card-grid-item>
-@else
-    <x-card-grid-item title="Adam {{ $track->played_at->diffInMinutes(Carbon::now()) > 5 ? 'was' : 'is' }} listening to...">
+<x-card-grid-item :title="is_null($track) ? 'Adam hasn\'t listened to anything recently ☹️' : 'Adam ' . ($track->played_at->diffInMinutes(Carbon::now()) > 5 ? 'was' : 'is') . ' listening to...'">
+    @if (!is_null($track))
         <div class="flex items-center space-x-4">
             <div class="h-20 w-20 flex-shrink-0 rounded-lg bg-gray-700">
                 <x-a href="{{ $track->album_url  }}" :noUnderline="true" :noExternalIcon="true">
@@ -35,19 +23,27 @@
                 <p class="text-sm text-gray-400"><x-a href="{{ $track->album_url }}">{{ $track->album_name }}</x-a></p>
             </div>
         </div>
+    @endif
 
-        <div class="mt-4">
-            <p class="text-sm text-gray-400">{!! $mdi('music-box', 'inline mr-1', 16) !!} Played {{ ($track->played_at->diffForHumans(Carbon::now(), CarbonInterface::DIFF_RELATIVE_TO_NOW)) }}</p>
-                @if(config('music-services.lastfm.enabled'))
-                    <p class="text-sm text-gray-400">
-                        {!! $si('lastdotfm', 'inline mr-1', 16) !!} View Adam's <x-a href="https://www.last.fm/user/{{ config('music-services.lastfm.username') }}" class="text-blue-500">Last.fm Profile</x-a>
-                    </p>
-                @endif
-                @if(config('music-services.listenbrainz.enabled'))
-                    <p class="text-sm text-gray-400">
-                        {!! $si('musicbrainz', 'inline mr-1', 16) !!} View Adam's <x-a href="https://listenbrainz.org/user/{{ config('music-services.listenbrainz.username') }}" class="text-blue-500">ListenBrainz Profile</x-a>
-                    </p>
-                @endif
-        </div>
-    </x-card-grid-item>
-@endif
+    <div class="mt-4">
+        @if (!is_null($track))
+            @php($playingNow = $track->played_at->gt(Carbon::now()->subMinutes(3)))
+            <p class="text-sm text-gray-400">{!! $mdi('music-box', 'inline mr-1' . ($playingNow ? ' text-sky-400 motion-safe:animate-bounce' : ''), 16) !!} {{ $playingNow ? 'Playing now' : 'Played ' . $track->played_at->diffForHumans(Carbon::now(), CarbonInterface::DIFF_RELATIVE_TO_NOW) }}</p>
+        @endif
+        @if(config('music-services.spotify.enabled'))
+            <p class="text-sm text-gray-400">
+                {!! $si('spotify', 'inline mr-1', 16) !!} View Adam's <x-a href="https://open.spotify.com/user/{{ config('music-services.spotify.user_id') }}" class="text-blue-400">Spotify Profile</x-a>
+            </p>
+        @endif
+        @if(config('music-services.lastfm.enabled'))
+            <p class="text-sm text-gray-400">
+                {!! $si('lastdotfm', 'inline mr-1', 16) !!} View Adam's <x-a href="https://www.last.fm/user/{{ config('music-services.lastfm.username') }}" class="text-blue-400">Last.fm Profile</x-a>
+            </p>
+        @endif
+        @if(config('music-services.listenbrainz.enabled'))
+            <p class="text-sm text-gray-400">
+                {!! $si('musicbrainz', 'inline mr-1', 16) !!} View Adam's <x-a href="https://listenbrainz.org/user/{{ config('music-services.listenbrainz.username') }}" class="text-blue-400">ListenBrainz Profile</x-a>
+            </p>
+        @endif
+    </div>
+</x-card-grid-item>

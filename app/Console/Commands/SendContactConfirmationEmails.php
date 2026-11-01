@@ -37,6 +37,7 @@ class SendContactConfirmationEmails extends Command
         }
 
         $count = 0;
+        $failed = 0;
         foreach ($contacts as $contact) {
             try {
                 Mail::send(new ContactConfirmation($contact));
@@ -48,7 +49,8 @@ class SendContactConfirmationEmails extends Command
                 $contact->confirmation_sent = true;
                 $contact->save();
 
-                return 1;
+                $failed++;
+                continue;
             }
 
             $admin_email = config('app.admin_email');
@@ -62,7 +64,8 @@ class SendContactConfirmationEmails extends Command
                 $contact->confirmation_sent = true;
                 $contact->save();
 
-                return 1;
+                $failed++;
+                continue;
             }
 
             $contact->confirmation_sent = true;
@@ -72,6 +75,6 @@ class SendContactConfirmationEmails extends Command
         }
 
         $this->info("Sent {$count} confirmation emails.");
-        return 0;
+        return $failed ? 1 : 0;
     }
 }

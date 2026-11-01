@@ -24,6 +24,9 @@ Route::get('/about', function () {
     return view('about');
 })->name('about');
 
+Route::view('/about/awards', 'about.awards')->name('about.awards');
+Route::view('/about/talks', 'about.talks')->name('about.talks');
+
 Route::get('/interests', function() {
     return view('interests');
 })->name('interests');
@@ -41,8 +44,15 @@ Route::get('/interests/software', function() {
     return view('interests.software');
 })->name('interests.software');
 
+Route::get('/now', function() {
+    return view('now', [
+        'latestTrack' => \App\Models\MusicNowPlaying::latest('played_at')->first(),
+        'programmingTime' => \App\Models\ProgrammingTime::getLatest(),
+    ]);
+})->name('now');
+
 Route::get('/contact', [\App\Http\Controllers\ContactController::class, 'show'])->name('contact');
-Route::post('/contact', [\App\Http\Controllers\ContactController::class, 'submit'])->name('contact.submit');
+Route::post('/contact', [\App\Http\Controllers\ContactController::class, 'submit'])->middleware('throttle:5,60')->name('contact.submit');
 
 // Blog routes
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
@@ -52,7 +62,6 @@ Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 // Editor routes
 Route::get('/editor', [EditorController::class, 'show'])->name('editor.show');
-Route::post('/editor/save', [EditorController::class, 'save'])->name('editor.save');
 
 // Sitemap
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');

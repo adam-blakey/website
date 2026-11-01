@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use HTMLPurifier;
+use HTMLPurifier_Config;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -68,5 +70,38 @@ class BlogPost extends Model
     public function getFormattedDateAttribute(): string
     {
         return $this->published_at->format('jS F Y');
+    }
+
+    public function getSafeContentAttribute(): string
+    {
+        return self::contentPurifier()->purify($this->content);
+    }
+
+    private static function contentPurifier(): HTMLPurifier
+    {
+        $config = HTMLPurifier_Config::createDefault();
+        $config->set('HTML.TargetBlank', true);
+        $config->set('HTML.DefinitionID', 'blog-post-content');
+        $config->set('HTML.DefinitionRev', 1);
+
+        if ($definition = $config->maybeGetRawHTMLDefinition()) {
+            $definition->addElement('video', 'Inline', 'Optional: #PCDATA | Inline | source', 'Common', [
+                'src' => 'URI',
+                'poster' => 'URI',
+                'preload' => 'Enum#auto,metadata,none',
+                'width' => 'Length',
+                'height' => 'Length',
+                'controls' => 'Bool',
+                'muted' => 'Bool',
+                'loop' => 'Bool',
+                'playsinline' => 'Bool',
+            ]);
+            $definition->addElement('source', 'Block', 'Empty', 'Common', [
+                'src*' => 'URI',
+                'type' => 'Text',
+            ]);
+        }
+
+        return new HTMLPurifier($config);
     }
 }

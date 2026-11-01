@@ -55,7 +55,7 @@
 
                 <!-- Post content -->
                 <article class="prose dark:prose-invert lg:prose-lg max-w-none mb-12 space-y-4">
-                    {!! $post->content !!}
+                    {!! $post->safe_content !!}
                 </article>
 
                 <!-- Related posts -->
@@ -86,7 +86,7 @@
                                             {{ $relatedPost->formatted_date }}
                                         </div>
                                         <x-a href="{{ $relatedPost->url }}" class="text-blue-400 hover:underline text-sm">
-                                            Read more
+                                            Read more<span class="sr-only"> about {{ $relatedPost->title }}</span>
                                         </x-a>
                                     </div>
                                 </div>

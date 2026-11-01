@@ -1,1 +1,8 @@
-import './bootstrap';
+// Self-hosted fonts: Vite bundles them into public/build, so they ship with each deploy instead of coming from a font CDN
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/500.css';
+import '@fontsource/jetbrains-mono/700.css';

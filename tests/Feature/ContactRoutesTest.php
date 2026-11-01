@@ -29,3 +29,21 @@ it('validates contact form input', function () {
     // Expecting validation errors
     $response->assertSessionHasErrors(['name', 'email', 'message']);
 });
+
+it('rejects overly long contact messages', function () {
+    $response = $this->post('/contact', [
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'message' => str_repeat('a', 5001),
+    ]);
+
+    $response->assertSessionHasErrors('message');
+});
+
+it('throttles contact form submissions', function () {
+    foreach (range(1, 5) as $attempt) {
+        $this->post('/contact', [])->assertRedirect();
+    }
+
+    $this->post('/contact', [])->assertTooManyRequests();
+});

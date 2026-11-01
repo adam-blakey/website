@@ -9,8 +9,9 @@ class TabNavLink extends Model
     public string $name;
     public string $path;
     public string $icon;
+    public string $color;
 
-    protected $fillable = ['name', 'path', 'icon'];
+    protected $fillable = ['name', 'path', 'icon', 'color'];
 
     public function __construct(array $attributes = [])
     {
@@ -19,5 +20,6 @@ class TabNavLink extends Model
         $this->name = $attributes['name'] ?? '';
         $this->path = $attributes['path'] ?? '';
         $this->icon = $attributes['icon'] ?? '';
+        $this->color = $attributes['color'] ?? '';
     }
 }

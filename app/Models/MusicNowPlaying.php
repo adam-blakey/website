@@ -33,7 +33,7 @@ class MusicNowPlaying extends Model
     public function getTrackUrlAttribute(): string
     {
         if ($this->track_mbid == "") {
-            return "";
+            return $this->metadata['track_url'] ?? "";
         }
 
         return self::$BASE_MB_URL . self::$TRACK_URL . $this->track_mbid;
@@ -42,7 +42,7 @@ class MusicNowPlaying extends Model
     public function getArtistUrlAttribute(): string
     {
         if ($this->artist_mbid == "") {
-            return "";
+            return $this->metadata['artist_url'] ?? "";
         }
 
         return self::$BASE_LB_URL . self::$ARTIST_URL . $this->artist_mbid;
@@ -51,7 +51,7 @@ class MusicNowPlaying extends Model
     public function getAlbumUrlAttribute(): string
     {
         if ($this->album_mbid == "") {
-            return "";
+            return $this->metadata['album_url'] ?? "";
         }
 
         return self::$BASE_LB_URL . self::$ALBUM_URL . $this->album_mbid;

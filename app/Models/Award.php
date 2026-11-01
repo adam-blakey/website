@@ -16,7 +16,7 @@ class Award {
     public function __construct(array $attributes = [])
     {
         $this->title = $attributes['title'] ?? '';
-        $this->date = $attributes['date'] ?? Carbon::now();
+        $this->date = Carbon::parse($attributes['date'] ?? 'now');
         $this->description = $attributes['description'] ?? '';
         $this->image = $attributes['image'] ?? null;
         $this->link = $attributes['link'] ?? null;

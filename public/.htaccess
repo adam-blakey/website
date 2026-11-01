@@ -1,3 +1,12 @@
+<IfModule mod_headers.c>
+    SetEnvIf Request_URI "^/(build/assets|storage/blog-media)/" HASHED_ASSET
+    Header set Cache-Control "public, max-age=31536000, immutable" env=HASHED_ASSET
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Strict-Transport-Security "max-age=31536000"
+</IfModule>
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
@@ -13,6 +22,12 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
+
+    RewriteRule ^storage/.*\.(php\d?|phtml|phar|pht|phps)$ - [F,L]
+
+    # Missing hashed assets 404 here, not in Laravel, so the 404 can't be cached with the long Cache-Control
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(build/assets|storage/blog-media)/ - [R=404,L]
 
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d

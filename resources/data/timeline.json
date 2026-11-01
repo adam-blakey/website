@@ -1,0 +1,54 @@
+[
+    {
+        "title": "Software engineer",
+        "company": "Capital One",
+        "company_url": "https://www.capitalone.co.uk/",
+        "start_date": "2025-09-08",
+        "end_date": null,
+        "description": "Capital One do credit cards. And they do them rather well, shown by the numerous awards they have won recognising their excellence for both customers and employees: they've been recognised with a rare 5-star rating by Fairer Finance for their credit builder card, and have achieved 15th in Great Place to Work® 2025 rankings. I joined as part of the graduate scheme in September 2025, working in an interdisciplinary team that focuses on customer retention. My work mostly involves using Java.",
+        "icon": "credit-card"
+    },
+    {
+        "title": "Software developer",
+        "company": "Savoy Systems",
+        "company_url": "https://savoysystems.co.uk/",
+        "start_date": "2024-06-10",
+        "end_date": "2025-07-31",
+        "description": "Savoy Systems makes ticketing software for cinemas and theatres. The small company size naturally makes this a full-stack development role, working on our backend server, web server, and desktop and mobile apps. I was involved in a large project to port a Delphi desktop app to a clean web interface in Blazor C#, which allows our clients to conveniently manage their venue in a web browser alongside useful analytics. I also got stuck in with various bug fixes, new features, and improvements to our workflow by introducing GitHub projects.",
+        "icon": "drama-masks"
+    },
+    {
+        "title": "Mathematics PhD",
+        "company": "University of Nottingham",
+        "company_url": "https://nottingham.ac.uk/",
+        "start_date": "2020-10-01",
+        "end_date": "2024-05-24",
+        "description": "Worked on an EPSRC-funded on a project titled \"Placental haemodynamics: A computational study of maternal blood flow and oxygen transport in the human placenta\" under the supervision of Paul Houston, Matthew Hubbard, and Reuben O'Dea. The main aims of the project were to create a mathematical model of blood flow and nutrient transport in the human placenta, simulating the dynamics using a computer.",
+        "icon": "test-tube",
+        "buttons": [
+            {
+                "url": "https://r.blakey.family/phd",
+                "text": "Read thesis"
+            },
+            {
+                "url": "https://doi.org/10.1002/mrm.30379",
+                "text": "Read paper on synthetic MRI"
+            }
+        ]
+    },
+    {
+        "title": "MMath degree",
+        "company": "University of Nottingham",
+        "company_url": "https://nottingham.ac.uk/",
+        "start_date": "2016-10-01",
+        "end_date": "2020-06-01",
+        "description": "A challenging integrated-master’s degree over 4 years, with the school ranked within the top-10 nationally for research power and research quality in 2014 Research Excellence Framework. I specialised in fluid mechanics and numerical methods during my studies.",
+        "icon": "school",
+        "buttons": [
+            {
+                "url": "https://r.blakey.family/blakeyfem",
+                "text": "Read dissertation"
+            }
+        ]
+    }
+]

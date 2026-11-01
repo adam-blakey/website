@@ -4,6 +4,9 @@ multi-ecosystem-groups:
   dependencies:
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "fix"
+      include: "scope"
 
 updates:
   - package-ecosystem: "composer"
@@ -11,6 +14,10 @@ updates:
     patterns: ["*"]
     multi-ecosystem-group: "dependencies"
   - package-ecosystem: "npm"
+    directory: "/"
+    patterns: ["*"]
+    multi-ecosystem-group: "dependencies"
+  - package-ecosystem: "github-actions"
     directory: "/"
     patterns: ["*"]
     multi-ecosystem-group: "dependencies"
