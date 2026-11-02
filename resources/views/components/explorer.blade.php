@@ -38,3 +38,32 @@
         @endforeach
     </div>
 </aside>
+
+<dialog id="open-file" class="m-auto w-80 max-w-[calc(100vw-2rem)] rounded-xl border border-gray-600 bg-gray-800 p-0 text-[13px] text-gray-300 shadow-2xl shadow-black/50 backdrop:bg-black/50" aria-labelledby="open-file-title" closedby="any">
+    <div class="flex items-center justify-between h-10 px-3 border-b border-gray-700">
+        <p id="open-file-title" class="font-semibold text-gray-200">Open File</p>
+        <form method="dialog">
+            <button class="grid place-items-center size-6 rounded-md text-gray-400 hover:bg-gray-700 hover:text-white" aria-label="Close">{!! $mdi('close', '', 16) !!}</button>
+        </form>
+    </div>
+    <nav class="p-1.5" aria-label="Pages">
+        @foreach ($tabEntries as $key => $link)
+            <a class="{{ $row }} {{ $rowState($key === $active && !$inFolder) }} pl-2" href="{{ route($link->path) }}">
+                {!! $mdi($link->icon, $link->color, 16) !!} {{ explode('.', $link->path)[0] }}.md
+            </a>
+        @endforeach
+        @foreach ($folders as $folder => $files)
+            @foreach ($files as $file => $icon)
+                <a class="{{ $row }} {{ $rowState(request()->routeIs($folder . '.' . $file)) }} pl-2" href="{{ route($folder . '.' . $file) }}">
+                    {!! $mdi($icon, $folderColors[$folder], 16) !!} <span><span class="text-gray-500">{{ $folder }}/</span>{{ $file }}.md</span>
+                </a>
+            @endforeach
+        @endforeach
+    </nav>
+</dialog>
+<script>
+    document.querySelector('a[href="#open-file"]')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('open-file').showModal();
+    });
+</script>
