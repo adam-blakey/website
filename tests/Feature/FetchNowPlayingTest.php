@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\MusicNowPlaying;
+use App\Services\MusicServices\SpotifyService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -85,4 +87,27 @@ it('shows the spotify and last.fm profile links with or without a track', functi
         ->assertSee('Song')
         ->assertSee('https://open.spotify.com/user/adamspotify', false)
         ->assertSee('https://www.last.fm/user/adamlastfm', false);
+});
+
+it('uses the refresh token spotify sends back, until a new one is configured', function () {
+    $sentRefreshTokens = [];
+    Http::fake([
+        'accounts.spotify.com/*' => function ($request) use (&$sentRefreshTokens) {
+            $sentRefreshTokens[] = $request['refresh_token'];
+            return Http::response(['access_token' => 'token', 'expires_in' => 3600, 'refresh_token' => 'rotated-' . count($sentRefreshTokens)]);
+        },
+        'api.spotify.com/*' => Http::response(null, 204),
+        '*' => Http::response('', 404),
+    ]);
+    $fetchWithExpiredAccessToken = function () {
+        Cache::forget('spotify.access_token');
+        (new SpotifyService())->getRecentTrack();
+    };
+
+    $fetchWithExpiredAccessToken();
+    $fetchWithExpiredAccessToken();
+    config(['music-services.spotify.refresh_token' => 'pasted-into-env']);
+    $fetchWithExpiredAccessToken();
+
+    expect($sentRefreshTokens)->toBe(['refresh', 'rotated-1', 'pasted-into-env']);
 });

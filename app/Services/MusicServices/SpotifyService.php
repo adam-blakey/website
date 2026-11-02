@@ -48,13 +48,20 @@ class SpotifyService implements MusicServiceInterface
             return $cached;
         }
 
+        $configuredRefreshToken = config('music-services.spotify.refresh_token');
+        $refreshTokenCacheKey = 'spotify.refresh_token.' . sha1($configuredRefreshToken);
+
         $response = Http::asForm()
             ->withBasicAuth(config('music-services.spotify.client_id'), config('music-services.spotify.client_secret'))
             ->post('https://accounts.spotify.com/api/token', [
                 'grant_type' => 'refresh_token',
-                'refresh_token' => config('music-services.spotify.refresh_token'),
+                'refresh_token' => Cache::get($refreshTokenCacheKey, $configuredRefreshToken),
             ])
             ->throw();
+
+        if ($response->json('refresh_token')) {
+            Cache::forever($refreshTokenCacheKey, $response->json('refresh_token'));
+        }
 
         $token = $response->json('access_token');
         Cache::put('spotify.access_token', $token, $response->json('expires_in', 3600) - 60);
