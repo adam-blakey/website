@@ -15,7 +15,7 @@ class SitemapController extends Controller
             return $route->methods()[0] === 'GET' &&
                    $route->getName() &&
                    !str_starts_with($route->getName(), 'editor.') &&
-                   $route->getName() !== 'contact.submit';
+                   !in_array($route->getName(), ['contact.submit', 'welcome', 'sitemap', 'robots']);
         });
 
         $urls = $routes->map(function ($route) {
@@ -54,18 +54,9 @@ class SitemapController extends Controller
 
         // Increase priority and update changefreq for welcome view.
         $urls = $urls->map(function ($url) {
-            if ($url['loc'] === URL::to('/') || $url['loc'] === URL::to('/welcome')) {
+            if ($url['loc'] === URL::to('/')) {
                 $url['changefreq'] = 'always';
                 $url['priority'] = '1.0';
-            }
-            return $url;
-        });
-
-        // Set up route to change always with minimum priority.
-        $urls = $urls->map(function ($url) {
-            if ($url['loc'] === URL::to('/up')) {
-                $url['changefreq'] = 'always';
-                $url['priority'] = '0.1';
             }
             return $url;
         });
