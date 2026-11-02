@@ -15,5 +15,6 @@ it('serves a sitemap of public pages', function () {
 it('points crawlers to the sitemap from robots.txt', function () {
     $this->get('/robots.txt')
         ->assertStatus(200)
+        ->assertSee("User-agent: *\nAllow: /\n", false)
         ->assertSee('Sitemap: ' . url('/sitemap.xml'), false);
 });
