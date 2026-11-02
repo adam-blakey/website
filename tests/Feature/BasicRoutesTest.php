@@ -52,6 +52,14 @@ it('returns a successful response for now page', function () {
     $response->assertStatus(200);
 });
 
+it('estimates breaths, heartbeats and orbit distance from the time of day on the now page', function () {
+    $this->travelTo(today()->setTime(1, 0));
+    $this->get('/now')
+        ->assertSee('900 breaths taken today')
+        ->assertSee('4,200 heartbeats today')
+        ->assertSee('107,208 km travelled around the Sun today');
+});
+
 it('links the version to its release', function () {
     View::share('layoutTaggedVersion', '1.4.0');
     $this->get('/')->assertSee('href="https://github.com/adam-blakey/website/releases/tag/v1.4.0"', false);
