@@ -80,7 +80,7 @@ Set `LARAVEL_CLOUDFLARE_ENABLED=false` in `.env` if the machine can't reach Clou
    SPOTIFY_USER_ID=...
    ```
 
-The refresh token doesn't expire unless you remove the app's access from your Spotify account. If you do, repeat steps 2 to 4.
+The refresh token doesn't expire unless you remove the app's access from your Spotify account or reset the client secret. If either happens, repeat steps 2 to 4 and put the new token in `.env`. If Spotify sends back a replacement refresh token, the site saves it in its cache and uses it from then on.
 
 ## Tests
 
