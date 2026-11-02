@@ -17,5 +17,6 @@
                 @endif
             </div>
         </x-card-grid-item>
+        <x-card-grid-item.vitals />
     </x-card-grid>
 </x-layout>
