@@ -3,18 +3,25 @@
 <x-layout>
     <x-card-grid :columns="3">
         <x-card-grid-item :colSpan="3" title="Adam Blakey">
-            <div class="mb-2">Hi there, I'm Adam 👋</div>
-            <div class="mb-2">
-                💼 I'm a Software Engineer at Capital One, mostly working on our backend Java services for customer offers. Before that, I worked at Savoy Systems on projects ranging from data visualisation and automated testing, all the way to a larger project where we were porting a legacy application to a new language.
-            </div>
-            <div class="mb-2">
-                🧑‍🔬 In 2024, I completed Mathematics PhD at the University of Nottingham, where I developed scientific software to simulate blood flow and nutrient transport within the human placenta.
-            </div>
-            <div class="mb-2">
-                🧑‍💻 Most of what I do is develop software, and I predominantly create websites and bespoke software in PHP/SQL/JS/HTML/CSS in my spare time. I have the most experience with the interesting cocktail of C#, Delphi, Fortran, Java, PHP, and Python. I also have experience teaching a first-year undergraduate Python course at the University of Nottingham, as well as mentoring newbies in tech and giving tech talks.
-            </div>
-            <div class="mb-2">
-                ✅ I have spent many years as a trustee of 3 local charities, served on committees of 3 more organisations, and still volunteer every week with Scouts since 2015. I also provide website and technical support to several local organisations.
+            <div class="flex flex-col md:flex-row gap-6">
+                <x-img src="resources/img/TODO-about-portrait.jpg" sizes="(min-width: 768px) 256px, 100vw" alt="TODO: describe the photo of Adam" class="rounded-lg shadow-lg w-full md:w-64 md:h-64 object-cover shrink-0" />
+                <div>
+                    <div class="mb-2">Hi there, I'm Adam 👋</div>
+                    <div class="mb-2">
+                        💼 I'm a Software Engineer at Capital One, mostly working on our backend Java services for customer offers. Before that, I worked at Savoy Systems on projects ranging from data visualisation and automated testing, all the way to a larger project where we were porting a legacy application to a new language.
+                    </div>
+                    <div class="mb-2">
+                        🧑‍🔬 In 2024, I completed Mathematics PhD at the University of Nottingham, where I developed scientific software to simulate blood flow and nutrient transport within the human placenta.
+                    </div>
+                    <div class="mb-2">
+                        🧑‍💻 Most of what I do is develop software, and I predominantly create websites and bespoke software in PHP/SQL/JS/HTML/CSS in my spare time. I have the most experience with the interesting cocktail of C#, Delphi, Fortran, Java, PHP, and Python. I also have experience teaching a first-year undergraduate Python course at the University of Nottingham, as well as mentoring newbies in tech and giving tech talks.
+                    </div>
+                    <div class="mb-2">
+                        ✅ I have spent many years as a trustee of 3 local charities, served on committees of 3 more organisations, and still volunteer every week with Scouts since 2015. I also provide website and technical support to several local organisations.
+                    </div>
+                    <div class="mb-2">TODO: name and link the 3 charities and 3 organisations above.</div>
+                    <div class="mb-2">TODO: Scouts start year is 2015 here but 2016 on the Interests and Scouts pages; make them match.</div>
+                </div>
             </div>
         </x-card-grid-item>
         <x-card-grid-item :colSpan="1" title="Recent-ish timeline">

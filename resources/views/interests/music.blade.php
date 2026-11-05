@@ -10,6 +10,7 @@
                     <p>During high school, I also took up piano and electric guitar — drawn to what I thought were the “cooler” instruments. However, after switching schools for A-levels, I met a new clarinet teacher who encouraged me to work towards the Grade 8 exam and helped me discover just how incredible (and I guess pretty cool) the clarinet can be.</p>
                     <p>Alongside school studies, I attended the North Tyneside Concert Band, was a member of the Klarinos Clarinet Quintet, and regularly performed in pit orchestras for amateur theatre productions across the North East.</p>
                     <h4 class="font-semibold pt-2">University</h4>
+                    <x-img src="resources/img/TODO-music-university.jpg" sizes="(min-width: 1024px) 66vw, 100vw" alt="TODO: describe the university music photo (e.g. Blowsoc or the NUS orchestras)" class="rounded-lg shadow-lg w-full" />
                     <p>After finishing A-levels in 2016, I moved to Nottingham to start a degree in mathematics. I was very excited that the University of Nottingham had a very active music department I could get involved with, despite not studying music as a degree.</p>
                     <p>During a semester abroad at the National University of Singapore, I continued playing by joining two orchestras. Back in Nottingham, I was heavily involved in the student-run society ‘Blowsoc’, which consumed most Wednesdays with non-stop rehearsals from 13:00 to 21:30!</p>
                     <p>As life grew busier during my second degree, I decided to bookend my university musical journey by performing a clarinet concerto with the University of Nottingham Wind Orchestra in 2022. You can watch my performance of the Martin Ellerby Clarinet Concerto below, or <x-a href="https://youtu.be/T1_VGlT4Mq0">on YouTube</x-a>.</p>
@@ -22,7 +23,7 @@
             </x-card-grid-item>
             <x-card-grid-item :colSpan="1" title="Music in Nottingham">
                 <div class="mb-4">
-                    <p class="mb-2">As a clarinettist in Nottingham, I'm a regular member of :</p>
+                    <p class="mb-2">As a clarinettist in Nottingham, I'm a regular member of:</p>
                     <ul class="mb-4 space-y-1">
                         <li class="flex items-center gap-2">
                             <img src="{{ \App\Models\Concert::ENSEMBLES['Blackwood Clarinets']['icon'] }}" alt="" class="w-4 h-4 rounded-sm" />

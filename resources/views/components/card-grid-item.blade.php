@@ -17,7 +17,7 @@
 }}">
     <x-card :title="$title" :hFull="true" :color="$color">
         <div class="flex h-full flex-col">
-            <p class="mt-2 max-w-lg text-sm/6 max-lg:text-center">{{ $slot }}</p>
+            <div class="mt-2 text-sm/6">{{ $slot }}</div>
         </div>
     </x-card>
 </div>
