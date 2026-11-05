@@ -11,6 +11,7 @@
         "php": "^8.5",
         "ezyang/htmlpurifier": "^4.19",
         "josiasmontag/laravel-recaptchav3": "^1.0",
+        "keepsuit/laravel-opentelemetry": "^2.2",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
         "mesavolt/mdi-php": "^1.1",
@@ -73,7 +74,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "tbachert/spi": false
         }
     },
     "minimum-stability": "stable",

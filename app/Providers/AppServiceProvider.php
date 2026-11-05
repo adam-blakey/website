@@ -10,8 +10,10 @@ use App\Models\Talk;
 use App\Models\TimelineEntry;
 use App\Models\TopMenuEntry;
 use App\Models\TopMenuSubEntry;
+use Illuminate\Support\Env;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use OpenTelemetry\SDK\Common\Configuration\Variables;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        Env::getRepository()->set(Variables::OTEL_PHP_DETECTORS, 'none');
     }
 
     /**
