@@ -6,7 +6,7 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
+  pull-requests: write
 
 jobs:
   commit_messages:
@@ -16,6 +16,17 @@ jobs:
       - uses: wagoid/commitlint-github-action@v6
         with:
           helpURL: https://github.com/${{ github.repository }}/blob/main/.github/pull_request_template.md
-      - run: echo "$PR_TITLE" | npx --yes -p @commitlint/cli@20 -p @commitlint/config-conventional@20 commitlint
-        env:
+      - env:
           PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$PR_AUTHOR" = 'dependabot[bot]' ]; then
+            lowercased_title=$(sed -E 's/^([^:]+: )(.)/\1\l\2/' <<< "$PR_TITLE")
+            if [ "$lowercased_title" != "$PR_TITLE" ]; then
+              gh api -X PATCH "repos/${{ github.repository }}/pulls/$PR_NUMBER" -f title="$lowercased_title" --silent
+              PR_TITLE=$lowercased_title
+            fi
+          fi
+          echo "$PR_TITLE" | npx --yes -p @commitlint/cli@20 -p @commitlint/config-conventional@20 commitlint
