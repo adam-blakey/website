@@ -66,6 +66,8 @@ Route::get('/editor', [EditorController::class, 'show'])->name('editor.show');
 
 // Sitemap
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', fn () => response("User-agent: *\nAllow: /\nSitemap: " . route('sitemap') . "\n")
+    ->header('Content-Type', 'text/plain'))->name('robots');
 
 // Fun.
 Route::get('/brew-coffee', function() {

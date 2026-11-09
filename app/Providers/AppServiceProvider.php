@@ -62,6 +62,7 @@ class AppServiceProvider extends ServiceProvider
                 'name' => 'File',
                 'subEntries' => [
                     new TopMenuSubEntry(['name' => 'New File', 'url' => 'editor', 'icon' => 'file-plus']),
+                    new TopMenuSubEntry(['name' => 'Open File…', 'url' => '#open-file', 'icon' => 'folder-open']),
                     new TopMenuSubEntry(['name' => 'Save File', 'url' => '#save-file', 'icon' => 'content-save', 'enabled' => request()->is('editor')]),
                 ]
             ]),
