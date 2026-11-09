@@ -47,6 +47,8 @@ php artisan serve
 
 Set `LARAVEL_CLOUDFLARE_ENABLED=false` in `.env` if the machine can't reach Cloudflare's IP list. API keys for Spotify, Last.fm, ListenBrainz, Wakapi and the WordPress import go in `.env`; see `.env.example`.
 
+Logs go to `storage/logs` and, with `LOG_STACK=single,nightwatch`, to Nightwatch. Errors and warnings that commands print are logged too, since the scheduler discards command output.
+
 ### Scheduled commands
 
 `routes/console.php` runs these via `php artisan schedule:run`:
