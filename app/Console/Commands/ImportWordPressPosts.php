@@ -8,7 +8,7 @@ use App\Models\BlogPost;
 use App\Models\BlogPostImage;
 use App\Models\BlogTag;
 use Carbon\Carbon;
-use Illuminate\Console\Command;
+use App\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;

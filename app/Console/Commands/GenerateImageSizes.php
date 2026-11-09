@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Helpers\Image;
-use Illuminate\Console\Command;
+use App\Console\Command;
 
 class GenerateImageSizes extends Command
 {

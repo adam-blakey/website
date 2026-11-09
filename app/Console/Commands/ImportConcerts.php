@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Concert;
 use Carbon\Carbon;
-use Illuminate\Console\Command;
+use App\Console\Command;
 use Illuminate\Support\Facades\Http;
 
 class ImportConcerts extends Command

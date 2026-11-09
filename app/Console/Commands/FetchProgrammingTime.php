@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\ProgrammingTime;
-use Illuminate\Console\Command;
+use App\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 

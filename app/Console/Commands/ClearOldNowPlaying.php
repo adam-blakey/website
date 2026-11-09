@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\MusicNowPlaying;
-use Illuminate\Console\Command;
+use App\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 
