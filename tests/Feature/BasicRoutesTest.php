@@ -17,6 +17,11 @@ it('returns a successful response for about page', function () {
     $response->assertStatus(200);
 });
 
+it('returns a successful response for timeline page', function () {
+    $response = $this->get('/about/timeline');
+    $response->assertStatus(200);
+});
+
 it('returns a successful response for awards page', function () {
     $response = $this->get('/about/awards');
     $response->assertStatus(200);

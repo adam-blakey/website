@@ -8,7 +8,9 @@
             </x-card-grid-item>
 
             <x-card-grid-item :colSpan="1" title="Music">
-                <x-img src="resources/img/woodwind-concert.jpg" sizes="(min-width: 1024px) 33vw, 100vw" alt="Adam and fellow woodwind players holding their instruments after a concert in a church" class="rounded-lg mb-3 w-full aspect-video object-cover" />
+                <x-a view="interests.music" :noUnderline="true" class="block">
+                    <x-img src="resources/img/woodwind-concert.jpg" sizes="(min-width: 1024px) 33vw, 100vw" alt="Adam and fellow woodwind players holding their instruments after a concert in a church" class="rounded-lg mb-3 w-full aspect-video object-cover" />
+                </x-a>
                 <div class="mb-2">{!! $mdi('music-note-outline', 'inline', 24) !!}
                     I'm a keen clarinettist, playing in multiple ensembles in Nottingham. Music has been a significant part of my life since I picked up the clarinet at age 8.
                 </div>
@@ -19,7 +21,9 @@
             </x-card-grid-item>
 
             <x-card-grid-item :colSpan="1" title="Scouts">
-                <x-img src="resources/img/TODO-scouts-group.jpg" sizes="(min-width: 1024px) 33vw, 100vw" alt="TODO: describe the Scouts photo" class="rounded-lg mb-3 w-full aspect-video object-cover" />
+                <x-a view="interests.scouts" :noUnderline="true" class="block">
+                    <x-img src="resources/img/scouts-group.jpg" sizes="(min-width: 1024px) 33vw, 100vw" alt="Photo of Adam with Scouts" class="rounded-lg mb-3 w-full aspect-video object-cover" />
+                </x-a>
                 <div class="mb-2">{!! $mdi('campfire', 'inline', 24) !!}
                     I've been volunteering with Scouts since 2016 through various different roles. Scouting has given me so many amazing experiences throughout my life.
                 </div>
@@ -30,7 +34,9 @@
             </x-card-grid-item>
 
             <x-card-grid-item :colSpan="1" title="Software Development">
-                <x-img src="resources/img/TODO-interests-software.jpg" sizes="(min-width: 1024px) 33vw, 100vw" alt="TODO: describe the software image" class="rounded-lg mb-3 w-full aspect-video object-cover" />
+                <x-a view="interests.software" :noUnderline="true" class="block">
+                    <x-img src="resources/img/interests-software.jpg" sizes="(min-width: 1024px) 33vw, 100vw" alt="Adam giving a software talk" class="rounded-lg mb-3 w-full aspect-video object-cover" />
+                </x-a>
                 <div class="mb-2">{!! $mdi('code-tags', 'inline', 24) !!}
                     Software development is both my profession and hobby. I work in a variety of programming languages, and I enjoy creating websites and bespoke software in my spare time.
                 </div>
