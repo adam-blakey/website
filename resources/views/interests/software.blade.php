@@ -64,7 +64,7 @@
                         </ul>
                     </div>
                     <div class="md:w-1/2">
-                        <x-img src="resources/img/academic-simulation.jpg" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" alt="Simulation of blood flow and nutrient transport in the placenta" class="rounded-lg shadow-lg w-full" />
+                        <x-img src="resources/img/academic-simulation.jpg" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" caption="Simulation of blood flow and nutrient transport in the placenta" class="rounded-lg shadow-lg w-full" />
                     </div>
                 </div>
                 <div class="flex flex-wrap gap-2">
@@ -95,7 +95,7 @@
                         @php($projectLink = $project['url'] ?? $project['source'])
                         <li class="flex flex-col rounded-lg bg-gray-700 p-4">
                             <x-a href="{{ $projectLink }}" class="block" :noUnderline="true" :noExternalIcon="true">
-                                <x-img src="resources/img/{{ $project['image'] }}" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" alt="Screenshot of {{ $project['name'] }}" class="rounded-lg mb-3 w-full aspect-video object-cover object-top" />
+                                <x-img src="resources/img/{{ $project['image'] }}" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" caption="Screenshot of {{ $project['name'] }}" class="rounded-lg mb-3 w-full aspect-video object-cover object-top" />
                             </x-a>
                             <h4 class="font-semibold text-gray-200">{{ $project['name'] }}</h4>
                             <p class="mb-3 text-gray-400">{{ $project['description'] }}</p>

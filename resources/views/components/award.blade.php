@@ -5,7 +5,7 @@
         <div class="relative rounded-lg overflow-hidden mb-3">
             <!-- Image as background -->
             <div class="absolute inset-0">
-                <x-img :src="$award->image" sizes="(min-width: 1024px) 33vw, 100vw" alt="{{ $award->title }}"
+                <x-img :src="$award->image" sizes="(min-width: 1024px) 33vw, 100vw"
                      class="w-full h-full object-cover opacity-40" />
             </div>
             <!-- Dark overlay to improve text visibility -->

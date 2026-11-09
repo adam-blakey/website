@@ -18,7 +18,7 @@
                         </ul>
                     </div>
                     <div class="md:w-1/2">
-                        <x-img src="resources/img/scouts-group.jpg" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" alt="Photo of Adam smiling at a Scout awards ceremony" class="rounded-lg shadow-lg w-full" />
+                        <x-img src="resources/img/scouts-group.jpg" sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" caption="Photo of Adam smiling at a Scout awards ceremony" class="rounded-lg shadow-lg w-full" />
                     </div>
                 </div>
             </x-card-grid-item>
