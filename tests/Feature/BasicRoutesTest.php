@@ -85,5 +85,7 @@ it('includes the goatcounter script only when a code is configured', function ()
 
     config(['services.goatcounter.code' => 'adamblakey']);
 
-    $this->get('/')->assertSee('https://adamblakey.goatcounter.com/count', false);
+    $this->get('/')
+        ->assertSee('https://adamblakey.goatcounter.com/count', false)
+        ->assertSee('href="https://adamblakey.goatcounter.com"', false);
 });
