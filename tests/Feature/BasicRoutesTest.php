@@ -79,3 +79,11 @@ it('links a staging version to its pull request', function () {
     View::share('layoutTaggedVersion', '1.4.0-2-gabc1234+pr62');
     $this->get('/')->assertSee('href="https://github.com/adam-blakey/website/pull/62"', false);
 });
+
+it('includes the goatcounter script only when a code is configured', function () {
+    $this->get('/')->assertDontSee('gc.zgo.at', false);
+
+    config(['services.goatcounter.code' => 'adamblakey']);
+
+    $this->get('/')->assertSee('https://adamblakey.goatcounter.com/count', false);
+});

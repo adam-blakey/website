@@ -12,6 +12,7 @@ abstract class Command extends BaseCommand
         match ($style) {
             'error' => Log::error($string, ['command' => $this->getName()]),
             'warning' => Log::warning($string, ['command' => $this->getName()]),
+            'info' => Log::info($string, ['command' => $this->getName()]),
             default => null,
         };
 

@@ -6,7 +6,7 @@ use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 
-it('logs the errors and warnings a command prints', function () {
+it('logs the info, warnings and errors a command prints', function () {
     $logged = [];
     Log::listen(function (MessageLogged $message) use (&$logged) {
         $logged[] = [$message->level, $message->message, $message->context];
@@ -26,6 +26,7 @@ it('logs the errors and warnings a command prints', function () {
     expect(Artisan::call('test:noisy'))->toBe(0);
 
     expect($logged)->toBe([
+        ['info', 'fine', ['command' => 'test:noisy']],
         ['warning', 'careful', ['command' => 'test:noisy']],
         ['error', 'broke', ['command' => 'test:noisy']],
     ]);
