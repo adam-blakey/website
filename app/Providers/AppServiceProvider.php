@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Award;
+use App\Models\Qualification;
 use App\Models\MusicNowPlaying;
 use App\Models\ProgrammingTime;
 use App\Models\TabNavLink;
@@ -83,12 +84,14 @@ class AppServiceProvider extends ServiceProvider
         $timelineEntries = $this->loadData('timeline', TimelineEntry::class);
         $awards = $this->loadData('awards', Award::class);
         $talks = $this->loadData('talks', Talk::class);
+        $qualifications = $this->loadData('qualifications', Qualification::class);
 
         View::share('layoutTabEntries', $tabEntries);
         View::share('layoutActiveTab', $active);
         View::share('layoutTopMenuEntries', $topMenuEntries);
         View::share('layoutTimelineEntries', $timelineEntries);
         View::share('layoutAwards', collect($awards)->where('featured', true)->sortByDesc('date')->values());
+        View::share('layoutQualifications', $qualifications);
         View::share('layoutTalks', collect($talks)->where('featured', true));
         View::share('layoutTaggedVersion', $taggedVersion);
         View::share('layoutLatestTrack', $latestTrack);

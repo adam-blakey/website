@@ -24,7 +24,9 @@ Route::get('/about', function () {
     return view('about');
 })->name('about');
 
+Route::view('/about/timeline', 'about.timeline')->name('about.timeline');
 Route::view('/about/awards', 'about.awards')->name('about.awards');
+Route::view('/about/qualifications', 'about.qualifications')->name('about.qualifications');
 Route::view('/about/talks', 'about.talks')->name('about.talks');
 
 Route::get('/interests', function() {

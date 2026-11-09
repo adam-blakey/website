@@ -1,5 +1,7 @@
 @props([
     'title' => "",
+    'view' => null,
+    'icon' => null,
     'rowSpan' => 1,
     'colSpan' => 1,
     'color' => 'bg-gray-800'
@@ -15,9 +17,9 @@
         default => 'lg:col-span-3'
     }
 }}">
-    <x-card :title="$title" :hFull="true" :color="$color">
+    <x-card :title="$title" :view="$view" :icon="$icon" :hFull="true" :color="$color">
         <div class="flex h-full flex-col">
-            <p class="mt-2 max-w-lg text-sm/6 max-lg:text-center">{{ $slot }}</p>
+            <div class="mt-2 text-sm/6">{{ $slot }}</div>
         </div>
     </x-card>
 </div>

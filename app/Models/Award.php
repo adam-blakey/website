@@ -10,6 +10,7 @@ class Award {
     public string $description;
     public ?string $image;
     public ?string $link;
+    public string $icon;
 
     public bool $featured;
 
@@ -20,6 +21,7 @@ class Award {
         $this->description = $attributes['description'] ?? '';
         $this->image = $attributes['image'] ?? null;
         $this->link = $attributes['link'] ?? null;
+        $this->icon = $attributes['icon'] ?? 'medal';
         $this->featured = $attributes['featured'] ?? false;
     }
 

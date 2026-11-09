@@ -2,7 +2,7 @@
 
 @php
     $folders = [
-        'about' => ['awards' => 'trophy', 'talks' => 'presentation'],
+        'about' => ['timeline' => 'timeline-clock', 'awards' => 'trophy', 'qualifications' => 'certificate', 'talks' => 'presentation'],
         'interests' => ['music' => 'music-note', 'scouts' => 'campfire', 'software' => 'code-tags'],
     ];
     $folderColors = ['about' => 'text-violet-400/80', 'interests' => 'text-rose-400/80'];
