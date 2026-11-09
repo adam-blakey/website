@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Models\BlogMedia;
 use App\Models\BlogPost;
 use App\Models\BlogPostImage;
-use Illuminate\Console\Command;
+use App\Console\Command;
 use DOMDocument;
 use DOMXPath;
 use Nette\Utils\Image;

@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Concert;
-use Illuminate\Console\Command;
+use App\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
 
 class ClearConcerts extends Command

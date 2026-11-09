@@ -6,7 +6,7 @@ use App\Services\MusicServiceManager;
 use App\Services\MusicServices\LastFmService;
 use App\Services\MusicServices\ListenBrainzService;
 use App\Services\MusicServices\SpotifyService;
-use Illuminate\Console\Command;
+use App\Console\Command;
 
 class FetchNowPlaying extends Command
 {

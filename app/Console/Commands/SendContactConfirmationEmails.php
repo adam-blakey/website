@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Mail\ContactConfirmation;
 use App\Mail\AdminContact;
 use App\Models\Contact;
-use Illuminate\Console\Command;
+use App\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
 class SendContactConfirmationEmails extends Command
