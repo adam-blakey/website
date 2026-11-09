@@ -83,7 +83,7 @@ class ImportWordPressPosts extends Command
                         return 1;
                     }
                 }
-                elseif (!$response->getStatusCode() < 300) {
+                elseif ($response->getStatusCode() >= 300) {
                     $this->error("Failed to fetch JSON file: HTTP " . $response->getStatusCode());
                     return 1;
                 }
