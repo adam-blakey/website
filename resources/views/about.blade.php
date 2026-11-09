@@ -22,14 +22,7 @@
                 </div>
             </div>
         </x-card-grid-item>
-        <x-card-grid-item :colSpan="1" title="Recent-ish timeline">
-            <x-timeline :entries="array_slice($layoutTimelineEntries, 0, 3)" />
-            <x-a view="about.timeline" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-100 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700" :noUnderline="true">
-                Full timeline
-                {!! $mdi('arrow-right', 'pl-1') !!}
-            </x-a>
-        </x-card-grid-item>
-        <x-card-grid-item :colSpan="1" title="Latest award">
+        <x-card-grid-item :colSpan="1" title="Latest award" view="about.awards">
             <ul class="space-y-6 mt-5">
                 <x-award :award="$layoutAwards->first()" />
             </ul>
@@ -38,12 +31,28 @@
                 {!! $mdi('arrow-right', 'pl-1') !!}
             </x-a>
         </x-card-grid-item>
-        <x-card-grid-item :colSpan="1" title="Latest talk">
+        <x-card-grid-item :colSpan="1" title="Latest qualification" view="about.qualifications">
+            <ul class="space-y-6 mt-5">
+                <x-qualification :qualification="$layoutQualifications[0]" />
+            </ul>
+            <x-a view="about.qualifications" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-100 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700" :noUnderline="true">
+                Qualifications & certifications
+                {!! $mdi('arrow-right', 'pl-1') !!}
+            </x-a>
+        </x-card-grid-item>
+        <x-card-grid-item :colSpan="1" title="Latest talk" view="about.talks">
             <ul class="space-y-6 mt-5">
                 <x-talk :talk="$layoutTalks->first()" />
             </ul>
             <x-a view="about.talks" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-100 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700" :noUnderline="true">
                 All talks & presentations
+                {!! $mdi('arrow-right', 'pl-1') !!}
+            </x-a>
+        </x-card-grid-item>
+        <x-card-grid-item :colSpan="3" title="Recent-ish timeline" view="about.timeline">
+            <x-timeline :entries="array_slice($layoutTimelineEntries, 0, 3)" />
+            <x-a view="about.timeline" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-100 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700" :noUnderline="true">
+                Full timeline
                 {!! $mdi('arrow-right', 'pl-1') !!}
             </x-a>
         </x-card-grid-item>

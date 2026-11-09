@@ -13,7 +13,10 @@
 
             <!-- Only title and date on top of the image -->
             <div class="relative z-10 p-4">
-                <div class="flex items-center mb-2">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="flex shrink-0 items-center justify-center w-8 h-8 bg-blue-100 rounded-full dark:bg-blue-900 p-1">
+                        {!! \Mdi\Mdi::mdi($award->icon) !!}
+                    </span>
                     <h3 class="text-xl font-semibold text-white">{{ $award->title }}</h3>
                 </div>
                 <time class="block mb-2 text-sm font-normal leading-none text-gray-200">
@@ -35,7 +38,10 @@
         </div>
     @else
         <!-- Fallback for awards without images -->
-        <div class="mb-2">
+        <div class="flex items-center gap-3 mb-2">
+            <span class="flex shrink-0 items-center justify-center w-8 h-8 bg-blue-100 rounded-full dark:bg-blue-900 p-1">
+                {!! \Mdi\Mdi::mdi($award->icon) !!}
+            </span>
             <h3 class="text-xl font-semibold text-gray-900 dark:text-white">{{ $award->title }}</h3>
         </div>
         <time class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">

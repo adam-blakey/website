@@ -4,7 +4,9 @@
     <div class="flex items-center mb-2">
         <h3 class="text-xl font-semibold text-gray-900 dark:text-white">{{ $talk->title }}</h3>
     </div>
-    <x-img :src="$talk->image" sizes="(min-width: 1024px) 33vw, 100vw" alt="{{ $talk->title }}" class="mb-3 rounded-lg max-w-full h-auto" />
+    <x-a href="{{ $talk->pdf_link }}" class="block" :noUnderline="true" :noExternalIcon="true">
+        <x-img :src="$talk->image" sizes="(min-width: 1024px) 33vw, 100vw" alt="{{ $talk->title }}" class="mb-3 rounded-lg max-w-full h-auto" />
+    </x-a>
     <p class="mb-3 text-base font-normal text-gray-500 dark:text-gray-400">
         {{ $talk->description }}
     </p>
