@@ -50,6 +50,16 @@
         "icon": "campfire"
     },
     {
+        "title": "Duke of Edinburgh Gold Award",
+        "issuer": "The Duke of Edinburgh's Award",
+        "date": "2017-07-01",
+        "result": null,
+        "icon": "compass",
+        "expires": null,
+        "credential_id": null,
+        "link": null
+    },
+    {
         "title": "Grade 8 Pianoforte",
         "issuer": "ABRSM",
         "date": "2017-04-01",
@@ -58,6 +68,16 @@
         "credential_id": null,
         "link": null,
         "icon": "piano"
+    },
+    {
+        "title": "Grade 8 Clarinet",
+        "issuer": "ABRSM",
+        "date": "2016-04-01",
+        "result": "Distinction",
+        "icon": "music",
+        "expires": null,
+        "credential_id": null,
+        "link": null
     },
     {
         "title": "Grade 6 Guitar",
