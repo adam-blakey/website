@@ -76,6 +76,15 @@ it('falls back to last.fm when spotify has nothing playing', function (array|int
     'spotify error' => 500,
 ]);
 
+it('succeeds when no service has a track', function () {
+    config(['music-services.lastfm.enabled' => false]);
+    fakeMusicApis(204);
+
+    expect(Artisan::call('music:fetch'))->toBe(0);
+
+    expect(MusicNowPlaying::count())->toBe(0);
+});
+
 it('shows the spotify and last.fm profile links with or without a track', function () {
     $this->get('/now')
         ->assertSee('https://open.spotify.com/user/adamspotify', false)

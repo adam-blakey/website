@@ -44,8 +44,8 @@ class FetchNowPlaying extends Command
                 return self::SUCCESS;
             }
 
-            $this->error('No tracks found from any service');
-            return self::FAILURE;
+            $this->info('No tracks found from any service');
+            return self::SUCCESS;
         } catch (\Exception $e) {
             $this->error("Error: {$e->getMessage()}");
             return self::FAILURE;
