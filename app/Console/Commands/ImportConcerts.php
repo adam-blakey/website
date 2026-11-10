@@ -168,6 +168,8 @@ class ImportConcerts extends Command
             return;
         }
 
+        $attributes['slug'] = str_replace('_', '-', $externalId) . '-' . $attributes['slug'];
+
         $concert = Concert::updateOrCreate(['external_id' => $externalId], $attributes);
 
         $this->info(($concert->wasRecentlyCreated ? 'Imported' : 'Updated') . " {$concert->ensemble} concert: {$concert->name}");

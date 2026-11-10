@@ -121,7 +121,16 @@ it('removes upcoming concerts that a source no longer lists, keeping manual ones
     ]);
     Artisan::call('concerts:import');
 
-    expect(Concert::pluck('slug')->sort()->values()->all())->toBe(['cirrus-live', 'solo']);
+    expect(Concert::pluck('slug')->sort()->values()->all())->toBe(['cirrus-7-cirrus-live', 'solo']);
+});
+
+it('imports a concert whose source slug is already taken', function () {
+    Concert::create(['name' => 'Autumn', 'slug' => 'autumn', 'start_datetime' => '2025-11-21 19:00:00', 'location' => 'Home', 'ensemble' => 'Blackwood Clarinets']);
+    fakeConcertSources('2026-11-21', '7:00 pm - 10:00 pm', '2026-12-01 19:00:00');
+
+    Artisan::call('concerts:import');
+
+    expect(Concert::firstWhere('external_id', 'blackwood_1')->slug)->toBe('blackwood-1-autumn');
 });
 
 it('clears all concerts', function () {
