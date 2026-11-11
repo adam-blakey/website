@@ -140,7 +140,7 @@ jobs:
             curl -fsS --retry 2 -o /dev/null -w '%{http_code} %header{cf-cache-status} %{url}\n' "https://${{ matrix.domain }}/${f#public/}"
           done
       - if: matrix.domain == vars.PROD_DOMAIN && steps.version.outputs.new_tag
-        uses: softprops/action-gh-release@v3.0.3
+        uses: softprops/action-gh-release@v3.0.4
         with:
           tag_name: ${{ steps.version.outputs.new_tag || steps.version.outputs.previous_tag }}
           target_commitish: ${{ github.sha }}
