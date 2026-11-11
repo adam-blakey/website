@@ -10,13 +10,20 @@
         ['mdi' => 'database', 'name' => 'SQL', 'use' => 'Database design and management'],
     ];
     $projects = [
-        ['name' => 'This website', 'image' => 'project-website.jpg', 'description' => 'Is that a text editor? Is that an IDE? Nope, it\'s just this website', 'stack' => ['Laravel', 'Tailwind CSS'], 'url' => null, 'source' => 'https://github.com/adam-blakey/website'],
+        ['name' => 'Adam\'s website', 'image' => 'project-website.jpg', 'description' => 'Is that a text editor? Is that an IDE? Nope, it\'s just this website', 'stack' => ['Laravel', 'Tailwind CSS'], 'url' => null, 'alreadyHere' => true, 'source' => 'https://github.com/adam-blakey/website'],
         ['name' => 'Readererer', 'image' => 'project-readererer.jpg', 'description' => 'Software for manging attendance and sheet music for amateur music ensembles', 'stack' => ['Laravel', 'Tabler'], 'url' => 'https://readererer.blakey.family', 'source' => 'https://github.com/adam-blakey/readererer'],
         ['name' => '2nd Beeston Sea Scouts', 'image' => 'project-2nd-beeston.jpg', 'description' => 'WordPress website which hosts important information as well as some of our volunteering vacancies', 'stack' => ['WordPress'], 'url' => 'https://2ndbeeston.org.uk', 'source' => null],
         ['name' => 'SW Notts Scouts', 'image' => 'project-swnotts.jpg', 'description' => 'WordPress website with various Scouting plugins for showing our groups and getting in touch', 'stack' => ['WordPress'], 'url' => 'https://swnotts-scouts.org.uk', 'source' => null],
         ['name' => 'Keiron Anderson', 'image' => 'project-keiron-anderson.jpg', 'description' => 'A website that allows Keiron to post blog posts and advertise published music', 'stack' => ['WordPress'], 'url' => 'https://keironanderson.co.uk', 'source' => null],
         ['name' => 'Nottingham Symphonic Winds', 'image' => 'project-nsw.jpg', 'description' => 'WordPress website that shows upcoming concerts', 'stack' => ['WordPress'], 'url' => 'https://nsw.org.uk', 'source' => null],
-        ['name' => 'Nottingham Digital', 'image' => 'project-nottingham-digital.jpg', 'description' => 'A site that lists upcoming tech meetups in Nottingham', 'stack' => ['WordPress'], 'url' => 'https://nottingham.digital', 'source' => null],
+        ['name' => 'Nottingham Digital', 'image' => 'project-nottingham-digital.jpg', 'description' => 'A site that lists upcoming tech meetups in Nottingham', 'stack' => ['Astro'], 'url' => 'https://nottingham.digital', 'source' => null],
+    ];
+    $technologyUrls = [
+        'Laravel' => 'https://laravel.com',
+        'Tailwind CSS' => 'https://tailwindcss.com',
+        'Tabler' => 'https://tabler.io',
+        'WordPress' => 'https://wordpress.com',
+        'Astro' => 'https://astro.build',
     ];
     $buttonClass = 'inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-100 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700';
 @endphp
@@ -101,10 +108,13 @@
                             <p class="mb-3 text-gray-400">{{ $project['description'] }}</p>
                             <div class="flex flex-wrap gap-1 mb-3">
                                 @foreach ($project['stack'] as $technology)
-                                    <x-a href="{{ $projectLink }}" class="rounded-full bg-gray-800 px-2 py-0.5 text-xs text-gray-300 hover:bg-gray-600" :noUnderline="true" :noExternalIcon="true">{{ $technology }}</x-a>
+                                    <x-a href="{{ $technologyUrls[$technology] }}" class="rounded-full bg-gray-800 px-2 py-0.5 text-xs text-gray-300 hover:bg-gray-600" :noUnderline="true" :noExternalIcon="true">{{ $technology }}</x-a>
                                 @endforeach
                             </div>
                             <div class="mt-auto flex flex-wrap gap-2">
+                                @if ($project['alreadyHere'] ?? false)
+                                    <button type="button" disabled class="{{ $buttonClass }} opacity-50 cursor-not-allowed pointer-events-none"><s>Visit</s>&nbsp;you're already here you banana</button>
+                                @endif
                                 @if ($project['url'])
                                     <x-a href="{{ $project['url'] }}" :class="$buttonClass" :noUnderline="true">Visit</x-a>
                                 @endif
