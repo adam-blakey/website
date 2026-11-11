@@ -16,6 +16,9 @@
     <meta name="description" content="{{ $description }}">
     <link type="image/x-icon" href="{{ asset('favicon.ico') }}" rel="icon">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @if (config('services.goatcounter.code'))
+        <script data-goatcounter="https://{{ config('services.goatcounter.code') }}.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+    @endif
     @stack('head')
 </head>
 

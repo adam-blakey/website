@@ -25,6 +25,15 @@
             </a>
             <a class="flex items-center gap-1 shrink-0 rounded px-1 hover:bg-gray-600 hover:text-white" href="{{ route('now') }}">{!! $mdi('clock-outline', $programmingTime && preg_match('/[1-9]/', $programmingTime) ? 'text-blue-400' : '', 13) !!} {{ $programmingTime ?? '0 hrs' }} programming</a>
             <span class="hidden md:inline">UTF-8</span>
+            @if (config('services.goatcounter.code'))
+                <a class="hidden md:flex items-center gap-1 shrink-0 rounded px-1 hover:bg-gray-600 hover:text-white" href="https://{{ config('services.goatcounter.code') }}.goatcounter.com" title="Public visitor stats">{!! $mdi('eye-outline', '', 13) !!} <span id="visit-count">–</span> visits</a>
+                <script>
+                    fetch('https://{{ config('services.goatcounter.code') }}.goatcounter.com/counter/TOTAL.json')
+                        .then((response) => response.json())
+                        .then(({ count }) => document.getElementById('visit-count').textContent = count)
+                        .catch(() => {});
+                </script>
+            @endif
             <x-a href="{{ $versionUrl }}" class="flex items-center gap-1 shrink-0 rounded px-1 hover:bg-gray-600 hover:text-white" :noUnderline="true" :noExternalIcon="true">{!! $mdi('tag-outline', '', 13) !!} v{{ $taggedVersion ?? '1.0.0' }}</x-a>
         </div>
     </div>

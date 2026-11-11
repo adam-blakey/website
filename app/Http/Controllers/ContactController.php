@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ContactController extends Controller
 {
@@ -28,6 +29,8 @@ class ContactController extends Controller
             'ip_address' => $request->ip(),
             'confirmation_sent' => false,
         ]);
+
+        Log::info('Contact form submitted', ['contact_id' => $contact->id]);
 
         return redirect()->route('contact')->with('success', 'Your message has been sent. We will get back to you soon!');
     }
