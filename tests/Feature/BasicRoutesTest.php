@@ -83,9 +83,9 @@ it('links a staging version to its pull request', function () {
 it('includes the goatcounter script only when a code is configured', function () {
     $this->get('/')->assertDontSee('gc.zgo.at', false);
 
-    config(['services.goatcounter.code' => 'adamblakey']);
+    config(['services.goatcounter.code' => 'adam-blakey']);
 
     $this->get('/')
-        ->assertSee('https://adamblakey.goatcounter.com/count', false)
-        ->assertSee('href="https://adamblakey.goatcounter.com"', false);
+        ->assertSee('https://adam-blakey.goatcounter.com/count', false)
+        ->assertSee('href="https://adam-blakey.goatcounter.com"', false);
 });
