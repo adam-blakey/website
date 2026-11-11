@@ -4,7 +4,7 @@
     <x-card-grid :columns="3">
         <x-card-grid-item :colSpan="3" title="Adam Blakey">
             <div class="flex flex-col md:flex-row gap-6">
-                <x-img src="resources/img/about-portrait.jpg" sizes="(min-width: 768px) 256px, 100vw" caption="Photo of Adam looking out over the Scottish/English border" class="rounded-lg shadow-lg w-full md:w-64 md:h-64 object-cover shrink-0" />
+                <x-img src="resources/img/about-portrait.jpg" sizes="(min-width: 768px) 256px, 192px" caption="Photo of Adam looking out over the Scottish/English border" class="h-48 w-48 md:h-64 md:w-64 max-w-none rounded-lg shadow-lg object-cover" />
                 <div>
                     <div class="mb-2">Hi there, I'm Adam 👋</div>
                     <div class="mb-2">
