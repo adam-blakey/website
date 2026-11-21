@@ -9,7 +9,8 @@ it('serves a sitemap of public pages', function () {
         ->assertDontSee(url('/welcome'), false)
         ->assertDontSee(url('/sitemap.xml'), false)
         ->assertDontSee(url('/robots.txt'), false)
-        ->assertDontSee(url('/editor'), false);
+        ->assertDontSee(url('/editor'), false)
+        ->assertDontSee(url('/dashboard'), false);
 });
 
 it('points crawlers to the sitemap from robots.txt', function () {

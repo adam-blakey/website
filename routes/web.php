@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\EditorController;
+use App\Http\Controllers\Dashboard;
 
 Route::get('/welcome', function () {
     return redirect('/');
@@ -64,6 +65,13 @@ Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 // Editor routes
 Route::get('/editor', [EditorController::class, 'show'])->name('editor.show');
+
+Route::prefix('dashboard')->name('dashboard.')->middleware(['auth.basic', 'throttle:30,1'])->group(function () {
+    Route::get('/', Dashboard\OverviewController::class)->name('overview');
+    Route::get('/schedule', Dashboard\ScheduleController::class)->name('schedule');
+    Route::resource('posts', Dashboard\PostController::class)->except('show');
+    Route::resource('concerts', Dashboard\ConcertController::class)->except('show');
+});
 
 // Sitemap
 Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
