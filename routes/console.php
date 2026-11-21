@@ -1,12 +1,23 @@
 <?php
 
+use App\Helpers\ScheduleRuns;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
 $artisan = fn (string $command) => function () use ($command) {
-    if (Artisan::call($command) !== Command::SUCCESS) {
-        throw new RuntimeException("{$command} failed: ".trim(Artisan::output()));
+    try {
+        $succeeded = Artisan::call($command) === Command::SUCCESS;
+    } catch (Throwable $exception) {
+        ScheduleRuns::record($command, false, $exception->getMessage());
+        throw $exception;
+    }
+
+    $output = trim(Artisan::output());
+    ScheduleRuns::record($command, $succeeded, $output);
+
+    if (! $succeeded) {
+        throw new RuntimeException("{$command} failed: {$output}");
     }
 };
 
