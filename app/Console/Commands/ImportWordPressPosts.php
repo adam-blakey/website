@@ -175,7 +175,7 @@ class ImportWordPressPosts extends Command
         // Skip if already imported and not overwriting
         $postExists = Self::doesPostExist($wordpressId);
         if ($postExists) {
-            if (!$overwrite) {
+            if (!$overwrite || BlogPost::where('wordpress_id', $wordpressId)->where('keep_local_edits', true)->exists()) {
                 return;
             }
 
