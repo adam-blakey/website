@@ -154,6 +154,7 @@ class ImportConcerts extends Command
         $count = Concert::upcoming()
             ->where('external_id', 'like', $source . '%')
             ->whereNotIn('external_id', array_map(fn ($id) => $source . $id, $ids))
+            ->where('keep_local_edits', false)
             ->delete();
 
         if ($count > 0) {
@@ -163,6 +164,11 @@ class ImportConcerts extends Command
 
     private function saveConcert(string $externalId, array $attributes)
     {
+        if (Concert::where('external_id', $externalId)->where('keep_local_edits', true)->exists()) {
+            $this->info("Keeping local edits to concert: {$attributes['name']}");
+            return;
+        }
+
         if ($attributes['start_datetime']->isPast()) {
             $this->info("Skipping past concert: {$attributes['name']}");
             return;

@@ -32,11 +32,13 @@ class Concert extends Model
         'event_url',
         'ensemble',
         'external_id',
+        'keep_local_edits',
     ];
 
     protected $casts = [
         'start_datetime' => 'datetime',
         'end_datetime' => 'datetime',
+        'keep_local_edits' => 'boolean',
     ];
 
     /**

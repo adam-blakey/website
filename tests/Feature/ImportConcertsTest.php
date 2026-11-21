@@ -124,6 +124,32 @@ it('removes upcoming concerts that a source no longer lists, keeping manual ones
     expect(Concert::pluck('slug')->sort()->values()->all())->toBe(['cirrus-7-cirrus-live', 'solo']);
 });
 
+it('leaves concerts with local edits alone, even when the source drops them', function () {
+    fakeConcertSources('2026-11-21', '7:00 pm - 10:00 pm', '2026-12-01 19:00:00');
+    Artisan::call('concerts:import');
+    Concert::firstWhere('external_id', 'blackwood_1')->update(['name' => 'Edited name', 'keep_local_edits' => true]);
+    Concert::firstWhere('external_id', 'cirrus_7')->update(['name' => 'Edited Cirrus', 'keep_local_edits' => true]);
+
+    Http::swap(new Illuminate\Http\Client\Factory);
+    Http::fake([
+        'blackwoodclarinets.co.uk/wp-json/*' => Http::response([[
+            'id' => 1,
+            'slug' => 'autumn',
+            'link' => 'https://blackwoodclarinets.co.uk/events/autumn/',
+            'title' => ['rendered' => 'Autumn'],
+            'content' => ['rendered' => ''],
+        ]]),
+        'blackwoodclarinets.co.uk/events/autumn/' => Http::response(blackwoodEventPage('2026-11-28', '6:30 pm - 9:00 pm')),
+        'cirrusquartet.uk/*' => Http::response(['events' => []]),
+    ]);
+    Artisan::call('concerts:import');
+
+    expect(Concert::firstWhere('external_id', 'blackwood_1'))
+        ->name->toBe('Edited name')
+        ->start_datetime->format('Y-m-d H:i')->toBe('2026-11-21 19:00')
+        ->and(Concert::firstWhere('external_id', 'cirrus_7')->name)->toBe('Edited Cirrus');
+});
+
 it('imports a concert whose source slug is already taken', function () {
     Concert::create(['name' => 'Autumn', 'slug' => 'autumn', 'start_datetime' => '2025-11-21 19:00:00', 'location' => 'Home', 'ensemble' => 'Blackwood Clarinets']);
     fakeConcertSources('2026-11-21', '7:00 pm - 10:00 pm', '2026-12-01 19:00:00');
