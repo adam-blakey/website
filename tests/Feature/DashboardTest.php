@@ -21,6 +21,16 @@ function admin(): User
     return User::create(['name' => 'Admin', 'email' => 'admin@example.test', 'password' => 'correct-horse-battery']);
 }
 
+function createAdmin(string $password): int
+{
+    $input = new Symfony\Component\Console\Input\ArrayInput(['email' => 'admin@example.test']);
+    $input->setStream(fopen('data://text/plain,' . $password . "\n", 'r'));
+    $command = app(App\Console\Commands\CreateAdmin::class);
+    $command->setLaravel(app());
+
+    return $command->run($input, new Symfony\Component\Console\Output\NullOutput);
+}
+
 function importedConcert(array $attributes = []): Concert
 {
     return Concert::create([
@@ -39,9 +49,7 @@ it('asks for a login on every dashboard page', function (string $path) {
 })->with(['/dashboard', '/dashboard/schedule', '/dashboard/posts', '/dashboard/posts/create', '/dashboard/concerts', '/dashboard/concerts/create']);
 
 it('logs in with a dashboard user created on the command line', function () {
-    $this->artisan('app:create-admin', ['email' => 'admin@example.test'])
-        ->expectsQuestion('Password (at least 12 characters)', 'correct-horse-battery')
-        ->assertSuccessful();
+    expect(createAdmin('correct-horse-battery'))->toBe(0);
     Http::fake(['example.goatcounter.com/*' => Http::response(status: 404)]);
 
     $this->withHeader('Authorization', 'Basic ' . base64_encode('admin@example.test:correct-horse-battery'))
@@ -50,11 +58,8 @@ it('logs in with a dashboard user created on the command line', function () {
 });
 
 it('refuses a short dashboard password', function () {
-    $this->artisan('app:create-admin', ['email' => 'admin@example.test'])
-        ->expectsQuestion('Password (at least 12 characters)', 'short')
-        ->assertFailed();
-
-    expect(User::count())->toBe(0);
+    expect(createAdmin('short'))->toBe(1)
+        ->and(User::count())->toBe(0);
 });
 
 it('shows visits from the public GoatCounter counter', function () {
