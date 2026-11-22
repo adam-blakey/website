@@ -15,6 +15,7 @@ class SitemapController extends Controller
             return $route->methods()[0] === 'GET' &&
                    $route->getName() &&
                    !str_starts_with($route->getName(), 'editor.') &&
+                   !str_starts_with($route->getName(), 'dashboard.') &&
                    !in_array($route->getName(), ['contact.submit', 'welcome', 'sitemap', 'robots']);
         });
 

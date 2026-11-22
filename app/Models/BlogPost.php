@@ -18,10 +18,12 @@ class BlogPost extends Model
         'content',
         'featured_media_id',
         'published_at',
+        'keep_local_edits',
     ];
 
     protected $casts = [
         'published_at' => 'datetime',
+        'keep_local_edits' => 'boolean',
     ];
 
     /**
